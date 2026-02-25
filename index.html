@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <title>Catasto Online | Terreni e Fabbricati – Ricerca, Misure, WMS</title>
+  <meta name="description" content="Portale Catasto online: accesso a strumenti per Catasto Terreni e Catasto Fabbricati. Ricerca catastale, misure, consultazione mappe e servizi WMS." />
+
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://MatteoChiurchiu.github.io/misuracatasto/" />
+
+  <!-- Open Graph (anteprima condivisione) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Catasto Online – Terreni e Fabbricati" />
+  <meta property="og:description" content="Strumenti per Catasto Terreni e Fabbricati: ricerca, misure e mappe (WMS)." />
+  <meta property="og:url" content="https://MatteoChiurchiu.github.io/misuracatasto/" />
+
+  <style>
+    :root{
+      --bg:#0b1220; --card:#111a2e; --muted:#9fb0d0; --text:#e9f0ff;
+      --a:#3aa6ff; --b:#7c5cff; --ok:#2ecc71;
+      --border:rgba(255,255,255,.10);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      color:var(--text);
+      background:radial-gradient(1200px 700px at 20% 10%, rgba(58,166,255,.18), transparent 60%),
+                 radial-gradient(1000px 700px at 80% 30%, rgba(124,92,255,.18), transparent 60%),
+                 var(--bg);
+      min-height:100vh; display:flex; align-items:center; justify-content:center; padding:28px;
+    }
+    .wrap{max-width:1000px; width:100%;}
+    header{display:flex; gap:18px; align-items:center; justify-content:space-between; flex-wrap:wrap;}
+    .brand{display:flex; flex-direction:column; gap:6px}
+    h1{margin:0; font-size:34px; letter-spacing:.2px}
+    .sub{color:var(--muted); margin:0; line-height:1.5}
+    .grid{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:16px; margin-top:18px;}
+    @media (max-width: 760px){ .grid{grid-template-columns:1fr;} h1{font-size:28px} }
+
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:18px;
+      box-shadow:0 14px 40px rgba(0,0,0,.35);
+    }
+    .titleRow{display:flex; align-items:center; justify-content:space-between; gap:10px}
+    .tag{
+      font-size:12px; padding:6px 10px; border-radius:999px;
+      border:1px solid var(--border); color:var(--muted);
+      background:rgba(0,0,0,.15);
+      white-space:nowrap;
+    }
+    .card h2{margin:0; font-size:18px}
+    .card p{margin:10px 0 0; color:var(--muted); line-height:1.55}
+    .actions{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap}
+    a.btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:8px;
+      padding:11px 14px; border-radius:12px; text-decoration:none; font-weight:700;
+      border:1px solid var(--border);
+    }
+    .btn.primary{background:linear-gradient(135deg, rgba(58,166,255,.95), rgba(124,92,255,.95)); color:#071022; border:none}
+    .btn.ghost{background:rgba(255,255,255,.04); color:var(--text)}
+    .seo{
+      margin-top:16px; padding:16px;
+      border-radius:16px; border:1px dashed rgba(255,255,255,.18);
+      color:var(--muted); line-height:1.6;
+      background:rgba(0,0,0,.18);
+    }
+    footer{margin-top:14px; color:rgba(255,255,255,.45); font-size:12px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px}
+    .dot{color:rgba(255,255,255,.35)}
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <h1>MISURA CATASTO planimetrie e terreni</h1>
+        <p class="sub">Portale Catasto online: scegli l’applicazione <b>Terreni</b> o <b>Fabbricati</b>.</p>
+      </div>
+      <div class="tag">Ricerca • Misure • WMS • Catasto</div>
+    </header>
+
+    <section class="grid" aria-label="Seleziona applicazione">
+      <article class="card">
+        <div class="titleRow">
+          <h2>Catasto Terreni</h2>
+          <span class="tag">Terreni</span>
+        </div>
+        <p>
+          Strumenti per <b>ricerca</b>, <b>misura</b> e consultazione cartografica.
+          Supporto a servizi <b>WMS</b> e gestione operativa su particelle e mappa.
+        </p>
+        <div class="actions">
+          <a class="btn primary" href="app/terreni.html">Apri TERRRENI</a>
+          <a class="btn ghost" href="app/terreni.html#info">Info</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="titleRow">
+          <h2>Catasto Fabbricati</h2>
+          <span class="tag">Fabbricati</span>
+        </div>
+        <p>
+          Applicazione <b>FABBRICATI</b> per gestione e misure su documenti/estratti,
+          con funzioni operative e integrazioni utili alla consultazione catastale.
+        </p>
+        <div class="actions">
+          <a class="btn primary" href="app/fabbricati.html">Apri FABBRICATI</a>
+          <a class="btn ghost" href="app/fabbricati.html#info">Info</a>
+        </div>
+      </article>
+    </section>
+
+    <!-- Testo “reale” per indicizzazione -->
+    <section class="seo">
+      <b>Catasto</b> online: portale per <b>Catasto Terreni</b> e <b>Catasto Fabbricati</b>.
+      Funzioni principali: <b>ricerca catastale</b>, strumenti di <b>misura</b> (distanze/aree),
+      consultazione cartografica e utilizzo di servizi <b>WMS</b>.
+      Ideale per attività tecniche su particelle, unità immobiliari e verifiche su mappa.
+    </section>
+
+    <footer>
+      <span>© 2026 <span class="dot">•</span> NOME PROGRAMMA</span>
+      <span>Home del sito: /misuracatasto/</span>
+    </footer>
+  </div>
+</body>
+</html>
