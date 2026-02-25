@@ -3,35 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TERRENI Beta 19</title>
+    <title>TERRENI Beta 20</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/openlayers/4.6.5/ol.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/openlayers/4.6.5/ol.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.4.4/proj4.js"></script>
 
 <style>
-        :root{--primary:#2c3e50;--accent:#3498db;--bg:#ecf0f1;--danger:#e74c3c}
+        :root{
+            --primary:#2c3e50;--accent:#3498db;--bg:#ecf0f1;--danger:#e74c3c;
+            --sb-w: 320px;   /* larghezza sidebar desktop */
+        }
 * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; overflow: hidden; background: var(--bg); }
-        #map { width: calc(100% - 640px); height: calc(100% - 60px); position: absolute; left: 320px; top: 0; }
-        
-        .sidebar-left {
-            position: absolute; top: 0; left: 0; width: 320px; height: calc(100% - 60px);
-            background: #f8fafc; border-right: 1px solid #e2e8f0;
-            display: flex; flex-direction: column; z-index: 1000; 
-            box-shadow: 2px 0 10px rgba(0,0,0,0.05); overflow-y: auto;
+
+        /* ── MAP ── posizione calcolata in JS via updateMapLayout() */
+        #map { position: absolute; top: 0; }
+
+        /* ── SIDEBAR COMUNE ─────────────────────────────────────── */
+        .sidebar-left, .sidebar-right {
+            position: absolute; top: 0;
+            width: var(--sb-w); height: calc(100% - 60px);
+            display: flex; flex-direction: column; z-index: 1000;
+            overflow-y: auto;
+            transition: transform 0.3s cubic-bezier(.4,0,.2,1);
         }
+        .sidebar-left {
+            left: 0; background: #f8fafc;
+            border-right: 1px solid #e2e8f0;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+        }
+        .sidebar-right {
+            right: 0; background: #ffffff;
+            border-left: 1px solid #e2e8f0;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.05);
+        }
+
+        /* Stato chiuso */
+        .sidebar-left.collapsed  { transform: translateX(calc(-1 * var(--sb-w))); }
+        .sidebar-right.collapsed { transform: translateX(var(--sb-w)); }
+
+        /* ── TAB DI APERTURA/CHIUSURA ──────────────────────────── */
+        .sb-toggle {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            width: 22px; height: 56px;
+            background: var(--primary);
+            color: #fff; font-size: 13px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 1100;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 3px 0 10px rgba(0,0,0,0.18);
+            transition: background 0.18s, left 0.3s cubic-bezier(.4,0,.2,1), right 0.3s cubic-bezier(.4,0,.2,1);
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .sb-toggle:hover { background: var(--accent); }
+        .sb-toggle-left  { left: var(--sb-w); border-radius: 0 8px 8px 0; }
+        .sb-toggle-right { right: var(--sb-w); border-radius: 8px 0 0 8px; box-shadow: -3px 0 10px rgba(0,0,0,0.18); }
+
+        /* Quando la sidebar è chiusa il tab torna al bordo */
+        .sidebar-left.collapsed  + .sb-toggle-left  { left: 0; }
+        .sidebar-right.collapsed ~ .sb-toggle-right { right: 0; }
+
+        /* Freccia nel tab */
+        .sb-toggle-left  .sb-arrow::before { content: '‹'; }
+        .sidebar-left.collapsed  + .sb-toggle-left  .sb-arrow::before { content: '›'; }
+        .sb-toggle-right .sb-arrow::before { content: '›'; }
+        .sidebar-right.collapsed ~ .sb-toggle-right .sb-arrow::before { content: '‹'; }
 
         .sidebar-content { padding: 20px; }
 
-        .sidebar-right {
-            position: absolute; top: 0; right: 0; width: 320px; height: calc(100% - 60px);
-            background: #ffffff; border-left: 1px solid #e2e8f0;
-            display: flex; flex-direction: column; z-index: 1000; 
-            box-shadow: -2px 0 10px rgba(0,0,0,0.05); overflow-y: auto;
+        /* ── MOBILE ≤ 768px ──────────────────────────────────────── */
+        @media (max-width: 768px) {
+            :root { --sb-w: 280px; }
+            .sidebar-left, .sidebar-right {
+                height: calc(100% - 56px);
+                transform: translateX(calc(-1 * var(--sb-w)));
+            }
+            .sidebar-right { transform: translateX(var(--sb-w)); }
+            .sidebar-left.open  { transform: translateX(0) !important; }
+            .sidebar-right.open { transform: translateX(0) !important; }
+            .sb-toggle-left  { left: 0 !important; }
+            .sb-toggle-right { right: 0 !important; }
+            .sidebar-left.open  + .sb-toggle-left  { left: var(--sb-w) !important; }
+            .action-bar { gap: 5px; padding: 0 6px; height: 56px; }
+            .ab-btn { padding: 0 9px; height: 42px; font-size: 11px; gap: 4px; }
+            .ab-btn .ab-label { display: none; }
+            .ab-icon { font-size: 20px !important; }
+            .ab-sep { height: 22px; }
         }
-        
-        h3 { 
+        @media (min-width: 769px) and (max-width: 1024px) {
+            :root { --sb-w: 260px; }
+        }
+
+        /* Overlay scuro quando sidebar aperta su mobile */
+        #sbOverlay {
+            display: none; position: fixed; inset: 0; z-index: 999;
+            background: rgba(0,0,0,0.35); transition: opacity 0.25s;
+        }
+        #sbOverlay.show { display: block; }
+
+
             margin-bottom: 12px; font-size: 14px; color: #1e293b; 
             text-transform: uppercase; letter-spacing: 0.5px; 
             border-bottom: 2px solid #10b981; padding-bottom: 4px; 
@@ -237,11 +309,6 @@
         .layer-badge.unofficial { background:#f59e0b; color:#000; }
         /* ── Print ───────────────────────────────────────────────── */
         
-
-#map { position:fixed !important; left:0!important; top:0!important;
-                   width:100vw!important; height:100vh!important; }
-
-
         /* ── Categorie misure A..Z ─────────────────────────────── */
         .cat-row{display:flex;align-items:center;gap:8px;margin:6px 0 2px;}
         .cat-pill{
@@ -282,6 +349,8 @@
         body.printing .action-bar,
         body.printing .help-overlay,
         body.printing .measure-info,
+        body.printing .sb-toggle,
+        body.printing #sbOverlay,
         body.printing .ol-zoom,
         body.printing .ol-rotate { display:none !important; }
 
@@ -310,7 +379,8 @@
   #svHint, .ab-modal-overlay, .ol-zoom, .ol-rotate, .ol-attribution,
   button, input[type="file"]{ }
   .sidebar-right, .action-bar, .help-overlay, .measure-info,
-  #svHint, .ab-modal-overlay, .ol-zoom, .ol-rotate, .ol-attribution{
+  #svHint, .ab-modal-overlay, .ol-zoom, .ol-rotate, .ol-attribution,
+  .sb-toggle, #sbOverlay {
     display:none !important;
   }
 
@@ -362,8 +432,9 @@
 
     <div id="map"></div>
     <div id="printPanel"></div>
+    <div id="sbOverlay" onclick="closeSidebarsOnMobile()"></div>
 
-    <div class="sidebar-left">
+    <div class="sidebar-left" id="sidebarLeft">
         
         <div class="sidebar-header">
             <div class="app-icon" aria-label="Icona colline"><svg viewBox="0 0 64 64" role="img" aria-hidden="true">
@@ -376,7 +447,7 @@
   <circle cx="14" cy="14" r="5" fill="none" stroke="currentColor" stroke-width="3" opacity="0.35"/>
 </svg></div>
             <div>
-                <h2>TERRENI <span class="vb">BETA 19</span></h2>
+                <h2>TERRENI <span class="vb">BETA 20</span></h2>
             </div>
         </div>
 <div class="sidebar-content">
@@ -478,8 +549,12 @@
 
                 </div>
     </div>
+    <!-- Tab toggle sidebar sinistra -->
+    <div class="sb-toggle sb-toggle-left" id="toggleLeft" onclick="toggleSidebar('left')" title="Apri/chiudi pannello">
+        <span class="sb-arrow" style="font-size:18px;font-weight:900;line-height:1;"></span>
+    </div>
 
-    <div class="sidebar-right">
+    <div class="sidebar-right" id="sidebarRight">
         <div class="sidebar-content">
 
             <h3>🔍 Ricerca Catastale</h3>
@@ -561,6 +636,10 @@
                 </div>
             </div>
         </div>
+    </div>
+    <!-- Tab toggle sidebar destra -->
+    <div class="sb-toggle sb-toggle-right" id="toggleRight" onclick="toggleSidebar('right')" title="Apri/chiudi pannello catastale">
+        <span class="sb-arrow" style="font-size:18px;font-weight:900;line-height:1;"></span>
     </div>
 
     <div id="helpText" class="help-overlay"></div>
@@ -757,6 +836,110 @@
         });
         
         console.log('✅ Mappa creata');
+
+        // ========== SIDEBAR TOGGLE + MAP LAYOUT ==========
+        var SB_W = 320;           // larghezza sidebar px (desktop)
+        var sbLeftOpen  = true;
+        var sbRightOpen = true;
+
+        function isMobile(){ return window.innerWidth <= 768; }
+
+        function updateMapLayout(){
+            var actionH = 60;
+            var mapEl = document.getElementById('map');
+            if(!mapEl) return;
+            if(isMobile()){
+                // Su mobile le sidebar sono overlay: la mappa occupa tutto
+                mapEl.style.left   = '0';
+                mapEl.style.width  = '100%';
+                mapEl.style.height = 'calc(100% - 56px)';
+                mapEl.style.top    = '0';
+                // Aggiorna SB_W dal CSS custom property
+                SB_W = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--sb-w')) || 280;
+            } else {
+                SB_W = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--sb-w')) || 320;
+                var leftPad  = sbLeftOpen  ? SB_W : 0;
+                var rightPad = sbRightOpen ? SB_W : 0;
+                mapEl.style.left   = leftPad + 'px';
+                mapEl.style.width  = 'calc(100% - ' + (leftPad + rightPad) + 'px)';
+                mapEl.style.height = 'calc(100% - ' + actionH + 'px)';
+                mapEl.style.top    = '0';
+            }
+            // Aggiorna posizione tab toggle
+            var tl = document.getElementById('toggleLeft');
+            var tr = document.getElementById('toggleRight');
+            if(tl){
+                if(isMobile()){
+                    tl.style.left = sbLeftOpen ? SB_W + 'px' : '0';
+                } else {
+                    tl.style.left = (sbLeftOpen ? SB_W : 0) + 'px';
+                }
+            }
+            if(tr){
+                if(isMobile()){
+                    tr.style.right = sbRightOpen ? SB_W + 'px' : '0';
+                } else {
+                    tr.style.right = (sbRightOpen ? SB_W : 0) + 'px';
+                }
+            }
+            setTimeout(function(){ try{ map.updateSize(); }catch(e){} }, 320);
+        }
+
+        function toggleSidebar(side){
+            var sl = document.getElementById('sidebarLeft');
+            var sr = document.getElementById('sidebarRight');
+            var ov = document.getElementById('sbOverlay');
+            if(side === 'left'){
+                sbLeftOpen = !sbLeftOpen;
+                if(isMobile()){
+                    sl.classList.toggle('open', sbLeftOpen);
+                    // Chiudi destra se aperta su mobile
+                    if(sbLeftOpen){ sbRightOpen = false; sr.classList.remove('open'); }
+                } else {
+                    sl.classList.toggle('collapsed', !sbLeftOpen);
+                }
+            } else {
+                sbRightOpen = !sbRightOpen;
+                if(isMobile()){
+                    sr.classList.toggle('open', sbRightOpen);
+                    if(sbRightOpen){ sbLeftOpen = false; sl.classList.remove('open'); }
+                } else {
+                    sr.classList.toggle('collapsed', !sbRightOpen);
+                }
+            }
+            // Overlay mobile
+            if(ov) ov.classList.toggle('show', isMobile() && (sbLeftOpen || sbRightOpen));
+            updateMapLayout();
+        }
+        window.toggleSidebar = toggleSidebar;
+
+        function closeSidebarsOnMobile(){
+            if(!isMobile()) return;
+            sbLeftOpen = false; sbRightOpen = false;
+            var sl = document.getElementById('sidebarLeft');
+            var sr = document.getElementById('sidebarRight');
+            var ov = document.getElementById('sbOverlay');
+            if(sl) sl.classList.remove('open');
+            if(sr) sr.classList.remove('open');
+            if(ov) ov.classList.remove('show');
+            updateMapLayout();
+        }
+        window.closeSidebarsOnMobile = closeSidebarsOnMobile;
+
+        // Inizializza layout al caricamento e al resize
+        updateMapLayout();
+        window.addEventListener('resize', function(){
+            // Su resize: su desktop riapri le sidebar se erano aperte
+            if(!isMobile()){
+                var sl = document.getElementById('sidebarLeft');
+                var sr = document.getElementById('sidebarRight');
+                if(sl) sl.classList.remove('open');
+                if(sr) sr.classList.remove('open');
+            }
+            updateMapLayout();
+        });
+
+
 
         
 
@@ -2136,7 +2319,7 @@ function formatLength(line) {
                     panel.innerHTML =
                         '<div style="border-bottom:2px solid #2c3e50;padding-bottom:8px;margin-bottom:10px;">' +
                           '<div style="font-size:18px;font-weight:900;color:#0f172a;">'+escapeHtml(title)+'</div>' +
-                          '<div style="font-size:12px;color:#475569;margin-top:2px;">TERRENI Beta 19 • ' + new Date().toLocaleDateString('it-IT') + '</div>' +
+                          '<div style="font-size:12px;color:#475569;margin-top:2px;">TERRENI Beta 20 • ' + new Date().toLocaleDateString('it-IT') + '</div>' +
                         '</div>' +
                         buildPrintSchema();
                 }
@@ -2445,19 +2628,17 @@ function formatLength(line) {
 
     <!-- ═══ BARRA AZIONI FISSA IN BASSO ═══════════════════════════ -->
     <div class="action-bar">
-        <button class="ab-btn save" onclick="projectSave()"><span class="ab-icon">💾</span> Salva Progetto</button>
-        <button class="ab-btn pdf" onclick="openPdfModal()"><span class="ab-icon">🖨️</span> Stampa PDF</button>
+        <button class="ab-btn save" onclick="projectSave()"><span class="ab-icon">💾</span> <span class="ab-label">Salva Progetto</span></button>
+        <button class="ab-btn pdf" onclick="openPdfModal()"><span class="ab-icon">🖨️</span> <span class="ab-label">Stampa PDF</span></button>
         <div class="ab-sep"></div>
-        <button class="ab-btn load" onclick="document.getElementById('projectFileInput').click()"><span class="ab-icon">📂</span> Carica Progetto</button>
+        <button class="ab-btn load" onclick="document.getElementById('projectFileInput').click()"><span class="ab-icon">📂</span> <span class="ab-label">Carica Progetto</span></button>
         <input type="file" id="projectFileInput" accept=".json" style="display:none">
-        <button class="ab-btn" style="border-color:#b45309;" onclick="document.getElementById('geoJsonFileInput').click()"><span class="ab-icon">🗺️</span> Carica GeoJSON</button>
+        <button class="ab-btn" style="border-color:#b45309;" onclick="document.getElementById('geoJsonFileInput').click()"><span class="ab-icon">🗺️</span> <span class="ab-label">Carica GeoJSON</span></button>
         <input type="file" id="geoJsonFileInput" accept=".geojson,.json" style="display:none">
         <div class="ab-sep"></div>
-        <button class="ab-btn kml" onclick="exportKML()"><span class="ab-icon">🗺️</span> Esporta KML</button>
-        <button class="ab-btn ge" id="btnGoogleEarth" onclick="openInGoogleEarth()"><span class="ab-icon">🌍</span> Google Earth</button>
+        <button class="ab-btn kml" onclick="exportKML()"><span class="ab-icon">🗺️</span> <span class="ab-label">Esporta KML</span></button>
         <div class="ab-sep"></div>
-        <button class="ab-btn ge" id="btnGeoLocate" onclick="toggleGeoloc()"><span class="ab-icon">📡</span> GPS</button>
-        <button class="ab-btn sv" id="btnStreetView" onclick="toggleStreetView()"><span class="ab-icon">👁️</span> Street View</button>
+        <button class="ab-btn sv" id="btnStreetView" onclick="toggleStreetView()"><span class="ab-icon">👁️</span> <span class="ab-label">Street View</span></button>
     </div>
     <div id="svHint">📍 Clicca sulla mappa per aprire Street View — ESC per uscire</div>
 
