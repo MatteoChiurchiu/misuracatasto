@@ -1,0 +1,2487 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TERRENI Beta 19</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/openlayers/4.6.5/ol.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/openlayers/4.6.5/ol.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.4.4/proj4.js"></script>
+
+<style>
+        :root{--primary:#2c3e50;--accent:#3498db;--bg:#ecf0f1;--danger:#e74c3c}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; overflow: hidden; background: var(--bg); }
+        #map { width: calc(100% - 640px); height: calc(100% - 60px); position: absolute; left: 320px; top: 0; }
+        
+        .sidebar-left {
+            position: absolute; top: 0; left: 0; width: 320px; height: calc(100% - 60px);
+            background: #f8fafc; border-right: 1px solid #e2e8f0;
+            display: flex; flex-direction: column; z-index: 1000; 
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05); overflow-y: auto;
+        }
+
+        .sidebar-content { padding: 20px; }
+
+        .sidebar-right {
+            position: absolute; top: 0; right: 0; width: 320px; height: calc(100% - 60px);
+            background: #ffffff; border-left: 1px solid #e2e8f0;
+            display: flex; flex-direction: column; z-index: 1000; 
+            box-shadow: -2px 0 10px rgba(0,0,0,0.05); overflow-y: auto;
+        }
+        
+        h3 { 
+            margin-bottom: 12px; font-size: 14px; color: #1e293b; 
+            text-transform: uppercase; letter-spacing: 0.5px; 
+            border-bottom: 2px solid #10b981; padding-bottom: 4px; 
+        }
+        .section { margin-bottom: 25px; }
+
+        .search-box { display: flex; gap: 5px; margin-bottom: 10px; }
+        .search-box input { 
+            flex: 1; padding: 8px 12px; border: 1px solid #cbd5e1; 
+            border-radius: 6px; font-size: 13px; 
+        }
+        .search-box button { 
+            padding: 8px 12px; background: #0f766e; color: white; 
+            border: none; border-radius: 6px; cursor: pointer; 
+        }
+
+        .tool-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .tool-grid button {
+            height: 45px; border: 1px solid #e2e8f0; background: white; cursor: pointer;
+            border-radius: 8px; font-size: 18px; transition: all 0.2s;
+        }
+        .tool-grid button:hover { background: #f1f5f9; border-color: #cbd5e1; }
+        .tool-grid button.active { background: #10b981; color: white; border-color: #059669; }
+        .btn-full { grid-column: span 3; font-size: 14px !important; font-weight: 600; }
+
+        .layer-item { 
+            background: white; padding: 5px 8px; border-radius: 6px; 
+            border: 1px solid #e2e8f0; margin-bottom: 4px; 
+        }
+        .layer-row { display: flex; align-items: center; gap: 7px; }
+        .layer-row label { 
+            font-size: 12px; font-weight: 500; color: #334155; 
+            cursor: pointer; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .opacity-slider { 
+            width: 68px; height: 3px; cursor: pointer; accent-color: #10b981; flex-shrink: 0;
+        }
+
+        .measures-container { max-height: 360px; overflow-y: auto; }
+        .measure-item {
+            background: white; padding: 10px; border: 1px solid #e2e8f0; 
+            border-radius: 6px; margin-bottom: 8px; font-size: 12px;
+        }
+        .measure-item-name { font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+        .measure-item-name input { 
+            width: 100%; border: 1px solid #e2e8f0; border-radius: 4px; 
+            padding: 4px; font-size: 12px; 
+        }
+        .measure-item-value { font-size: 12px; color: #10b981; font-weight: 600; margin-bottom: 4px; }
+        .measure-item-coords { font-size: 11px; color: #999; margin-top: 4px; font-family: monospace; }
+        .measure-item-actions { margin-top: 8px; display: flex; gap: 5px; }
+        .measure-item-actions button {
+            padding: 4px 8px; font-size: 11px; border: 1px solid #e2e8f0;
+            border-radius: 4px; cursor: pointer; background: #f8fafc;
+        }
+        .measure-item-actions button.delete { background: #fee; color: #e74c3c; }
+        .measure-item.selected { background: #e6f7f4; border-color: #10b981; border-left: 3px solid #10b981; }
+
+        .help-overlay {
+            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.9); color: white; padding: 10px 20px;
+            border-radius: 30px; font-size: 13px; z-index: 2000; display: none;
+            pointer-events: none; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .help-overlay.active { display: block; }
+        
+        .measure-info {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 10000; background: rgba(0,0,0,0.75); color: white; border-radius: 8px;
+            padding: 12px 15px; font-size: 14px; display: none; pointer-events: none;
+        }
+        .measure-info.active { display: block; }
+        .measure-info .value { font-weight: 600; font-size: 16px; }
+        
+        .btn-small { 
+            padding: 8px 10px; background: #0f766e; color: white; 
+            border: none; border-radius: 6px; cursor: pointer; 
+            font-size: 12px; font-weight: 700; 
+        }
+        .btn-small.secondary { background: #2980b9; }
+        .btn-small.danger { background: #ef4444; }
+        
+        .rendite-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+        .rendite-table th, .rendite-table td { border: 1px solid #e2e8f0; padding: 6px; }
+        .rendite-table th { 
+            background: #f1f5f9; font-size: 10px; 
+            text-transform: uppercase; text-align: left; 
+        }
+
+
+        /* --- UI style (PLANIMETRIA-like) --- */
+        .sidebar-header{
+            padding:15px 20px;
+            background: var(--primary);
+            color:#fff;
+            display:flex;
+            align-items:center;
+            gap:12px;
+            position: sticky;
+            top: 0;
+            z-index: 1100;
+        }
+        .sidebar-header .app-icon{
+            width:44px;height:44px;flex-shrink:0;
+            display:flex;align-items:center;justify-content:center;
+            font-size:28px;line-height:1;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,.25));
+        }
+        .sidebar-header .app-icon svg{width:34px;height:34px;display:block;}
+        .sidebar-header h2{margin:0;font-size:16px;letter-spacing:.3px}
+        .sidebar-header .vb{
+            display:inline-block;
+            background:#e67e22;
+            color:#fff;
+            font-size:9px;
+            font-weight:800;
+            padding:3px 8px;
+            border-radius:3px;
+            margin-left:8px;
+            vertical-align:middle;
+        }
+        h3{
+            border-bottom: 2px solid var(--accent) !important;
+        }
+        .search-box button{ background: var(--accent) !important; }
+        .tool-grid button.active{
+            background: var(--accent) !important;
+            border-color: var(--accent) !important;
+        }
+        .tool-grid button:hover{ border-color: #cbd5e1; }
+        .opacity-slider{ accent-color: var(--accent) !important; }
+        .btn-small{ background: var(--accent) !important; }
+        .btn-small.secondary{ background: #2980b9 !important; }
+        .btn-small.danger{ background: var(--danger) !important; }
+        .measure-item-value{ color: var(--accent) !important; }
+        .sidebar-left{ background:#fff; }
+        .sidebar-right .sidebar-content h3{ border-bottom: 2px solid var(--accent) !important; }
+    
+        /* ── Action bar ─────────────────────────────────────────── */
+        .action-bar {
+            position: fixed; bottom: 0; left: 0; right: 0; height: 60px;
+            background: var(--primary); border-top: 2px solid rgba(255,255,255,0.1);
+            display: flex; align-items: center; justify-content: center;
+            gap: 12px; z-index: 2000; box-shadow: 0 -4px 20px rgba(0,0,0,0.25);
+        }
+        .ab-btn {
+            display: flex; align-items: center; gap: 7px;
+            padding: 0 18px; height: 38px; border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.18);
+            background: rgba(255,255,255,0.08);
+            color: #fff; font-size: 13px; font-weight: 600;
+            cursor: pointer; transition: background .18s, transform .12s; white-space: nowrap;
+        }
+        .ab-btn:hover { background: rgba(255,255,255,0.18); transform: translateY(-1px); }
+        .ab-btn .ab-icon { font-size: 16px; }
+        .ab-sep { width: 1px; height: 28px; background: rgba(255,255,255,0.15); }
+        .ab-btn.save   { border-color: #10b981; }
+        .ab-btn.load   { border-color: #3498db; }
+        .ab-btn.pdf    { border-color: #f59e0b; }
+        .ab-btn.kml    { border-color: #a855f7; }
+        .ab-btn.sv     { border-color: #f97316; }
+        .ab-btn.ge     { border-color: #34a853; }
+        .ab-btn.snap   { border-color: #a855f7; }
+        .ab-btn.snap.active { background: #a855f7 !important; border-color: #9333ea; }
+        .ab-btn.sv.active { background: #f97316 !important; }
+        body.sv-mode #map { cursor: crosshair !important; }
+        #svHint {
+            display:none; position:fixed; bottom:68px; left:50%;
+            transform:translateX(-50%);
+            background:rgba(249,115,22,0.92); color:#fff;
+            padding:8px 20px; border-radius:20px; font-size:13px;
+            font-weight:600; z-index:2100; pointer-events:none;
+        }
+        #svHint.show { display:block; }
+        /* ── Modal ──────────────────────────────────────────────── */
+        .ab-modal-overlay {
+            display:none; position:fixed; inset:0; z-index:9000;
+            background:rgba(0,0,0,0.55); align-items:center; justify-content:center;
+        }
+        .ab-modal-overlay.open { display:flex; }
+        .ab-modal {
+            background:#fff; border-radius:12px; padding:28px; width:360px; max-width:95vw;
+            box-shadow:0 20px 60px rgba(0,0,0,0.35);
+        }
+        .ab-modal h4 { font-size:16px; margin-bottom:16px; color:#1e293b; }
+        .ab-modal label { font-size:13px; color:#475569; display:block; margin-bottom:6px; }
+        .ab-modal select, .ab-modal input[type=text] {
+            width:100%; padding:9px 12px; border:1px solid #cbd5e1;
+            border-radius:7px; font-size:13px; margin-bottom:14px;
+        }
+        .ab-modal .ab-modal-btns { display:flex; gap:10px; justify-content:flex-end; margin-top:6px; }
+        .ab-modal .ab-modal-btns button {
+            padding:9px 20px; border-radius:7px; border:none; font-size:13px; font-weight:700; cursor:pointer;
+        }
+        .ab-modal .ab-modal-btns .ok { background:var(--primary); color:#fff; }
+        .ab-modal .ab-modal-btns .cancel { background:#f1f5f9; color:#334155; }
+        /* ── Layer badge ─────────────────────────────────────────── */
+        .layer-badge {
+            display:inline-block; font-size:9px; font-weight:700;
+            padding:1px 5px; border-radius:3px; margin-left:5px; vertical-align:middle;
+        }
+        .layer-badge.google { background:#4285f4; color:#fff; }
+        .layer-badge.unofficial { background:#f59e0b; color:#000; }
+        /* ── Print ───────────────────────────────────────────────── */
+        
+
+#map { position:fixed !important; left:0!important; top:0!important;
+                   width:100vw!important; height:100vh!important; }
+
+
+        /* ── Categorie misure A..Z ─────────────────────────────── */
+        .cat-row{display:flex;align-items:center;gap:8px;margin:6px 0 2px;}
+        .cat-pill{
+            display:inline-flex;align-items:center;justify-content:center;
+            width:22px;height:18px;border-radius:4px;
+            color:#fff;font-weight:800;font-size:11px;
+            border:1px solid rgba(0,0,0,0.08);
+        }
+        .cat-select{
+            flex:1;
+            padding:4px 6px;
+            border:1px solid #e2e8f0;border-radius:6px;
+            font-size:12px;background:#fff;
+        }
+        #measuresSummary{
+            margin-top:10px;
+            background:#ffffff;
+            border:1px solid #e2e8f0;
+            border-radius:8px;
+            padding:10px;
+            font-size:12px;
+            color:#334155;
+        }
+        #measuresSummary .sum-title{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+        #measuresSummary .sum-row{display:flex;align-items:center;gap:8px;padding:4px 0;border-top:1px dashed #e2e8f0;}
+        #measuresSummary .sum-row:first-of-type{border-top:none;}
+        #measuresSummary .sum-label{flex:1;font-weight:700;}
+        #measuresSummary .sum-val{font-variant-numeric:tabular-nums;white-space:nowrap;}
+
+        /* ── Print layout: verticale + elenco sotto ─────────────── */
+        #printPanel{display:none;}
+        
+
+
+        /* Printing preparation: apply print-like sizing before print to avoid OL canvas distortion */
+        body.printing .sidebar-left,
+        body.printing .sidebar-right,
+        body.printing .action-bar,
+        body.printing .help-overlay,
+        body.printing .measure-info,
+        body.printing .ol-zoom,
+        body.printing .ol-rotate { display:none !important; }
+
+        body.printing { margin:0 !important; }
+        body.printing #map{
+            position:relative !important;
+            left:auto !important; top:auto !important;
+            /* width e height vengono impostati inline dal JS con l'aspect ratio corretto */
+        }
+        body.printing #printPanel{
+            display:block !important;
+            position:relative !important;
+            width:100% !important;
+            padding:10px 0 0 0 !important;
+            box-sizing:border-box !important;
+        }
+
+
+@media print{
+  @page{ margin:10mm; }
+  html, body{ background:#fff !important; }
+  body{ margin:0 !important; overflow:visible !important; }
+
+  /* nascondi UI */
+  .sidebar-right, .action-bar, .help-overlay, .measure-info,
+  #svHint, .ab-modal-overlay, .ol-zoom, .ol-rotate, .ol-attribution,
+  button, input[type="file"]{ }
+  .sidebar-right, .action-bar, .help-overlay, .measure-info,
+  #svHint, .ab-modal-overlay, .ol-zoom, .ol-rotate, .ol-attribution{
+    display:none !important;
+  }
+
+  /* layout stampa: mappa sopra + schema sotto */
+  .sidebar-left{
+    position:static !important;
+    width:auto !important;
+    height:auto !important;
+    border:none !important;
+    box-shadow:none !important;
+  }
+  .sidebar-left .sidebar-content{
+    padding:0 !important;
+  }
+
+  #map{
+    /* width/height vengono gestiti inline dal JS — NO !important qui */
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    max-width: 100%;
+    max-height: none;
+    margin: 0 auto 6mm auto !important;
+    border:1px solid #d1d5db !important;
+  }
+  #map .ol-viewport, #map canvas{
+    width:100% !important;
+    height:100% !important;
+  }
+
+  #printPanel{
+    display:block !important;
+    position:relative !important;
+    width:100% !important;
+    padding:0 !important;
+  }
+
+  /* tabella schema */
+  #printPanel table{ width:100% !important; border-collapse:collapse !important; }
+  #printPanel th, #printPanel td{ border:1px solid #e5e7eb !important; padding:6px 8px !important; font-size:12px !important; }
+  #printPanel th{ background:#f3f4f6 !important; }
+
+  /* evita spezzature brutte */
+  .print-avoid-break{ break-inside: avoid; page-break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+
+    <div id="map"></div>
+    <div id="printPanel"></div>
+
+    <div class="sidebar-left">
+        
+        <div class="sidebar-header">
+            <div class="app-icon" aria-label="Icona colline"><svg viewBox="0 0 64 64" role="img" aria-hidden="true">
+  <!-- Disegno "da bambino": montagna con tratto a matita -->
+  <path d="M6 52 L26 20 L38 38 L48 26 L60 52 Z" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity="0.95"/>
+  <path d="M26 20 L30 28 L22 28 Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" opacity="0.8"/>
+  <path d="M48 26 L52 34 L44 34 Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" opacity="0.7"/>
+  <path d="M10 52 C16 46, 24 48, 30 52" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity="0.45"/>
+  <path d="M34 52 C40 47, 50 47, 56 52" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity="0.45"/>
+  <circle cx="14" cy="14" r="5" fill="none" stroke="currentColor" stroke-width="3" opacity="0.35"/>
+</svg></div>
+            <div>
+                <h2>TERRENI <span class="vb">BETA 19</span></h2>
+            </div>
+        </div>
+<div class="sidebar-content">
+            
+            <h3>🔍 Ricerca</h3>
+            <div class="section">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Indirizzo o coordinate">
+                    <button id="searchBtn">Vai</button>
+                </div>
+                <button class="btn-small" onclick="toggleGeoloc()" id="btnGPSSidebar" style="width:100%;padding:8px;margin-top:6px;background:#334155;">📡 GPS — Posizione corrente</button>
+            </div>
+
+            <h3>🗺️ Gestione Mappa</h3>
+            <div class="section">
+                <div class="layer-item">
+                    <div class="layer-row">
+                        <input type="checkbox" id="layerCatasto" checked>
+                        <label for="layerCatasto">Catasto AdE</label>
+                        <input type="range" class="opacity-slider" id="opacityCatasto" min="0" max="100" value="70">
+                    </div>
+                </div>
+                <div class="layer-item">
+                    <div class="layer-row">
+                        <input type="checkbox" id="layerOSM" checked>
+                        <label for="layerOSM">OpenStreetMap</label>
+                        <input type="range" class="opacity-slider" id="opacityOSM" min="0" max="100" value="100">
+                    </div>
+                </div>
+                <div class="layer-item">
+                    <div class="layer-row">
+                        <input type="checkbox" id="layerSatellite">
+                        <label for="layerSatellite">Satellite (Esri)</label>
+                        <input type="range" class="opacity-slider" id="opacitySatellite" min="0" max="100" value="100">
+                    </div>
+                </div>
+                <div class="layer-item">
+                    <div class="layer-row">
+                        <input type="checkbox" id="layerGoogleMaps">
+                        <label for="layerGoogleMaps">Google Maps <span class="layer-badge google">G</span><span class="layer-badge unofficial">non uff.</span></label>
+                        <input type="range" class="opacity-slider" id="opacityGoogleMaps" min="0" max="100" value="100">
+                    </div>
+                </div>
+                <div class="layer-item">
+                    <div class="layer-row">
+                        <input type="checkbox" id="layerGoogleSat">
+                        <label for="layerGoogleSat">Google Satellite <span class="layer-badge google">G</span></label>
+                        <input type="range" class="opacity-slider" id="opacityGoogleSat" min="0" max="100" value="100">
+                    </div>
+                </div>
+                <div id="geoJsonLayerItem" style="display:none;">
+                    <div class="layer-item" style="border-color:#b45309;padding:6px 8px;">
+                        <div class="layer-row" style="margin-bottom:4px;">
+                            <span id="geoJsonLayerLabel" style="color:#b45309;font-weight:700;font-size:12px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">—</span>
+                            <input type="range" class="opacity-slider" id="opacityGeoJSON" min="0" max="100" value="100"
+                                   oninput="if(geoJsonLayer) geoJsonLayer.setOpacity(this.value/100)">
+                        </div>
+                        <div style="display:flex;gap:5px;margin-top:3px;">
+                            <button id="btnGeoJsonToggle" onclick="toggleGeoJsonVisible()"
+                                style="flex:1;padding:3px 6px;font-size:11px;font-weight:700;border-radius:5px;border:1px solid #b45309;background:#fff5eb;color:#b45309;cursor:pointer;">
+                                👁 Visibile
+                            </button>
+                            <button onclick="clearGeoJSON()"
+                                style="flex:1;padding:3px 6px;font-size:11px;font-weight:700;border-radius:5px;border:1px solid #ef4444;background:#fef2f2;color:#ef4444;cursor:pointer;">
+                                🗑 Elimina
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>🛠️ Strumenti Rilievo</h3>
+            <div class="section">
+                <div class="tool-grid">
+                    <button id="btnMarker" title="Punto">📍</button>
+                    <button id="btnMeasureLine" title="Linea">📏</button>
+                    <button id="btnMeasurePolygon" title="Area">⬡</button>
+                    <button id="btnModify" class="btn-full" title="Modifica vertici — trascina">✏️ Modifica Vertici</button>
+                    <button id="btnDeleteVertex" class="btn-full" title="Cancella vertice — click su vertice" onclick="toggleDeleteVertex()" style="color:#b45309;">✂️ Cancella Vertice</button>
+                    <button id="btnUndoVertex" class="btn-full" title="Rimuovi ultimo vertice (Backspace)" onclick="undoLastVertex()" style="color:#b45309;display:none;">↩ Rimuovi Ultimo Vertice</button>
+                    <button id="btnSnapSidebar" class="btn-full active" onclick="toggleSnap()" style="background:#a855f7;color:#fff;border-color:#9333ea;">🧲 Snap ON</button>
+                    <button id="btnQuotaParticella" class="btn-full" onclick="toggleQuotaMode()" style="display:none;">📐 Quota Particella</button>
+                    <button id="btnClear" class="btn-full" style="color: #ef4444;">🗑️ Cancella Tutto</button>
+                </div>
+                <div style="font-size:11px;color:#94a3b8;margin-top:6px;text-align:center;">
+                    Click misura → seleziona • [Canc] → elimina selezionata
+                </div>
+            </div>
+
+            <h3>📋 Misure</h3>
+            <div class="section">
+                <div class="measures-container" id="measuresList"></div>
+                <div id="measuresEmpty" style="font-size: 12px; color: #94a3b8; text-align: center; padding: 10px;">
+                    Nessuna misura presente
+                </div>
+                <div id="measuresSummary" style="display:none"></div>
+
+            </div>
+
+                </div>
+    </div>
+
+    <div class="sidebar-right">
+        <div class="sidebar-content">
+
+            <h3>🔍 Ricerca Catastale</h3>
+            <div class="section">
+                <div id="csvFolderStatus" style="font-size:12px;color:#64748b;margin-bottom:10px;
+                     padding:7px 10px;background:#f8fafc;border-radius:6px;border:1px solid #e2e8f0;">
+                    ⏳ Connessione archivio in corso…
+                </div>
+                <div style="margin-bottom:8px;">
+                    <div style="font-size:11px;color:#94a3b8;margin-bottom:3px;text-transform:uppercase;letter-spacing:.5px;">Codice Belfiore</div>
+                    <div style="display:flex;gap:6px;align-items:center;">
+                        <input type="text" id="csvBelfiore" placeholder="es. F626" maxlength="4"
+                               style="flex:1;padding:7px 10px;border:1px solid #cbd5e1;border-radius:6px;
+                                      font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;">
+                        <button class="btn-small" id="btnLoadComune" disabled
+                                style="padding:7px 12px;white-space:nowrap;opacity:.4;">
+                            📂 Carica
+                        </button>
+                    </div>
+                    <div id="csvComuneStatus" style="font-size:12px;color:#64748b;margin-top:4px;min-height:1.2em;"></div>
+                </div>
+                <div id="csvFiltriBox" style="opacity:.3;pointer-events:none;transition:opacity .25s;">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px;">
+                        <div>
+                            <div style="font-size:11px;color:#94a3b8;margin-bottom:3px;text-transform:uppercase;letter-spacing:.5px;">Sezione</div>
+                            <input type="text" id="csvSezione" placeholder="es. _"
+                                   style="width:100%;padding:6px 8px;border:1px solid #cbd5e1;border-radius:6px;font-size:12px;">
+                        </div>
+                        <div>
+                            <div style="font-size:11px;color:#94a3b8;margin-bottom:3px;text-transform:uppercase;letter-spacing:.5px;">Foglio</div>
+                            <input type="text" id="csvFoglio" placeholder="es. 200"
+                                   style="width:100%;padding:6px 8px;border:1px solid #cbd5e1;border-radius:6px;font-size:12px;">
+                        </div>
+                    </div>
+                    <div style="margin-bottom:8px;">
+                        <div style="font-size:11px;color:#94a3b8;margin-bottom:3px;text-transform:uppercase;letter-spacing:.5px;">Particella</div>
+                        <input type="text" id="csvParticella" placeholder="es. 1"
+                               style="width:100%;padding:6px 8px;border:1px solid #cbd5e1;border-radius:6px;font-size:12px;">
+                    </div>
+                    <button class="btn-small" id="btnSearchCSV" style="width:100%;padding:9px;">🔎 Cerca Particella</button>
+                </div>
+                <div id="csvResult" style="margin-top:8px;font-size:12px;color:#64748b;min-height:1.2em;"></div>
+            </div>
+
+            <h3>📋 Dati catastali</h3>
+            <div class="section">
+                <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px;">
+                    <button class="btn-small secondary" id="btnOpenRendite" style="width:100%;padding:10px 10px;">
+                        🔗 Consulta Rendite
+                    </button>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                        <button class="btn-small" id="btnPasteRendite">📋 Incolla</button>
+                        <button class="btn-small danger" id="btnClearRendite">🗑️ Pulisci</button>
+                    </div>
+                </div>
+                <div style="overflow:auto; border-radius:8px; border:1px solid #e2e8f0;">
+                    <table class="rendite-table">
+                        <tbody>
+                            <tr><td><b>Ufficio provinciale</b></td><td><input id="rend-ufficio" style="width:100%;border:none;" value=""></td></tr>
+                            <tr><td><b>Catasto</b></td><td><input id="rend-catasto" style="width:100%;border:none;" value=""></td></tr>
+                            <tr><td><b>Comune</b></td><td><input id="rend-comune" style="width:100%;border:none;" value=""></td></tr>
+                            <tr><td><b>Codice Comune</b></td><td><input id="rend-codice" style="width:100%;border:none;" value=""></td></tr>
+                            <tr><td><b>Foglio</b></td><td><input id="rend-foglio" style="width:100%;border:none;" value=""></td></tr>
+                            <tr><td><b>Particella</b></td><td><input id="rend-particella" style="width:100%;border:none;" value=""></td></tr>
+                            <tr><td><b>Subalterno</b></td><td><input id="rend-sub" style="width:100%;border:none;" value=""></td></tr>
+                            <tr><td><b>Qualità</b></td><td><input id="rend-qualita" style="width:100%;border:none;" value=""></td></tr>
+                            <tr><td><b>Classe</b></td><td><input id="rend-classe" style="width:100%;border:none;" value=""></td></tr>
+                            <tr><td><b>Superficie (ha)</b></td><td><input id="rend-ha" style="width:100%;border:none;" value=""></td></tr>
+                            <tr><td><b>Superficie (are)</b></td><td><input id="rend-are" style="width:100%;border:none;" value=""></td></tr>
+                            <tr><td><b>Superficie (ca)</b></td><td><input id="rend-ca" style="width:100%;border:none;" value=""></td></tr>
+                            <tr><td><b>Reddito dominicale</b></td><td><input id="rend-dominicale" style="width:100%;border:none;font-weight:800;color:#0f766e;" value=""></td></tr>
+                            <tr><td><b>Reddito agrario</b></td><td><input id="rend-agrario" style="width:100%;border:none;font-weight:800;color:#0f766e;" value=""></td></tr>
+                            <tr><td><b>Partita</b></td><td><input id="rend-partita" style="width:100%;border:none;" value=""></td></tr>
+                            <tr><td><b>Porzioni</b></td><td><input id="rend-porzioni" style="width:100%;border:none;" value=""></td></tr>
+                            <tr style="display:none;"><th colspan="2">Dati della Ricerca</th></tr>
+                            <tr style="display:none;"><th colspan="2">Elenco Immobili</th></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="helpText" class="help-overlay"></div>
+    <div class="measure-info" id="measureInfo">
+        <div class="value" id="measureValue">-</div>
+    </div>
+
+    <script>
+        console.log('🗺️ Catasto Pro - TERRENI Beta 16');
+        
+        // ========== CONFIGURAZIONE EPSG:6706 ==========
+        var ETRS89Extent = [5.93, 34.76, 18.99, 47.1];
+        proj4.defs('EPSG:6706', '+proj=longlat +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +no_defs');
+        // RDN2008 / UTM zone 33N — EPSG:7792
+        // OL4 usa window.proj4 automaticamente: basta registrare la def e aggiungere la proiezione
+        proj4.defs('EPSG:7792', '+proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs');
+        ol.proj.addProjection(new ol.proj.Projection({ code: 'EPSG:7792', units: 'm' }));
+        var ETRS89proj = new ol.proj.Projection({ code: 'EPSG:6706', extent: ETRS89Extent });
+        ol.proj.addProjection(ETRS89proj);
+        
+        var startResolution = ol.extent.getWidth(ETRS89Extent) / 1024;
+        var resolutions = new Array(18);
+        for (var i = 0; i < 18; i++) resolutions[i] = startResolution / Math.pow(2, i);
+        
+        var tileGrid = new ol.tilegrid.TileGrid({ 
+            extent: ETRS89Extent, 
+            resolutions: resolutions, 
+            tileSize: [512, 512] 
+        });
+        
+        console.log('✅ EPSG:6706 OK');
+        
+        // ========== LAYERS ==========
+        var osmLayer = new ol.layer.Tile({ 
+            source: new ol.source.OSM(), 
+            visible: true 
+        });
+        
+        var satelliteLayer = new ol.layer.Tile({
+            source: new ol.source.XYZ({ 
+                url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}' 
+            }),
+            visible: false
+        });
+        
+        var googleMapsLayer = new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                url: 'https://mt{0-3}.google.com/vt/lyrs=m&hl=it&x={x}&y={y}&z={z}',
+                maxZoom: 20,
+                attributions: '© Google Maps'
+            }),
+            visible: false
+        });
+
+        var googleSatLayer = new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                url: 'https://mt{0-3}.google.com/vt/lyrs=s&hl=it&x={x}&y={y}&z={z}',
+                maxZoom: 20,
+                attributions: '© Google Satellite'
+            }),
+            visible: false
+        });
+
+        var catastoLayer = new ol.layer.Tile({
+            source: new ol.source.TileWMS({
+                projection: ETRS89proj,
+                url: 'https://wms.cartografia.agenziaentrate.gov.it/inspire/wms/ows01.php',
+                params: { 
+                    'LAYERS': 'CP.CadastralParcel,vestizioni,fabbricati', 
+                    'TILED': true, 
+                    'VERSION': '1.1.1' 
+                },
+                tileGrid: tileGrid
+            }),
+            opacity: 0.7
+        });
+
+        var vectorSource = new ol.source.Vector();
+        
+        // ========== STILE (dal file originale) ==========
+        function getMeasureStyle(feature) {
+            var type = feature.get('type');
+            var selected = feature.get('selected');
+            var editing = feature.get('editing');
+            var value = feature.get('value') || '';
+            var name = feature.get('name') || '';
+            
+            if (type === 'point') {
+                // Costruisce etichetta con nome + coordinate
+                var coordsRaw = feature.get('coords_raw') || null;
+                var coordLabel = '';
+                if (coordsRaw) {
+                    coordLabel = '\n' + coordsRaw.lat + '\n' + coordsRaw.lon;
+                }
+                var pointLabel = (name || '') + coordLabel;
+                return [
+                    new ol.style.Style({
+                        image: new ol.style.Circle({
+                            radius: 8,
+                            fill: new ol.style.Fill({ color: selected ? '#e74c3c' : catColor(feature.get('cat')) }),
+                            stroke: new ol.style.Stroke({ color: 'white', width: 3 })
+                        })
+                    }),
+                    new ol.style.Style({
+                        geometry: feature.getGeometry(),
+                        text: new ol.style.Text({
+                            text: pointLabel.trim(),
+                            font: 'bold 11px Arial',
+                            fill: new ol.style.Fill({ color: '#1e293b' }),
+                            stroke: new ol.style.Stroke({ color: 'rgba(255,255,255,0.95)', width: 3 }),
+                            offsetY: coordsRaw ? -32 : -15,
+                            textAlign: 'center',
+                            textBaseline: 'bottom'
+                        })
+                    })
+                ];
+            } else if (type === 'measure') {
+                var styles = [new ol.style.Style({
+                    fill: new ol.style.Fill({
+                        color: editing ? 'rgba(52, 152, 219, 0.2)' : (selected ? 'rgba(231, 76, 60, 0.2)' : catFill(feature.get('cat'), 0.20))
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: editing ? '#3498db' : (selected ? '#e74c3c' : catColor(feature.get('cat'))),
+                        width: editing ? 4 : (selected ? 4 : 3)
+                    }),
+                    image: new ol.style.Circle({
+                        radius: editing ? 8 : 7,
+                        fill: new ol.style.Fill({ color: editing ? '#3498db' : (selected ? '#e74c3c' : catColor(feature.get('cat'))) }),
+                        stroke: new ol.style.Stroke({ color: 'white', width: 2 })
+                    })
+                })];
+                
+                if (value) {
+                    var geom = feature.getGeometry();
+                    var labelPoint = null;
+                    if (geom.getType() === 'Polygon') {
+                        labelPoint = geom.getInteriorPoint().getCoordinates();
+                    } else if (geom.getType() === 'LineString') {
+                        labelPoint = geom.getCoordinateAt(0.5);
+                    }
+                    if (labelPoint) {
+                        styles.push(new ol.style.Style({
+                            geometry: new ol.geom.Point(labelPoint),
+                            text: new ol.style.Text({
+                                text: (name ? name + '\n' : '') + value,
+                                font: 'bold 12px Arial',
+                                fill: new ol.style.Fill({ color: '#000' }),
+                                stroke: new ol.style.Stroke({ color: '#fff', width: 3 }),
+                                textAlign: 'center', 
+                                textBaseline: 'middle'
+                            })
+                        }));
+                    }
+                }
+                return styles;
+            }
+        }
+        
+        var vectorLayer = new ol.layer.Vector({ 
+            source: vectorSource, 
+            style: getMeasureStyle 
+        });
+        
+        console.log('✅ Layers OK');
+
+        // ========== LAYER PARCELLE GML ==========
+        var parcelsSource = new ol.source.Vector();
+        var parcelsLayer = new ol.layer.Vector({
+            source: parcelsSource,
+            style: function(f){
+                var sel = f.get('gml_selected');
+                return new ol.style.Style({
+                    fill: new ol.style.Fill({ color: sel ? 'rgba(52,152,219,0.15)' : 'rgba(241,196,15,0.08)' }),
+                    stroke: new ol.style.Stroke({ color: sel ? '#3498db' : '#f1c40f', width: sel ? 3 : 2 }),
+                    text: new ol.style.Text({
+                        text: f.get('label') ? String(f.get('label')) : '',
+                        font: 'bold 11px Arial',
+                        fill: new ol.style.Fill({ color: '#111827' }),
+                        stroke: new ol.style.Stroke({ color: '#ffffff', width: 3 })
+                    })
+                });
+            }
+        });
+
+        var map = new ol.Map({
+            target: 'map',
+            layers: [osmLayer, satelliteLayer, googleMapsLayer, googleSatLayer, catastoLayer, parcelsLayer, vectorLayer],
+            view: new ol.View({ 
+                center: ol.proj.fromLonLat([12.4964, 41.9028]), 
+                zoom: 6, 
+                maxZoom: 20 
+            }),
+            controls: ol.control.defaults({ zoom: false, rotate: false }).extend([new ol.control.ScaleLine()])
+        });
+        
+        console.log('✅ Mappa creata');
+
+        
+
+        // ========== GEOLOCALIZZAZIONE (GPS) ==========
+        var geolocWatchId = null;
+        var gpsSource = new ol.source.Vector();
+        var gpsLayer = new ol.layer.Vector({
+            source: gpsSource,
+            style: function(){
+                return new ol.style.Style({
+                    image: new ol.style.Circle({
+                        radius: 7,
+                        fill: new ol.style.Fill({ color: '#34a853' }),
+                        stroke: new ol.style.Stroke({ color: '#ffffff', width: 2 })
+                    })
+                });
+            }
+        });
+        map.addLayer(gpsLayer);
+
+        function setGpsUi(active){
+            var b1 = document.getElementById('btnGeoLocate');
+            var b2 = document.getElementById('btnGPS');
+            if(b1) b1.classList.toggle('active', !!active);
+            if(b2) b2.classList.toggle('active', !!active);
+        }
+
+        function toggleGeoloc(){
+            if(geolocWatchId != null){
+                navigator.geolocation.clearWatch(geolocWatchId);
+                geolocWatchId = null;
+                gpsSource.clear();
+                setGpsUi(false);
+                showHelp('GPS disattivato');
+                return;
+            }
+            if(!navigator.geolocation){
+                alert('Geolocalizzazione non supportata dal browser.');
+                return;
+            }
+            setGpsUi(true);
+            showHelp('Attivo GPS… autorizza il permesso');
+            geolocWatchId = navigator.geolocation.watchPosition(function(pos){
+                var lon = pos.coords.longitude, lat = pos.coords.latitude;
+                var acc = pos.coords.accuracy || 0;
+                var p = new ol.geom.Point(ol.proj.fromLonLat([lon,lat]));
+                var f = gpsSource.getFeatures()[0];
+                if(!f){
+                    f = new ol.Feature({ geometry: p });
+                    gpsSource.addFeature(f);
+                } else {
+                    f.setGeometry(p);
+                }
+                map.getView().animate({ center: p.getCoordinates(), zoom: Math.max(map.getView().getZoom(), 18), duration: 350 });
+                showHelp('GPS: ' + lat.toFixed(6) + ', ' + lon.toFixed(6) + (acc? (' (±' + Math.round(acc) + 'm)'):''));
+            }, function(err){
+                setGpsUi(false);
+                geolocWatchId = null;
+                alert('Errore GPS: ' + err.message);
+            }, { enableHighAccuracy:true, maximumAge:2000, timeout:10000 });
+        }
+        window.toggleGeoloc = toggleGeoloc;
+// ========== VARIABILI GLOBALI ==========
+        var measureCounter = 0;
+        var measuresData = {};
+        var selectedFeature = null;
+        var currentDraw = null;
+        var measureMode = null;
+        var sketch = null;
+        var listener = null;
+        var helpTimeout = null;
+        var dragPanInteraction = null;
+        var doubleClickZoomInteraction = null;
+        
+        // ========== SNAP & MODIFY ==========
+        var snapInteraction = new ol.interaction.Snap({ source: vectorSource });
+        map.addInteraction(snapInteraction);
+
+        // ── Stato snap globale (attivo di default) ─────────────────
+        var snapEnabled = true;
+
+        function toggleSnap(){
+            snapEnabled = !snapEnabled;
+            snapInteraction.setActive(snapEnabled);
+            if(geoJsonSnap) geoJsonSnap.setActive(snapEnabled);
+
+            // Aggiorna pulsante sidebar
+            var btn = document.getElementById('btnSnapSidebar');
+            if(btn){
+                if(snapEnabled){
+                    btn.classList.add('active');
+                    btn.style.background = '#a855f7';
+                    btn.style.color = '#fff';
+                    btn.style.borderColor = '#9333ea';
+                    btn.textContent = '🧲 Snap ON';
+                } else {
+                    btn.classList.remove('active');
+                    btn.style.background = '';
+                    btn.style.color = '';
+                    btn.style.borderColor = '';
+                    btn.textContent = '🔓 Snap OFF';
+                }
+            }
+            showHelp(snapEnabled ? '🧲 Snap attivato' : '🔓 Snap disattivato');
+        }
+        window.toggleSnap = toggleSnap;
+        
+        var modifyInteraction = new ol.interaction.Modify({ source: vectorSource });
+        modifyInteraction.setActive(false);
+        map.addInteraction(modifyInteraction);
+
+        // Modifica con cancellazione vertice al singolo click
+        // Usiamo una funzione inline per compatibilità con OL 4.6.5
+        var deleteVertexInteraction = new ol.interaction.Modify({
+            source: vectorSource,
+            deleteCondition: function(evt) {
+                // Cancella vertice al singleClick senza modificatori
+                return ol.events.condition.noModifierKeys(evt) && ol.events.condition.primaryAction(evt);
+            }
+        });
+        deleteVertexInteraction.setActive(false);
+        map.addInteraction(deleteVertexInteraction);
+        
+        modifyInteraction.on('modifyend', function(evt) {
+            evt.features.forEach(function(f) { updateMeasureValue(f); });
+        });
+        deleteVertexInteraction.on('modifyend', function(evt) {
+            evt.features.forEach(function(f) { updateMeasureValue(f); });
+        });
+        
+        // Trova interazioni nav
+        map.getInteractions().forEach(function(i) {
+            if (i instanceof ol.interaction.DragPan) dragPanInteraction = i;
+            else if (i instanceof ol.interaction.DoubleClickZoom) doubleClickZoomInteraction = i;
+        });
+        
+        // ========== FUNZIONI MISURE (dal file originale FUNZIONANTE) ==========
+        var wgs84Sphere = new ol.Sphere(6378137);
+        
+        
+        // ========== CATEGORIE A..Z (colore per lettera) ==========
+        var CAT_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+        function catNormalize(c){
+            c = (c || "A").toString().trim().toUpperCase();
+            return CAT_LETTERS.indexOf(c) >= 0 ? c : "A";
+        }
+        function catColor(c){
+            c = catNormalize(c);
+            var idx = CAT_LETTERS.indexOf(c);
+            var hue = (idx * 137) % 360;
+            return "hsl(" + hue + ", 78%, 42%)";
+        }
+        function catFill(c, alpha){
+            c = catNormalize(c);
+            var idx = CAT_LETTERS.indexOf(c);
+            var hue = (idx * 137) % 360;
+            return "hsla(" + hue + ", 78%, 42%, " + (alpha==null?0.20:alpha) + ")";
+        }
+        function nextAutoCategory(){
+            var idx = (measureCounter % 26);
+            return CAT_LETTERS[idx];
+        }
+
+        // ========== GEOMETRIE: valori numerici ==========
+        function lengthMeters(line){
+            var coords = line.getCoordinates();
+            var length = 0;
+            var proj = map.getView().getProjection();
+            for (var i = 0; i < coords.length - 1; i++) {
+                var c1 = ol.proj.transform(coords[i], proj, 'EPSG:4326');
+                var c2 = ol.proj.transform(coords[i + 1], proj, 'EPSG:4326');
+                length += wgs84Sphere.haversineDistance(c1, c2);
+            }
+            return length;
+        }
+        function areaSqm(poly){
+            var proj = map.getView().getProjection();
+            var geom = poly.clone().transform(proj, 'EPSG:4326');
+            return Math.abs(wgs84Sphere.geodesicArea(geom.getLinearRing(0).getCoordinates()));
+        }
+        function perimeterMeters(poly){
+            return lengthMeters(new ol.geom.LineString(poly.getCoordinates()[0]));
+        }
+function formatLength(line) {
+            var coords = line.getCoordinates();
+            var length = 0;
+            var proj = map.getView().getProjection();
+            for (var i = 0; i < coords.length - 1; i++) {
+                var c1 = ol.proj.transform(coords[i], proj, 'EPSG:4326');
+                var c2 = ol.proj.transform(coords[i + 1], proj, 'EPSG:4326');
+                length += wgs84Sphere.haversineDistance(c1, c2);
+            }
+            return length > 1000 
+                ? (Math.round(length / 1000 * 100) / 100) + ' km' 
+                : (Math.round(length * 100) / 100) + ' m';
+        }
+        
+        function formatArea(polygon) {
+            var proj = map.getView().getProjection();
+            var geom = polygon.clone().transform(proj, 'EPSG:4326');
+            var area = Math.abs(wgs84Sphere.geodesicArea(geom.getLinearRing(0).getCoordinates()));
+            return area > 10000 
+                ? (Math.round(area / 10000 * 100) / 100) + ' ha' 
+                : (Math.round(area * 100) / 100) + ' m²';
+        }
+        
+        function formatPerimeter(polygon) {
+            return formatLength(new ol.geom.LineString(polygon.getCoordinates()[0]));
+        }
+        
+        function updateMeasureValue(feature) {
+            var geom = feature.getGeometry();
+            var value;
+            if (geom.getType() === 'LineString') {
+                value = formatLength(geom);
+            } else if (geom.getType() === 'Polygon') {
+                value = formatArea(geom) + ' / ' + formatPerimeter(geom);
+            }
+            feature.set('value', value);
+            var id = feature.get('id');
+            if (id && measuresData[id]) {
+                measuresData[id].value = value;
+                updateMeasuresList();
+            }
+            vectorLayer.changed();
+        }
+        
+        function disableMapInteractions() {
+            if (dragPanInteraction) dragPanInteraction.setActive(false);
+            if (doubleClickZoomInteraction) doubleClickZoomInteraction.setActive(false);
+        }
+        
+        function enableMapInteractions() {
+            if (dragPanInteraction) dragPanInteraction.setActive(true);
+            if (doubleClickZoomInteraction) doubleClickZoomInteraction.setActive(true);
+        }
+        
+        function showHelp(text) {
+            var helpEl = document.getElementById('helpText');
+            helpEl.textContent = text; 
+            helpEl.classList.add('active');
+            if (helpTimeout) clearTimeout(helpTimeout);
+            helpTimeout = setTimeout(function() { 
+                helpEl.classList.remove('active'); 
+            }, 3000);
+        }
+        
+        function undoLastVertex(){
+            if(currentDraw){
+                try { currentDraw.removeLastPoint(); } catch(e){}
+                showHelp('↩ Ultimo vertice rimosso');
+            }
+        }
+        window.undoLastVertex = undoLastVertex;
+
+        function showUndoBtn(show){
+            var btn = document.getElementById('btnUndoVertex');
+            if(btn) btn.style.display = show ? '' : 'none';
+        }
+
+        function removeMeasureInteraction() {
+            if (currentDraw) { 
+                map.removeInteraction(currentDraw); 
+                currentDraw = null; 
+            }
+            showUndoBtn(false);
+            if (listener) ol.Observable.unByKey(listener);
+            enableMapInteractions();
+            document.querySelectorAll('.tool-grid button').forEach(function(btn) {
+                btn.classList.remove('active');
+            });
+            document.getElementById('helpText').classList.remove('active');
+            document.getElementById('measureInfo').classList.remove('active');
+        }
+        
+        // ========== GESTIONE MISURE ==========
+        function saveMeasure(feature, type, coords) {
+            measureCounter++;
+            var cat = nextAutoCategory();
+            var id = 'measure_' + measureCounter;
+            var name = type === 'point' ? 'Punto ' + measureCounter :
+                       type === 'line' ? 'Linea ' + measureCounter : 
+                       'Poligono ' + measureCounter;
+            feature.set('id', id); 
+            feature.set('name', name);
+            feature.set('cat', cat);
+            
+            measuresData[id] = { 
+                id: id, 
+                name: name, 
+                type: type, 
+                value: feature.get('value') || '', 
+                coords: coords || null,
+                cat: cat,
+                feature: feature 
+            };
+            
+            console.log('✅ Misura salvata:', id, type, feature.get('value'));
+            updateMeasuresList();
+        }
+        
+        function updateMeasuresList() {
+            var list = document.getElementById('measuresList');
+            var empty = document.getElementById('measuresEmpty');
+            
+            list.innerHTML = '';
+            var keys = Object.keys(measuresData);
+            
+            if (keys.length === 0) {
+                empty.style.display = 'block';
+                updateMeasuresSummary(); // nascondi il riepilogo categorie
+                return;
+            }
+            
+            empty.style.display = 'none';
+            
+            keys.forEach(function(id) {
+                var data = measuresData[id];
+                var item = document.createElement('div');
+                item.className = 'measure-item';
+                item.setAttribute('data-measure-id', id);
+                if (selectedFeature && selectedFeature.get('id') === id) {
+                    item.classList.add('selected');
+                }
+                
+                var coordsHtml = '';
+                if (data.coords) {
+                    coordsHtml = '<div class="measure-item-coords">Lat: ' + data.coords.lat + ' | Lon: ' + data.coords.lon + '</div>';
+                }
+                
+                item.innerHTML =
+                    '<div class="measure-item-name"><input type="text" value="' + data.name + '" data-id="' + id + '" /></div>' +
+                    '<div class="cat-row">' +
+                        '<span class="cat-pill" style="background:' + catColor(data.cat || 'A') + ';">' + (data.cat || 'A') + '</span>' +
+                        '<select class="cat-select" data-cat-id="' + id + '">' +
+                            CAT_LETTERS.map(function(c){ return '<option value="' + c + '"' + (c === (data.cat||'A') ? ' selected' : '') + '>' + c + '</option>'; }).join('') +
+                        '</select>' +
+                    '</div>' +
+                    '<div class="measure-item-value">' + data.value + '</div>' +
+                    coordsHtml +
+                    '<div class="measure-item-actions">' +
+                        '<button onclick="zoomToMeasure(\'' + id + '\')">🔍 Zoom</button>' +
+                        (data.type !== 'point' ? '<button onclick="selectMeasure(\'' + id + '\')">✏️ Modifica</button>' : '') +
+                        '<button class="delete" onclick="deleteMeasure(\'' + id + '\')">🗑️ Elimina</button>' +
+                    '</div>';
+
+                list.appendChild(item);
+
+                // Click sull'elemento lista → seleziona sulla mappa
+                item.addEventListener('click', function(e) {
+                    // Non intercettare click su pulsanti/input interni
+                    if(e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+                    var feat = data.feature;
+                    if(!feat) return;
+                    if(selectedFeature && selectedFeature !== feat){
+                        selectedFeature.set('selected', false);
+                        selectedFeature.set('editing', false);
+                    }
+                    selectedFeature = feat;
+                    selectedFeature.set('selected', true);
+                    vectorLayer.changed();
+                    updateMeasuresList();
+                    // Zoom alla misura
+                    var ext = feat.getGeometry().getExtent();
+                    map.getView().fit(ext, { padding:[80,80,80,80], duration:400 });
+                });
+                
+                var input = item.querySelector('input');
+                input.addEventListener('change', function() {
+                    data.name = this.value; 
+                    data.feature.set('name', this.value); 
+                    vectorLayer.changed();
+                });
+
+                var sel = item.querySelector('select.cat-select');
+                if (sel) {
+                    sel.addEventListener('change', function(){
+                        var cid = this.getAttribute('data-cat-id');
+                        var dd = measuresData[cid];
+                        if (!dd) return;
+                        dd.cat = catNormalize(this.value);
+                        if (dd.feature) dd.feature.set('cat', dd.cat);
+                        vectorLayer.changed();
+                        updateMeasuresList();
+                    });
+                }
+
+            });
+            
+            updateMeasuresSummary();
+
+            // Auto-scroll all'elemento selezionato
+            if(selectedFeature) {
+                var selId = selectedFeature.get('id');
+                var selEl = list.querySelector('[data-measure-id="' + selId + '"]');
+                if(selEl) setTimeout(function(){ selEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 50);
+            }
+
+            console.log('📊 Lista aggiornata:', keys.length, 'misure');
+        }
+        
+        window.zoomToMeasure = function(id) {
+            var data = measuresData[id];
+            if (data && data.feature) {
+                var extent = data.feature.getGeometry().getExtent();
+                map.getView().fit(extent, { padding: [100,100,100,100], duration: 500 });
+            }
+        };
+
+
+        function fmtMeters(m){
+            if (m == null || isNaN(m)) return '-';
+            return (m >= 1000) ? (Math.round((m/1000)*1000)/1000).toLocaleString('it-IT') + ' km' : (Math.round(m*100)/100).toLocaleString('it-IT') + ' m';
+        }
+        function fmtSqm(a){
+            if (a == null || isNaN(a)) return '-';
+            if (a >= 10000) return (Math.round((a/10000)*1000)/1000).toLocaleString('it-IT') + ' ha';
+            return (Math.round(a*100)/100).toLocaleString('it-IT') + ' m²';
+        }
+        function updateMeasuresSummary(){
+            var box = document.getElementById('measuresSummary');
+            if(!box) return;
+
+            var keys = Object.keys(measuresData);
+            if(keys.length === 0){
+                box.style.display='none';
+                box.innerHTML='';
+                return;
+            }
+
+            var byCat = {};
+            keys.forEach(function(id){
+                var m = measuresData[id];
+                var cat = catNormalize(m.cat || (m.feature && m.feature.get('cat')) || 'A');
+                if(!byCat[cat]) byCat[cat] = {len:0, area:0, per:0, points:0, nLine:0, nPoly:0, nPoint:0};
+                var g = m.feature && m.feature.getGeometry ? m.feature.getGeometry() : null;
+                if(!g) return;
+
+                if(m.type === 'line' && g.getType()==='LineString'){
+                    byCat[cat].len += lengthMeters(g);
+                    byCat[cat].nLine++;
+                } else if(m.type === 'polygon' && g.getType()==='Polygon'){
+                    byCat[cat].area += areaSqm(g);
+                    byCat[cat].per  += perimeterMeters(g);
+                    byCat[cat].nPoly++;
+                } else if(m.type === 'point'){
+                    byCat[cat].points++;
+                    byCat[cat].nPoint++;
+                }
+            });
+
+            var tot = {len:0, area:0, per:0, points:0};
+            Object.keys(byCat).forEach(function(c){
+                tot.len += byCat[c].len;
+                tot.area += byCat[c].area;
+                tot.per += byCat[c].per;
+                tot.points += byCat[c].points;
+            });
+
+            var cats = Object.keys(byCat).sort();
+            var h = '<div class="sum-title">Somme per categoria</div>';
+            cats.forEach(function(c){
+                var d = byCat[c];
+                var parts = [];
+                if(d.nLine) parts.push('Linee: ' + fmtMeters(d.len));
+                if(d.nPoly) parts.push('Aree: ' + fmtSqm(d.area) + ' • Perimetro: ' + fmtMeters(d.per));
+                if(d.nPoint) parts.push('Punti: ' + d.points);
+                if(parts.length === 0) return;
+                h += '<div class="sum-row">' +
+                        '<span class="cat-pill" style="background:'+catColor(c)+';">'+c+'</span>' +
+                        '<div class="sum-label">'+ parts.join(' | ') + '</div>' +
+                     '</div>';
+            });
+            h += '<div class="sum-title" style="margin-top:10px;">Totale</div>';
+            var totalParts = [];
+            if(tot.len) totalParts.push('Linee: ' + fmtMeters(tot.len));
+            if(tot.area) totalParts.push('Aree: ' + fmtSqm(tot.area) + ' • Perimetro: ' + fmtMeters(tot.per));
+            if(tot.points) totalParts.push('Punti: ' + tot.points);
+            h += '<div class="sum-row"><div class="sum-label">'+ (totalParts.join(' | ') || '-') + '</div></div>';
+
+            box.innerHTML = h;
+            box.style.display='block';
+        }
+        
+        window.selectMeasure = function(id) {
+            var data = measuresData[id];
+            if (data && data.feature && data.type !== 'point') {
+                if (selectedFeature) {
+                    selectedFeature.set('selected', false); 
+                    selectedFeature.set('editing', false);
+                }
+                selectedFeature = data.feature;
+                selectedFeature.set('selected', true); 
+                selectedFeature.set('editing', true);
+                modifyInteraction.setActive(true);
+                document.getElementById('btnModify').classList.add('active');
+                vectorLayer.changed(); 
+                updateMeasuresList();
+                map.getView().fit(data.feature.getGeometry().getExtent(), { 
+                    padding: [100,100,100,100], 
+                    duration: 500 
+                });
+            }
+        };
+        
+        var deleteVertexActive = false;
+        function toggleDeleteVertex(){
+            if(deleteVertexActive){
+                // Disattiva
+                deleteVertexActive = false;
+                deleteVertexInteraction.setActive(false);
+                var btn = document.getElementById('btnDeleteVertex');
+                if(btn){ btn.classList.remove('active'); btn.style.background=''; btn.style.color='#b45309'; btn.style.borderColor=''; }
+                showHelp('✂️ Cancella vertice disattivato');
+            } else {
+                // Disattiva modify normale se attivo
+                if(selectedFeature){ selectedFeature.set('editing', false); }
+                modifyInteraction.setActive(false);
+                var bm = document.getElementById('btnModify');
+                if(bm) bm.classList.remove('active');
+                removeMeasureInteraction();
+                stopQuotaMode();
+
+                deleteVertexActive = true;
+                deleteVertexInteraction.setActive(true);
+                var btn = document.getElementById('btnDeleteVertex');
+                if(btn){ btn.classList.add('active'); btn.style.background='#b45309'; btn.style.color='#fff'; btn.style.borderColor='#92400e'; }
+                showHelp('✂️ Clicca su un vertice per cancellarlo — ESC per uscire');
+            }
+        }
+        window.toggleDeleteVertex = toggleDeleteVertex;
+
+        function stopDeleteVertex(){
+            if(!deleteVertexActive) return;
+            deleteVertexActive = false;
+            deleteVertexInteraction.setActive(false);
+            var btn = document.getElementById('btnDeleteVertex');
+            if(btn){ btn.classList.remove('active'); btn.style.background=''; btn.style.color='#b45309'; btn.style.borderColor=''; }
+        }
+
+        window.deleteMeasure = function(id) {
+            if (confirm('Eliminare questa misurazione?')) {
+                var data = measuresData[id];
+                if (data && data.feature) {
+                    vectorSource.removeFeature(data.feature);
+                    delete measuresData[id]; 
+                    updateMeasuresList();
+                    if (selectedFeature && selectedFeature.get('id') === id) {
+                        selectedFeature = null; 
+                        modifyInteraction.setActive(false);
+                        document.getElementById('btnModify').classList.remove('active');
+                    }
+                }
+            }
+        };
+        
+        // ========== MISURA PUNTO ==========
+        function measurePoint() {
+            removeMeasureInteraction();
+            stopQuotaMode();
+            stopDeleteVertex();
+            measureMode = 'point';
+            disableMapInteractions();
+            document.getElementById('btnMarker').classList.add('active');
+            showHelp('Click sulla mappa per aggiungere punto');
+            
+            var clickListener = map.on('singleclick', function(evt) {
+                var coord4326 = ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326');
+                
+                var pointFeature = new ol.Feature({
+                    geometry: new ol.geom.Point(evt.coordinate),
+                    type: 'point',
+                    value: ''
+                });
+                
+                vectorSource.addFeature(pointFeature);
+                
+                var coords = {
+                    lat: coord4326[1].toFixed(6),
+                    lon: coord4326[0].toFixed(6)
+                };
+                
+                pointFeature.set('coords_raw', coords);
+                saveMeasure(pointFeature, 'point', coords);
+                
+                ol.Observable.unByKey(clickListener);
+                enableMapInteractions();
+                document.getElementById('btnMarker').classList.remove('active');
+            });
+        }
+        
+        // ========== MISURA LINEA ==========
+        function measureLine() {
+            removeMeasureInteraction(); 
+            stopQuotaMode();
+            stopDeleteVertex();
+            measureMode = 'line'; 
+            disableMapInteractions();
+            document.getElementById('btnMeasureLine').classList.add('active');
+            showHelp('Click per punti • Backspace = rimuovi ultimo • Doppio click per terminare');
+            
+            currentDraw = new ol.interaction.Draw({
+                source: vectorSource, 
+                type: 'LineString',
+                style: new ol.style.Style({
+                    stroke: new ol.style.Stroke({ color: '#10b981', width: 3 }),
+                    image: new ol.style.Circle({
+                        radius: 7, 
+                        fill: new ol.style.Fill({ color: '#10b981' }),
+                        stroke: new ol.style.Stroke({ color: 'white', width: 2 })
+                    })
+                })
+            });
+            
+            map.addInteraction(currentDraw);
+            // ── Snap: deve essere l'ULTIMA interazione aggiunta (OL la processa per prima) ──
+            map.removeInteraction(snapInteraction);
+            map.addInteraction(snapInteraction);
+            if(geoJsonSnap){ map.removeInteraction(geoJsonSnap); map.addInteraction(geoJsonSnap); }
+            
+            currentDraw.on('drawstart', function(evt) {
+                sketch = evt.feature; 
+                showUndoBtn(true);
+                document.getElementById('measureInfo').classList.add('active');
+                listener = sketch.getGeometry().on('change', function(evt) {
+                    document.getElementById('measureValue').textContent = formatLength(evt.target);
+                });
+            });
+            
+            currentDraw.on('drawend', function(evt) {
+                console.log('📏 Linea disegnata');
+                evt.feature.set('type', 'measure'); 
+                evt.feature.set('measureType', 'line');
+                evt.feature.set('value', document.getElementById('measureValue').textContent);
+                saveMeasure(evt.feature, 'line');
+                sketch = null; 
+                ol.Observable.unByKey(listener);
+                showUndoBtn(false);
+                setTimeout(removeMeasureInteraction, 100);
+            });
+        }
+        
+        // ========== MISURA POLIGONO ==========
+        function measurePolygon() {
+            removeMeasureInteraction(); 
+            stopQuotaMode();
+            stopDeleteVertex();
+            measureMode = 'polygon'; 
+            disableMapInteractions();
+            document.getElementById('btnMeasurePolygon').classList.add('active');
+            showHelp('Click per vertici • Backspace = rimuovi ultimo • Doppio click per chiudere');
+            
+            currentDraw = new ol.interaction.Draw({
+                source: vectorSource, 
+                type: 'Polygon',
+                style: new ol.style.Style({
+                    fill: new ol.style.Fill({ color: 'rgba(16, 185, 129, 0.2)' }),
+                    stroke: new ol.style.Stroke({ color: '#10b981', width: 3 }),
+                    image: new ol.style.Circle({
+                        radius: 7, 
+                        fill: new ol.style.Fill({ color: '#10b981' }),
+                        stroke: new ol.style.Stroke({ color: 'white', width: 2 })
+                    })
+                })
+            });
+            
+            map.addInteraction(currentDraw);
+            // ── Snap: deve essere l'ULTIMA interazione aggiunta (OL la processa per prima) ──
+            map.removeInteraction(snapInteraction);
+            map.addInteraction(snapInteraction);
+            if(geoJsonSnap){ map.removeInteraction(geoJsonSnap); map.addInteraction(geoJsonSnap); }
+            
+            currentDraw.on('drawstart', function(evt) {
+                sketch = evt.feature; 
+                showUndoBtn(true);
+                document.getElementById('measureInfo').classList.add('active');
+                listener = sketch.getGeometry().on('change', function(evt) {
+                    var geom = evt.target;
+                    document.getElementById('measureValue').textContent = formatArea(geom) + ' / ' + formatPerimeter(geom);
+                });
+            });
+            
+            currentDraw.on('drawend', function(evt) {
+                console.log('⬡ Poligono disegnato');
+                evt.feature.set('type', 'measure'); 
+                evt.feature.set('measureType', 'polygon');
+                evt.feature.set('value', document.getElementById('measureValue').textContent);
+                saveMeasure(evt.feature, 'polygon');
+                sketch = null; 
+                ol.Observable.unByKey(listener);
+                showUndoBtn(false);
+                setTimeout(removeMeasureInteraction, 100);
+            });
+        }
+        
+        // ========== ESC / BACKSPACE / CANC ==========
+        document.addEventListener('keydown', function(evt) {
+            // Ignora se il focus è su un input/textarea
+            var tag = (evt.target && evt.target.tagName) ? evt.target.tagName.toLowerCase() : '';
+            if(tag === 'input' || tag === 'textarea' || tag === 'select') return;
+
+            if (evt.key === 'Escape') {
+                removeMeasureInteraction();
+                stopDeleteVertex();
+            }
+
+            // Backspace durante il disegno: rimuove l'ultimo vertice
+            if ((evt.key === 'Backspace' || evt.key === 'z') && currentDraw) {
+                evt.preventDefault();
+                try { currentDraw.removeLastPoint(); } catch(e){}
+                showHelp('↩ Ultimo vertice rimosso');
+            }
+
+            // Canc/Delete: elimina la misura selezionata
+            if (evt.key === 'Delete' && !currentDraw) {
+                if (selectedFeature) {
+                    var id = selectedFeature.get('id');
+                    if (id && measuresData[id]) {
+                        vectorSource.removeFeature(selectedFeature);
+                        delete measuresData[id];
+                        selectedFeature = null;
+                        modifyInteraction.setActive(false);
+                        var bm = document.getElementById('btnModify');
+                        if(bm) bm.classList.remove('active');
+                        updateMeasuresList();
+                        showHelp('🗑️ Misura eliminata');
+                    }
+                }
+            }
+        });
+        
+        // ========== SELEZIONE FEATURE CON CLICK SULLA MAPPA ==========
+        map.on('singleclick', function(evt) {
+            // Non intervenire se siamo in modalità disegno o quota o street view
+            if (currentDraw || quotaMode || svMode || measureMode === 'point') return;
+
+            var hit = false;
+            map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
+                if (hit || layer !== vectorLayer) return;
+                var id = feature.get('id');
+                if (!id || !measuresData[id]) return;
+                hit = true;
+
+                // Deseleziona il precedente
+                if (selectedFeature && selectedFeature !== feature) {
+                    selectedFeature.set('selected', false);
+                    selectedFeature.set('editing', false);
+                }
+
+                selectedFeature = feature;
+                selectedFeature.set('selected', true);
+                vectorLayer.changed();
+                updateMeasuresList();
+            }, { hitTolerance: 6 });
+
+            // Click su area vuota → deseleziona
+            if (!hit && selectedFeature) {
+                selectedFeature.set('selected', false);
+                selectedFeature.set('editing', false);
+                selectedFeature = null;
+                modifyInteraction.setActive(false);
+                var bm = document.getElementById('btnModify');
+                if(bm) bm.classList.remove('active');
+                vectorLayer.changed();
+                updateMeasuresList();
+            }
+        });
+
+        document.getElementById('btnMarker').addEventListener('click', measurePoint);
+        document.getElementById('btnMeasureLine').addEventListener('click', measureLine);
+        document.getElementById('btnMeasurePolygon').addEventListener('click', measurePolygon);
+        var _bgps=document.getElementById('btnGPS'); if(_bgps) _bgps.addEventListener('click', toggleGeoloc);
+        var _bpr=document.getElementById('btnPrintBelow'); if(_bpr) _bpr.addEventListener('click', function(){ openPdfModal(); });
+        
+        document.getElementById('btnModify').addEventListener('click', function() {
+            if (this.classList.contains('active')) {
+                this.classList.remove('active');
+                modifyInteraction.setActive(false);
+                if (selectedFeature) {
+                    selectedFeature.set('editing', false);
+                    selectedFeature = null;
+                    vectorLayer.changed();
+                    updateMeasuresList();
+                }
+            } else {
+                removeMeasureInteraction();
+                this.classList.add('active');
+                modifyInteraction.setActive(true);
+                showHelp('Trascina i vertici per modificare');
+            }
+        });
+        
+        document.getElementById('btnClear').addEventListener('click', function() {
+            if (Object.keys(measuresData).length === 0) {
+                alert('Nessuna misura da cancellare');
+                return;
+            }
+            if (confirm('Cancellare tutte le ' + Object.keys(measuresData).length + ' misure?')) {
+                vectorSource.clear();
+                measuresData = {};
+                measureCounter = 0;
+                selectedFeature = null;
+                updateMeasuresList();
+                removeMeasureInteraction();
+                console.log('🗑️ Tutte le misure cancellate');
+            }
+        });
+        
+        // ========== RICERCA ==========
+        document.getElementById('searchBtn').addEventListener('click', function() {
+            var q = document.getElementById('searchInput').value.trim();
+            if (!q) return;
+            
+            // Coordinate dirette
+            var match = q.match(/^\s*([0-9.+-]+)\s*,\s*([0-9.+-]+)\s*$/);
+            if (match) {
+                var lat = parseFloat(match[1]);
+                var lon = parseFloat(match[2]);
+                map.getView().animate({ 
+                    center: ol.proj.fromLonLat([lon, lat]), 
+                    zoom: 18, 
+                    duration: 1000 
+                });
+                return;
+            }
+            
+            // Geocoding
+            fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + 
+                  encodeURIComponent(q) + '&countrycodes=it&limit=1')
+                .then(function(res) { return res.json(); })
+                .then(function(data) {
+                    if (data.length > 0) {
+                        var lat = parseFloat(data[0].lat);
+                        var lon = parseFloat(data[0].lon);
+                        map.getView().animate({ 
+                            center: ol.proj.fromLonLat([lon, lat]), 
+                            zoom: 18, 
+                            duration: 1000 
+                        });
+                    } else {
+                        alert('Indirizzo non trovato');
+                    }
+                })
+                .catch(function(err) {
+                    console.error(err);
+                    alert('Errore nella ricerca');
+                });
+        });
+        
+        // ========== LAYER CONTROLS ==========
+        document.getElementById('layerOSM').onchange = function(e) { 
+            osmLayer.setVisible(e.target.checked); 
+        };
+        document.getElementById('opacityOSM').oninput = function(e) { 
+            osmLayer.setOpacity(e.target.value/100); 
+        };
+        
+        document.getElementById('layerSatellite').onchange = function(e) { 
+            satelliteLayer.setVisible(e.target.checked); 
+        };
+        document.getElementById('opacitySatellite').oninput = function(e) { 
+            satelliteLayer.setOpacity(e.target.value/100); 
+        };
+        
+        document.getElementById('layerCatasto').onchange = function(e) { 
+            catastoLayer.setVisible(e.target.checked); 
+        };
+        document.getElementById('opacityCatasto').oninput = function(e) { 
+            catastoLayer.setOpacity(e.target.value/100); 
+        };
+
+        document.getElementById('layerGoogleMaps').onchange = function(e) { googleMapsLayer.setVisible(e.target.checked); };
+        document.getElementById('opacityGoogleMaps').oninput = function(e) { googleMapsLayer.setOpacity(e.target.value/100); };
+        document.getElementById('layerGoogleSat').onchange = function(e) { googleSatLayer.setVisible(e.target.checked); };
+        document.getElementById('opacityGoogleSat').oninput = function(e) { googleSatLayer.setOpacity(e.target.value/100); };
+        
+        // ========== RENDITE ==========
+        document.getElementById('btnOpenRendite').onclick = function() {
+            window.open('https://sister3.agenziaentrate.gov.it/CitizenVisure/','_blank');
+        };
+        
+        document.getElementById('btnClearRendite').onclick = function() {
+            if(!confirm('Cancellare tutti i dati catastali?')) return;
+            ['rend-ufficio','rend-catasto','rend-comune','rend-codice','rend-foglio',
+             'rend-particella','rend-sub','rend-qualita','rend-classe',
+             'rend-ha','rend-are','rend-ca','rend-dominicale',
+             'rend-agrario','rend-partita','rend-porzioni'].forEach(function(id){
+                var el = document.getElementById(id);
+                if(el) el.value = '';
+            });
+        };
+        
+        document.getElementById('btnPasteRendite').onclick = function() {
+            if(navigator.clipboard && navigator.clipboard.readText)
+                navigator.clipboard.readText()
+                    .then(function(text){ parseRenditeText(text); })
+                    .catch(function(){ showHelp('Permesso clipboard negato'); });
+            else
+                showHelp('Clipboard non disponibile');
+        };
+
+        function parseRenditeText(text){
+            var lines = text.split(/\r?\n/).map(function(l){ return l.trim(); }).filter(Boolean);
+            var filled = 0;
+            function setVal(id, val){
+                if(!val) return;
+                var el = document.getElementById(id);
+                if(el){ el.value = val.trim(); filled++; }
+            }
+            for(var i = 0; i < lines.length; i++){
+                var line = lines[i];
+                if(/ufficio provinciale/i.test(line))
+                    setVal('rend-ufficio', line.split(':').slice(1).join(':').trim());
+                else if(/^catasto/i.test(line))
+                    setVal('rend-catasto', line.split(':').slice(1).join(':').trim());
+                else if(/comune/i.test(line)){
+                    var mC = line.match(/comune[:\s]+(.+?)\s+codice[:\s]+([A-Z0-9]+)/i);
+                    if(mC){ setVal('rend-comune', mC[1]); setVal('rend-codice', mC[2]); }
+                }
+                else if(/foglio/i.test(line) && /particella/i.test(line)){
+                    var mFP = line.match(/foglio[:\s]+(\S+)\s+particella[:\s]+(\S+)/i);
+                    if(mFP){ setVal('rend-foglio', mFP[1]); setVal('rend-particella', mFP[2]); }
+                }
+            }
+            // Cerca riga dati con tab (formato tabella AdE)
+            var tabLine = null;
+            for(var j = 0; j < lines.length; j++){
+                if(lines[j].indexOf('\t') >= 0 && /euro|\d{4}/i.test(lines[j])){
+                    tabLine = lines[j]; break;
+                }
+            }
+            if(tabLine){
+                var cols = tabLine.split('\t');
+                if(cols.length >= 8){
+                    setVal('rend-foglio',      cols[0]);
+                    setVal('rend-particella',  cols[1]);
+                    setVal('rend-sub',         cols[2]);
+                    setVal('rend-qualita',     cols[3]);
+                    setVal('rend-classe',      cols[4]);
+                    setVal('rend-ha',          cols[5]);
+                    setVal('rend-are',         cols[6]);
+                    setVal('rend-ca',          cols[7]);
+                    if(cols[8])  setVal('rend-dominicale', cols[8].replace(/euro[:\s]*/i,'').replace('(*)', '').trim());
+                    if(cols[9])  setVal('rend-agrario',    cols[9].replace(/euro[:\s]*/i,'').replace('(*)', '').trim());
+                    if(cols[10]) setVal('rend-partita',    cols[10]);
+                    if(cols[11]) setVal('rend-porzioni',   cols[11]);
+                }
+            } else {
+                // Formato compatto: cerca riga con "Euro:"
+                for(var k = 0; k < lines.length; k++){
+                    if(!/euro/i.test(lines[k])) continue;
+                    var rl = lines[k];
+                    var redditi = [], rm, re1 = /euro[:\s]*([\d,]+)/gi;
+                    while((rm = re1.exec(rl)) !== null) redditi.push(rm[1]);
+                    if(redditi[0]) setVal('rend-dominicale', redditi[0]);
+                    if(redditi[1]) setVal('rend-agrario',    redditi[1]);
+                    var mS = rl.match(/(\d{1,3})\s*(\d{2})\s*(\d{2})\s*[Ee]uro/);
+                    if(mS){ setVal('rend-ha', mS[1]); setVal('rend-are', mS[2]); setVal('rend-ca', mS[3]); }
+                    break;
+                }
+            }
+            showHelp(filled > 0 ? ('Incollati ' + filled + ' campi') : 'Nessun dato riconosciuto');
+        }
+        
+        console.log('✅ Tutti gli eventi collegati');
+        console.log('🎉 APPLICAZIONE PRONTA!');
+        
+        map.once('postrender', function() {
+            console.log('✅✅✅ MAPPA RENDERIZZATA CON SUCCESSO!');
+        });
+    
+        // =========================
+        // Ricerca Catastale — archivio cloud (GitHub + jsDelivr)
+        // =========================
+        var _u = 'MatteoChiurchiu';
+        var _r = 'catasto-csv';
+        var _b = 'main';
+        var CDN_BASE = 'https://raw.githubusercontent.com/' + _u + '/' + _r + '/' + _b + '/catasto_csv/';
+        var INDEX_URL = CDN_BASE + 'index.json';
+
+        var csvCloudIndex = {};
+        var csvData = [];
+        var csvLoadedBelfiore = '';
+
+        var csvSource = new ol.source.Vector();
+        var csvLayer  = new ol.layer.Vector({
+            source: csvSource,
+            style: function(feat){
+                var sel = feat.get('selected');
+                return new ol.style.Style({
+                    image: new ol.style.Circle({
+                        radius: sel ? 10 : 7,
+                        fill:   new ol.style.Fill({ color: sel ? '#f59e0b' : '#e74c3c' }),
+                        stroke: new ol.style.Stroke({ color: '#fff', width: sel ? 3 : 2 })
+                    })
+                });
+            }
+        });
+        map.addLayer(csvLayer);
+
+        function setCloudStatus(msg, ok){
+            var el = document.getElementById('csvFolderStatus');
+            if(!el) return;
+            el.innerHTML = msg;
+            el.style.borderColor = ok === true ? '#10b981' : ok === false ? '#ef4444' : '#e2e8f0';
+            el.style.color       = ok === true ? '#0f766e' : ok === false ? '#e74c3c' : '#64748b';
+            el.style.background  = ok === true ? '#f0fdf4' : ok === false ? '#fef2f2' : '#f8fafc';
+        }
+        function setComuneStatus(msg, ok){
+            var el = document.getElementById('csvComuneStatus');
+            if(el){ el.innerHTML = msg; el.style.color = ok===true?'#0f766e':ok===false?'#e74c3c':'#64748b'; }
+        }
+        function setCsvResult(msg, ok){
+            var el = document.getElementById('csvResult');
+            if(el){ el.textContent = msg; el.style.color = ok===true?'#0f766e':ok===false?'#e74c3c':'#64748b'; }
+        }
+        function setFiltriEnabled(on){
+            var box = document.getElementById('csvFiltriBox');
+            if(box){ box.style.opacity = on?'1':'.3'; box.style.pointerEvents = on?'':'none'; }
+        }
+        function setBtnLoadEnabled(on){
+            var btn = document.getElementById('btnLoadComune');
+            if(btn){ btn.disabled = !on; btn.style.opacity = on?'1':'.4'; }
+        }
+        function normFoglio(v){
+            if(!v) return '';
+            var s = v.trim();
+            var n = parseInt(s, 10);
+            if(isNaN(n)) return s.toUpperCase();
+            if(s.length === 5 && s[0] === '0' && n % 10 === 0) return String(n / 10);
+            return String(n);
+        }
+        function parseCSV(text){
+            var lines = text.split(/\r?\n/);
+            if(lines.length < 2) return [];
+            var headers = lines[0].split(',').map(function(h){ return h.trim().replace(/^"|"$/g,''); });
+            var rows = [];
+            for(var i = 1; i < lines.length; i++){
+                var line = lines[i].trim();
+                if(!line) continue;
+                var vals = line.split(',').map(function(v){ return v.trim().replace(/^"|"$/g,''); });
+                var obj = {};
+                headers.forEach(function(h, idx){ obj[h] = vals[idx] || ''; });
+                rows.push(obj);
+            }
+            return rows;
+        }
+        (function initCloud(){
+            if(_u === 'TUO_UTENTE_GITHUB'){
+                setCloudStatus('⚙️ Configura username GitHub nel codice (var _u)', false); return;
+            }
+            setCloudStatus('⏳ Connessione archivio…', null);
+            fetch(INDEX_URL + '?v=' + Date.now())
+                .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+                .then(function(idx){ csvCloudIndex=idx; setCloudStatus('☁️ Archivio connesso — '+Object.keys(idx).length+' comuni',true); setBtnLoadEnabled(true); })
+                .catch(function(err){ setCloudStatus('❌ '+err.message+' — <a href="'+INDEX_URL+'" target="_blank" style="color:#3498db">Testa URL</a>',false); });
+        })();
+        (function(){
+            var btnLoad = document.getElementById('btnLoadComune');
+            var inputBel = document.getElementById('csvBelfiore');
+            if(!btnLoad||!inputBel) return;
+            inputBel.addEventListener('input', function(){ inputBel.value=inputBel.value.toUpperCase(); setComuneStatus('',null); setFiltriEnabled(false); });
+            function doLoad(){
+                var bel = inputBel.value.trim().toUpperCase();
+                if(bel.length<4){ setComuneStatus('Inserisci 4 caratteri',false); return; }
+                if(bel===csvLoadedBelfiore){ setComuneStatus('✅ Già caricato ('+csvData.length.toLocaleString('it')+' particelle)',true); setFiltriEnabled(true); return; }
+                var entry = csvCloudIndex[bel];
+                if(!entry){ setComuneStatus('"'+bel+'" non in archivio.',false); return; }
+                var url = CDN_BASE + encodeURIComponent(entry.file||bel+'.csv');
+                setComuneStatus('⏳ Download '+(entry.nome||bel)+'…',null);
+                setFiltriEnabled(false); csvData=[]; csvLoadedBelfiore=''; csvSource.clear(); setCsvResult('',null);
+                fetch(url+'?v='+Date.now())
+                    .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status+' — <a href="'+url+'" target="_blank" style="color:#3498db">Testa URL</a>'); return r.text(); })
+                    .then(function(text){ csvData=parseCSV(text); csvLoadedBelfiore=bel; setComuneStatus('✅ '+(entry.nome||bel)+' — '+csvData.length.toLocaleString('it')+' particelle',true); setFiltriEnabled(true); })
+                    .catch(function(err){ setComuneStatus('❌ '+err.message,false); });
+            }
+            btnLoad.addEventListener('click', doLoad);
+            inputBel.addEventListener('keydown', function(e){ if(e.key==='Enter') doLoad(); });
+        })();
+        function searchCSV(){
+            if(!csvData.length){ setCsvResult('Prima carica un comune.',false); return; }
+            var s=(document.getElementById('csvSezione').value||'').trim().toUpperCase();
+            var f=(document.getElementById('csvFoglio').value||'').trim();
+            var p=(document.getElementById('csvParticella').value||'').trim();
+            var nf=normFoglio(f);
+            var hits=csvData.filter(function(row){
+                var ok=true;
+                if(s) ok=ok&&(row.SEZIONE||'').toUpperCase()===s;
+                if(nf) ok=ok&&normFoglio(row.FOGLIO)===nf;
+                if(p) ok=ok&&(row.PARTICELLA||'').trim()===p;
+                return ok;
+            });
+            csvSource.clear();
+            if(!hits.length){ setCsvResult('Nessuna particella trovata.',false); showHelp('Nessun risultato'); return; }
+            hits.forEach(function(row,idx){
+                var lon=parseFloat(row.lon),lat=parseFloat(row.lat);
+                if(isNaN(lon)||isNaN(lat)) return;
+                csvSource.addFeature(new ol.Feature({ geometry:new ol.geom.Point(ol.proj.fromLonLat([lon,lat])), nome:row.nome_particella, selected:idx===0 }));
+            });
+            if(!csvSource.getFeatures().length){ setCsvResult('Coordinate non valide.',false); return; }
+            map.getView().fit(csvSource.getFeatures()[0].getGeometry().getExtent(),{padding:[100,100,100,100],duration:450,maxZoom:18});
+            var msg=hits.length===1?'✅ Trovata: '+hits[0].nome_particella:'✅ '+hits.length.toLocaleString('it')+' particelle';
+            setCsvResult(msg,true); showHelp(msg);
+        }
+        (function(){
+            var b=document.getElementById('btnSearchCSV');
+            if(b) b.addEventListener('click',searchCSV);
+            ['csvSezione','csvFoglio','csvParticella'].forEach(function(id){
+                var el=document.getElementById(id);
+                if(el) el.addEventListener('keydown',function(e){ if(e.key==='Enter') searchCSV(); });
+            });
+        })();
+
+        // ═══ SALVA PROGETTO ═══════════════════════════════════════
+        function projectSave(){
+            if(!Object.keys(measuresData).length){ showHelp('Nessuna misura da salvare'); return; }
+            var proj=map.getView().getProjection();
+            var center=ol.proj.toLonLat(map.getView().getCenter());
+            var data={version:1,savedAt:new Date().toISOString(),view:{lon:center[0],lat:center[1],zoom:map.getView().getZoom()},measures:[]};
+            Object.keys(measuresData).forEach(function(id){
+                var m=measuresData[id]; var geomJson=null;
+                if(m.feature&&m.feature.getGeometry()){
+                    var geom=m.feature.getGeometry().clone().transform(proj,'EPSG:4326');
+                    geomJson=JSON.parse(new ol.format.GeoJSON().writeGeometry(geom));
+                }
+                data.measures.push({id:m.id,name:m.name,type:m.type,value:m.value,cat:(m.cat|| (m.feature&&m.feature.get('cat')) || 'A'),coords:m.coords||null,geometry:geomJson});
+            });
+            var a=document.createElement('a');
+            a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
+            a.download='terreni_'+new Date().toISOString().slice(0,10)+'.json';
+            a.click();
+            showHelp('✅ Progetto salvato ('+data.measures.length+' misure)');
+        }
+        (function(){
+            var input=document.getElementById('projectFileInput');
+            if(!input) return;
+            input.addEventListener('change',function(){
+                var file=input.files[0]; if(!file) return;
+                var reader=new FileReader();
+                reader.onload=function(){
+                    try{
+                        var data=JSON.parse(reader.result);
+                        if(!data.measures) throw new Error('File non valido');
+                        vectorSource.clear(); measuresData={}; measureCounter=0;
+                        var proj=map.getView().getProjection();
+                        var fmt=new ol.format.GeoJSON();
+                        data.measures.forEach(function(m){
+                            measureCounter++;
+                            if(!m.geometry) return;
+                            var geom=fmt.readGeometry(m.geometry).transform('EPSG:4326',proj);
+                            var feature=new ol.Feature({geometry:geom});
+                            feature.set('id',m.id); feature.set('name',m.name); feature.set('type',m.type); feature.set('value',m.value);
+                            feature.set('cat', catNormalize(m.cat || 'A'));
+                            vectorSource.addFeature(feature);
+                            measuresData[m.id]={id:m.id,name:m.name,type:m.type,value:m.value,coords:m.coords||null,cat:catNormalize(m.cat || 'A'),feature:feature};
+                        });
+                        if(data.view){ map.getView().setCenter(ol.proj.fromLonLat([data.view.lon,data.view.lat])); map.getView().setZoom(data.view.zoom); }
+                        updateMeasuresList();
+                        showHelp('✅ Progetto caricato: '+data.measures.length+' misure');
+                    } catch(e){ showHelp('❌ Errore: '+e.message); }
+                    input.value='';
+                };
+                reader.readAsText(file);
+            });
+        })();
+
+        
+        function openPdfModal(){ var m=document.getElementById('pdfModal'); if(m) m.classList.add('open'); }
+        function closePdfModal(){ var m=document.getElementById('pdfModal'); if(m) m.classList.remove('open'); }
+
+        function escapeHtml(str){
+            return (str==null?'':String(str))
+              .replace(/&/g,'&amp;')
+              .replace(/</g,'&lt;')
+              .replace(/>/g,'&gt;')
+              .replace(/"/g,'&quot;')
+              .replace(/'/g,'&#39;');
+        }
+
+        function buildPrintSchema(){
+            var keys = Object.keys(measuresData);
+            keys.sort(function(a,b){
+                var ca = catNormalize((measuresData[a].cat)||'A');
+                var cb = catNormalize((measuresData[b].cat)||'A');
+                if(ca<cb) return -1; if(ca>cb) return 1;
+                return a.localeCompare(b);
+            });
+
+            var rows = '';
+            keys.forEach(function(id){
+                var m = measuresData[id];
+                if(!m || !m.feature || !m.feature.getGeometry) return;
+                var g = m.feature.getGeometry();
+                var cat = catNormalize(m.cat || m.feature.get('cat') || 'A');
+                var typeLabel = (m.type==='point') ? 'Punto' : (m.type==='line') ? 'Linea' : 'Superficie';
+                var valueTxt = '-';
+
+                if(m.type==='point'){
+                    if(m.coords){
+                        valueTxt = 'Lat ' + m.coords.lat + ' • Lon ' + m.coords.lon;
+                    } else if(g && g.getCoordinates){
+                        var ll = ol.proj.toLonLat(g.getCoordinates());
+                        valueTxt = 'Lat ' + ll[1].toFixed(5) + ' • Lon ' + ll[0].toFixed(5);
+                    }
+                } else if(m.type==='line' && g.getType()==='LineString'){
+                    valueTxt = fmtMeters(lengthMeters(g));
+                } else if(m.type==='polygon' && g.getType()==='Polygon'){
+                    valueTxt = fmtSqm(areaSqm(g)) + ' • Perimetro ' + fmtMeters(perimeterMeters(g));
+                } else {
+                    valueTxt = (m.value || '-');
+                }
+
+                rows += '<tr>' +
+                          '<td style="width:44px;text-align:center;font-weight:900;color:#fff;background:'+catColor(cat)+';">'+cat+'</td>' +
+                          '<td style="font-weight:700;">'+escapeHtml(m.name||id)+'</td>' +
+                          '<td>'+typeLabel+'</td>' +
+                          '<td style="text-align:right;font-weight:800;">'+escapeHtml(valueTxt)+'</td>' +
+                        '</tr>';
+            });
+
+            if(!rows){
+                rows = '<tr><td colspan="4" style="text-align:center;color:#64748b;padding:12px;">Nessuna misura</td></tr>';
+            }
+
+            var table =
+              '<div style="font-size:12px;font-weight:900;color:#0f172a;margin:10px 0 6px;">Elenco misurazioni</div>' +
+              '<table style="width:100%;border-collapse:collapse;font-size:12px;">' +
+                '<thead>' +
+                  '<tr>' +
+                    '<th style="text-align:center;border:1px solid #e2e8f0;padding:6px;background:#f8fafc;">Cat</th>' +
+                    '<th style="text-align:left;border:1px solid #e2e8f0;padding:6px;background:#f8fafc;">Nome</th>' +
+                    '<th style="text-align:left;border:1px solid #e2e8f0;padding:6px;background:#f8fafc;">Tipo</th>' +
+                    '<th style="text-align:right;border:1px solid #e2e8f0;padding:6px;background:#f8fafc;">Valore</th>' +
+                  '</tr>' +
+                '</thead>' +
+                '<tbody>' + rows + '</tbody>' +
+              '</table>';
+
+            // riepilogo in schema (senza pill/icone)
+            var byCat = {};
+            keys.forEach(function(id){
+                var m = measuresData[id];
+                if(!m || !m.feature || !m.feature.getGeometry) return;
+                var cat = catNormalize(m.cat || m.feature.get('cat') || 'A');
+                if(!byCat[cat]) byCat[cat] = {len:0, area:0, per:0, points:0};
+                var g = m.feature.getGeometry();
+                if(m.type==='line' && g.getType()==='LineString'){ byCat[cat].len += lengthMeters(g); }
+                else if(m.type==='polygon' && g.getType()==='Polygon'){ byCat[cat].area += areaSqm(g); byCat[cat].per += perimeterMeters(g); }
+                else if(m.type==='point'){ byCat[cat].points += 1; }
+            });
+
+            var cats = Object.keys(byCat).sort();
+            var sumRows = '';
+            var tot = {len:0, area:0, per:0, points:0};
+            cats.forEach(function(c){
+                var d = byCat[c];
+                tot.len += d.len; tot.area += d.area; tot.per += d.per; tot.points += d.points;
+                var parts = [];
+                if(d.len) parts.push('Linee ' + fmtMeters(d.len));
+                if(d.area) parts.push('Aree ' + fmtSqm(d.area));
+                if(d.per) parts.push('Perimetro ' + fmtMeters(d.per));
+                if(d.points) parts.push('Punti ' + d.points);
+                if(parts.length===0) return;
+                sumRows += '<tr>' +
+                            '<td style="width:44px;text-align:center;font-weight:900;color:#fff;background:'+catColor(c)+';">'+c+'</td>' +
+                            '<td style="padding:6px 8px;border:1px solid #e2e8f0;">'+parts.join(' • ')+'</td>' +
+                           '</tr>';
+            });
+            var totalParts = [];
+            if(tot.len) totalParts.push('Linee ' + fmtMeters(tot.len));
+            if(tot.area) totalParts.push('Aree ' + fmtSqm(tot.area));
+            if(tot.per) totalParts.push('Perimetro ' + fmtMeters(tot.per));
+            if(tot.points) totalParts.push('Punti ' + tot.points);
+
+            var summary =
+              '<div style="font-size:12px;font-weight:900;color:#0f172a;margin:12px 0 6px;">Riepilogo</div>' +
+              '<table style="width:100%;border-collapse:collapse;font-size:12px;">' +
+                '<tbody>' + (sumRows || '<tr><td style="padding:6px 8px;border:1px solid #e2e8f0;color:#64748b;">-</td></tr>') + '</tbody>' +
+              '</table>' +
+              '<div style="margin-top:8px;font-size:12px;font-weight:900;">Totale: <span style="font-weight:800;">'+ (totalParts.join(' • ') || '-') +'</span></div>';
+
+            return table + summary;
+        }
+
+        // ═══ STAMPA (sempre verticale) ════════════════════════════
+
+        // ─────────────────────────────────────────────────────────
+        // Stampa: preserva proporzioni mappa (senza deformazioni)
+        // ─────────────────────────────────────────────────────────
+        var __printRestore = null;
+
+        function __applyPrintMapSize(){
+            if(!window.map) return;
+            var mapEl = document.getElementById('map');
+            if(!mapEl) return;
+
+            // salva inline styles correnti
+            __printRestore = {
+                w: mapEl.style.width || '',
+                h: mapEl.style.height || '',
+                mw: mapEl.style.maxWidth || '',
+                mh: mapEl.style.maxHeight || ''
+            };
+
+            // Usa map.getSize() (pixel reali OL) per l'aspect ratio
+            var olSize = null;
+            try { olSize = map.getSize(); } catch(e){}
+            var aspect;
+            if(olSize && olSize[0] > 0 && olSize[1] > 0){
+                aspect = olSize[0] / olSize[1];
+            } else {
+                var r = mapEl.getBoundingClientRect();
+                aspect = (r.width > 0 && r.height > 0) ? (r.width / r.height) : (4/3);
+            }
+
+            var orientEl = document.getElementById('pdfOrientation');
+            var orientation = (orientEl && orientEl.value) ? orientEl.value : 'portrait';
+            var mapOnlyEl = document.getElementById('pdfMapOnly');
+            var mapOnly = mapOnlyEl && mapOnlyEl.checked;
+
+            // La mappa ha SEMPRE 190mm di altezza
+            // In landscape la larghezza si adatta all'aspect ratio (max 277mm)
+            // In portrait larghezza fissa 190mm
+            var hmm = 190;
+            var wmm;
+            if(orientation === 'landscape'){
+                wmm = Math.min(hmm * aspect, 277);
+            } else {
+                wmm = 190;
+            }
+
+            mapEl.style.width     = wmm + 'mm';
+            mapEl.style.height    = hmm.toFixed(1) + 'mm';
+            mapEl.style.maxWidth  = wmm + 'mm';
+            mapEl.style.maxHeight = hmm.toFixed(1) + 'mm';
+        }
+
+        function __restorePrintMapSize(){
+            if(!window.map) return;
+            var mapEl = document.getElementById('map');
+            if(!mapEl || !__printRestore) return;
+
+            mapEl.style.width = __printRestore.w;
+            mapEl.style.height = __printRestore.h;
+            mapEl.style.maxWidth = __printRestore.mw;
+            mapEl.style.maxHeight = __printRestore.mh;
+
+            __printRestore = null;
+
+            setTimeout(function(){
+                try{ map.updateSize(); }catch(e){}
+                document.body.classList.remove('printing');
+            }, 80);
+        }
+
+        // beforeprint rimosso: il resize viene gestito in doPrint() con timing controllato
+        window.addEventListener('afterprint', __restorePrintMapSize);
+
+        function doPrint(){
+            var titleEl = document.getElementById('pdfTitle');
+            var title = (titleEl && titleEl.value) ? titleEl.value : 'Planimetria Catastale';
+
+            var orientEl = document.getElementById('pdfOrientation');
+            var orientation = (orientEl && orientEl.value) ? orientEl.value : 'portrait';
+            var mapOnlyEl = document.getElementById('pdfMapOnly');
+            var mapOnly = mapOnlyEl && mapOnlyEl.checked;
+
+            // Chiudi il modale
+            closePdfModal();
+
+            // 1) Prepara il pannello di stampa
+            var panel=document.getElementById('printPanel');
+            if(panel){
+                if(mapOnly){
+                    panel.innerHTML = '';
+                } else {
+                    panel.innerHTML =
+                        '<div style="border-bottom:2px solid #2c3e50;padding-bottom:8px;margin-bottom:10px;">' +
+                          '<div style="font-size:18px;font-weight:900;color:#0f172a;">'+escapeHtml(title)+'</div>' +
+                          '<div style="font-size:12px;color:#475569;margin-top:2px;">TERRENI Beta 19 • ' + new Date().toLocaleDateString('it-IT') + '</div>' +
+                        '</div>' +
+                        buildPrintSchema();
+                }
+            }
+
+            // 2) Attiva la classe printing (nasconde sidebars ecc.)
+            document.body.classList.add('printing');
+
+            // 3) Imposta le dimensioni esatte della mappa SUBITO (sincrono)
+            __applyPrintMapSize();
+
+            // 4) Forza OL a ridisegnare al nuovo viewport
+            try{ map.updateSize(); }catch(e){}
+
+            // 5) Aspetta che OL abbia completato il render prima di aprire il dialogo di stampa
+            setTimeout(function(){
+                try{ map.updateSize(); }catch(e){} // secondo aggiornamento per sicurezza
+                var s=document.getElementById('printDynStyle')||document.createElement('style');
+                s.id='printDynStyle';
+                s.innerHTML='@page{size:A4 '+orientation+';margin:10mm}';
+                document.head.appendChild(s);
+                window.print();
+                // afterprint listener ripristinerà tutto
+            }, 400);
+        }
+
+        // ═══ ESPORTA KML ══════════════════════════════════════════
+        function buildKML(){
+            if(!Object.keys(measuresData).length) return null;
+            var proj=map.getView().getProjection();
+            var lines=['<?xml version="1.0" encoding="UTF-8"?>','<kml xmlns="http://www.opengis.net/kml/2.2">','<Document>',
+                '  <n>TERRENI - '+new Date().toLocaleDateString('it-IT')+'</n>',
+                '  <Style id="pt"><IconStyle><Icon><href>http://maps.google.com/mapfiles/kml/paddle/grn-circle.png</href></Icon></IconStyle></Style>',
+                '  <Style id="ln"><LineStyle><color>ff0b981b</color><width>3</width></LineStyle></Style>',
+                '  <Style id="pl"><LineStyle><color>ff0b981b</color><width>2</width></LineStyle><PolyStyle><color>660b981b</color></PolyStyle></Style>'];
+            Object.keys(measuresData).forEach(function(id){
+                var m=measuresData[id]; if(!m.feature||!m.feature.getGeometry()) return;
+                var geom=m.feature.getGeometry().clone().transform(proj,'EPSG:4326');
+                var sr=m.type==='point'?'pt':m.type==='line'?'ln':'pl';
+                lines.push('  <Placemark>','    <n>'+escXml(m.name)+'</n>','    <description>'+escXml(m.value)+'</description>','    <styleUrl>#'+sr+'</styleUrl>');
+                if(m.type==='point'){ var co=geom.getCoordinates(); lines.push('    <Point><coordinates>'+co[0].toFixed(7)+','+co[1].toFixed(7)+',0</coordinates></Point>'); }
+                else if(m.type==='line'){ lines.push('    <LineString><tessellate>1</tessellate><coordinates>'+geom.getCoordinates().map(function(c){return c[0].toFixed(7)+','+c[1].toFixed(7)+',0';}).join(' ')+'</coordinates></LineString>'); }
+                else{ lines.push('    <Polygon><outerBoundaryIs><LinearRing><tessellate>1</tessellate><coordinates>'+geom.getLinearRing(0).getCoordinates().map(function(c){return c[0].toFixed(7)+','+c[1].toFixed(7)+',0';}).join(' ')+'</coordinates></LinearRing></outerBoundaryIs></Polygon>'); }
+                lines.push('  </Placemark>');
+            });
+            lines.push('</Document>','</kml>');
+            return lines.join('\n');
+        }
+
+        function exportKML(){
+            var kml = buildKML();
+            if(!kml){ showHelp('Nessuna misura da esportare'); return; }
+            var a=document.createElement('a');
+            a.href=URL.createObjectURL(new Blob([kml],{type:'application/vnd.google-earth.kml+xml'}));
+            a.download='terreni_'+new Date().toISOString().slice(0,10)+'.kml';
+            a.click();
+            showHelp('✅ KML esportato ('+Object.keys(measuresData).length+' elementi)');
+        }
+
+        function openInGoogleEarth(){
+            var kml = buildKML();
+            if(!kml){ showHelp('Nessuna misura da esportare'); return; }
+            var fname = 'terreni_'+new Date().toISOString().slice(0,10)+'.kml';
+            var blob = new Blob([kml],{type:'application/vnd.google-earth.kml+xml'});
+            var btn = document.getElementById('btnGoogleEarth');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="ab-icon">⏳</span> Caricamento…';
+            var fd = new FormData();
+            fd.append('file', blob, fname);
+            fetch('https://tmpfiles.org/api/v1/upload',{method:'POST',body:fd})
+                .then(function(r){ return r.json(); })
+                .then(function(data){
+                    btn.disabled = false;
+                    btn.innerHTML = '<span class="ab-icon">🌍</span> Google Earth';
+                    var url = data && data.data && data.data.url;
+                    if(!url) throw new Error('no url');
+                    var dlUrl = url.replace('tmpfiles.org/','tmpfiles.org/dl/');
+                    window.open('https://earth.google.com/web/?kml='+encodeURIComponent(dlUrl),'_blank');
+                    showHelp('🌍 Google Earth aperto! (link valido 1 ora)');
+                })
+                .catch(function(){
+                    btn.disabled = false;
+                    btn.innerHTML = '<span class="ab-icon">🌍</span> Google Earth';
+                    var a=document.createElement('a');
+                    a.href=URL.createObjectURL(blob); a.download=fname; a.click();
+                    setTimeout(function(){ window.open('https://earth.google.com/web/','_blank'); },400);
+                    showHelp('📂 Trascina '+fname+' su Google Earth');
+                });
+        }
+
+        function escXml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+        // ═══ STREET VIEW ══════════════════════════════════════════
+        var svMode=false, svClickHandler=null;
+        function toggleStreetView(){
+            svMode=!svMode;
+            var btn=document.getElementById('btnStreetView');
+            var hint=document.getElementById('svHint');
+            if(svMode){
+                btn.classList.add('active'); document.body.classList.add('sv-mode'); hint.classList.add('show');
+                removeMeasureInteraction();
+                svClickHandler=map.on('singleclick',function(evt){
+                    var ll=ol.proj.toLonLat(evt.coordinate);
+                    window.open('https://www.google.com/maps?q=&layer=c&cbll='+ll[1].toFixed(6)+','+ll[0].toFixed(6)+'&cbp=11,0,0,0,0&z=18','_blank');
+                    showHelp('📍 Street View aperto');
+                });
+            } else {
+                svMode=false; btn.classList.remove('active'); document.body.classList.remove('sv-mode'); hint.classList.remove('show');
+                if(svClickHandler){ ol.Observable.unByKey(svClickHandler); svClickHandler=null; }
+            }
+        }
+        document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&svMode) toggleStreetView(); });
+
+
+
+        // ═══ CARICA GEOJSON CATASTO ═══════════════════════════════
+        var geoJsonLayer = null;
+        var geoJsonSnap = null;
+        var quotaMode = false;
+        var quotaClickHandler = null;
+
+        function toggleGeoJsonVisible(){
+            if(!geoJsonLayer) return;
+            var visible = !geoJsonLayer.getVisible();
+            geoJsonLayer.setVisible(visible);
+            var btn = document.getElementById('btnGeoJsonToggle');
+            btn.textContent = visible ? '👁 Visibile' : '🚫 Nascosto';
+            btn.style.background = visible ? '#fff5eb' : '#f1f5f9';
+            btn.style.color = visible ? '#b45309' : '#64748b';
+            btn.style.borderColor = visible ? '#b45309' : '#cbd5e1';
+        }
+
+        function clearGeoJSON(){
+            stopQuotaMode();
+            if(geoJsonSnap){ map.removeInteraction(geoJsonSnap); geoJsonSnap = null; }
+            if(geoJsonLayer){ map.removeLayer(geoJsonLayer); geoJsonLayer = null; }
+            document.getElementById('geoJsonLayerItem').style.display = 'none';
+            document.getElementById('btnQuotaParticella').style.display = 'none';
+            document.getElementById('geoJsonFileInput').value = '';
+            // reset toggle button
+            var btn = document.getElementById('btnGeoJsonToggle');
+            if(btn){ btn.textContent = '👁 Visibile'; btn.style.background='#fff5eb'; btn.style.color='#b45309'; btn.style.borderColor='#b45309'; }
+        }
+
+        function stopQuotaMode(){
+            if(!quotaMode) return;
+            quotaMode = false;
+            if(quotaClickHandler){ ol.Observable.unByKey(quotaClickHandler); quotaClickHandler = null; }
+            var btn = document.getElementById('btnQuotaParticella');
+            if(btn) btn.classList.remove('active');
+            document.body.style.cursor = '';
+        }
+
+        function toggleQuotaMode(){
+            if(!geoJsonLayer){ showHelp('Carica prima un GeoJSON'); return; }
+            if(quotaMode){ stopQuotaMode(); showHelp('Modalità quota disattivata'); return; }
+            removeMeasureInteraction();
+            quotaMode = true;
+            document.getElementById('btnQuotaParticella').classList.add('active');
+            document.body.style.cursor = 'crosshair';
+            showHelp('📐 Clicca una particella per quotarla — ESC per uscire');
+            quotaClickHandler = map.on('singleclick', function(evt){
+                var hit = false;
+                map.forEachFeatureAtPixel(evt.pixel, function(feat, layer){
+                    if(hit || layer !== geoJsonLayer) return;
+                    if(feat.get('LIVELLO') !== 'PARTICELLE') return;
+                    var geom = feat.getGeometry();
+                    if(!geom || geom.getType() !== 'Polygon') return;
+                    hit = true;
+                    var codice = feat.get('CODICE') || '?';
+                    var foglio = feat.get('FOGLIO') || '';
+                    var nome = 'Part.' + codice + (foglio ? ' F.' + parseInt(foglio,10) : '');
+                    var exists = Object.values(measuresData).some(function(m){ return m.name === nome; });
+                    if(exists){ showHelp('Già quotata: ' + nome); return; }
+                    var area = areaSqm(geom);
+                    var perim = perimeterMeters(geom);
+                    var areaStr = area >= 10000 ? (area/10000).toFixed(4)+' ha ('+Math.round(area)+' m²)' : Math.round(area)+' m²';
+                    var perimStr = perim >= 1000 ? (perim/1000).toFixed(3)+' km' : perim.toFixed(1)+' m';
+                    measureCounter++;
+                    var id = 'gjm_' + measureCounter;
+                    var cat = nextAutoCategory();
+                    var value = 'Area: ' + areaStr + ' | Per.: ' + perimStr;
+                    var newFeat = new ol.Feature({ geometry: geom.clone() });
+                    newFeat.set('id',id); newFeat.set('type','measure');
+                    newFeat.set('cat',cat); newFeat.set('value',value); newFeat.set('name',nome);
+                    vectorSource.addFeature(newFeat);
+                    measuresData[id] = { id:id, name:nome, type:'measure', value:value, cat:cat, feature:newFeat };
+                    updateMeasuresList();
+                    showHelp('📐 ' + nome + ' — ' + areaStr + ' | clicca altra o ESC');
+                });
+            });
+        }
+        document.addEventListener('keydown', function(e){ if(e.key==='Escape'&&quotaMode){ stopQuotaMode(); showHelp('Quota disattivata'); } });
+
+        function loadGeoJSON(geojsonData){
+            clearGeoJSON();
+
+            // Il file GeoJSON AdE contiene "crs":{"name":"urn:ogc:def:crs:EPSG::7792"}
+            // OL4 legge quel campo e lo usa come projection, ignorando dataProjection.
+            // Lo eliminiamo e passiamo 'EPSG:7792' esplicitamente — OL4 usa window.proj4
+            // automaticamente per la conversione (come in Beta 7).
+            if(geojsonData && geojsonData.crs) geojsonData = Object.assign({}, geojsonData, {crs: undefined});
+
+            var format = new ol.format.GeoJSON();
+            var allFeatures = format.readFeatures(geojsonData, {
+                dataProjection: 'EPSG:7792',
+                featureProjection: 'EPSG:3857'
+            });
+
+            var features = allFeatures.filter(function(f){
+                var liv = f.get('LIVELLO');
+                return liv === 'PARTICELLE' || liv === 'CONFINI';
+            });
+
+            var source = new ol.source.Vector({ features: features });
+
+            geoJsonLayer = new ol.layer.Vector({
+                source: source,
+                style: function(feature){
+                    var liv = feature.get('LIVELLO');
+                    if(liv === 'CONFINI'){
+                        return new ol.style.Style({
+                            stroke: new ol.style.Stroke({ color: '#1e40af', width: 2.5, lineDash: [8,4] }),
+                            fill:   new ol.style.Fill({ color: 'rgba(0,0,0,0)' })
+                        });
+                    }
+                    if(liv === 'PARTICELLE'){
+                        var codice = feature.get('CODICE') || '';
+                        return new ol.style.Style({
+                            stroke: new ol.style.Stroke({ color: '#b45309', width: 1.5 }),
+                            fill:   new ol.style.Fill({ color: 'rgba(0,0,0,0)' }),
+                            text: new ol.style.Text({
+                                text: codice,
+                                font: 'bold 11px Arial',
+                                fill: new ol.style.Fill({ color: '#78350f' }),
+                                stroke: new ol.style.Stroke({ color: 'rgba(255,255,255,0.85)', width: 3 }),
+                                overflow: true
+                            })
+                        });
+                    }
+                    return null;
+                }
+            });
+
+            map.addLayer(geoJsonLayer);
+
+            // ── Snap sul layer esterno ──────────────────────────────
+            geoJsonSnap = new ol.interaction.Snap({ source: source });
+            map.addInteraction(geoJsonSnap);
+            // Rispetta lo stato snap corrente
+            geoJsonSnap.setActive(snapEnabled);
+            // Snap sui vettori disegnati rimane sempre l'ultimo (processa per primo in OL)
+            map.removeInteraction(snapInteraction);
+            map.addInteraction(snapInteraction);
+            snapInteraction.setActive(snapEnabled);
+
+            // ── Aggiorna UI layer in Gestione Mappa ────────────────
+            var nParc = features.filter(function(f){ return f.get('LIVELLO')==='PARTICELLE'; }).length;
+            var sample = features.find(function(f){ return f.get('FOGLIO'); });
+            var foglio = sample ? parseInt(sample.get('FOGLIO'),10) : '?';
+            var comune = sample ? (sample.get('COD_COMUNE') || '') : '';
+            var layerLabel = comune + ' F.' + foglio + ' (' + nParc + ' part.)';
+            document.getElementById('geoJsonLayerLabel').textContent = layerLabel;
+            document.getElementById('geoJsonLayerItem').style.display = 'block';
+            document.getElementById('opacityGeoJSON').value = 100;
+            var btn = document.getElementById('btnGeoJsonToggle');
+            if(btn){ btn.textContent='👁 Visibile'; btn.style.background='#fff5eb'; btn.style.color='#b45309'; btn.style.borderColor='#b45309'; }
+            document.getElementById('btnQuotaParticella').style.display = '';
+
+            // Zoom sull'estensione del layer
+            var extent = source.getExtent();
+            if(extent && extent[0] !== Infinity){
+                map.getView().fit(extent, { padding: [40,40,40,40], duration: 600 });
+            }
+            showHelp('✅ ' + layerLabel + ' caricato');
+        }
+
+
+        // ⚠️ BUG FIX: l'input #geoJsonFileInput è nell'action-bar che è DOPO questo script.
+        // Usiamo DOMContentLoaded per collegare l'evento solo quando il DOM è completo.
+        document.addEventListener('DOMContentLoaded', function(){
+            var geoJsonInput = document.getElementById('geoJsonFileInput');
+            if(!geoJsonInput) return;
+            geoJsonInput.addEventListener('change', function(e){
+                var file = e.target.files[0];
+                if(!file) return;
+                showHelp('⏳ Caricamento ' + file.name + '…');
+                var reader = new FileReader();
+                reader.onload = function(ev){
+                    try{
+                        var data = JSON.parse(ev.target.result);
+                        loadGeoJSON(data);
+                    } catch(err){
+                        console.error('GeoJSON load error:', err);
+                        showHelp('❌ Errore caricamento: ' + err.message);
+                    }
+                };
+                reader.onerror = function(){ showHelp('❌ Errore lettura file'); };
+                reader.readAsText(file, 'UTF-8');
+            });
+        });
+
+        // con timing controllato (400ms) per garantire che OL ridisegni prima della stampa.
+
+</script>
+
+    <!-- ═══ BARRA AZIONI FISSA IN BASSO ═══════════════════════════ -->
+    <div class="action-bar">
+        <button class="ab-btn save" onclick="projectSave()"><span class="ab-icon">💾</span> Salva Progetto</button>
+        <button class="ab-btn pdf" onclick="openPdfModal()"><span class="ab-icon">🖨️</span> Stampa PDF</button>
+        <div class="ab-sep"></div>
+        <button class="ab-btn load" onclick="document.getElementById('projectFileInput').click()"><span class="ab-icon">📂</span> Carica Progetto</button>
+        <input type="file" id="projectFileInput" accept=".json" style="display:none">
+        <button class="ab-btn" style="border-color:#b45309;" onclick="document.getElementById('geoJsonFileInput').click()"><span class="ab-icon">🗺️</span> Carica GeoJSON</button>
+        <input type="file" id="geoJsonFileInput" accept=".geojson,.json" style="display:none">
+        <div class="ab-sep"></div>
+        <button class="ab-btn kml" onclick="exportKML()"><span class="ab-icon">🗺️</span> Esporta KML</button>
+        <button class="ab-btn ge" id="btnGoogleEarth" onclick="openInGoogleEarth()"><span class="ab-icon">🌍</span> Google Earth</button>
+        <div class="ab-sep"></div>
+        <button class="ab-btn ge" id="btnGeoLocate" onclick="toggleGeoloc()"><span class="ab-icon">📡</span> GPS</button>
+        <button class="ab-btn sv" id="btnStreetView" onclick="toggleStreetView()"><span class="ab-icon">👁️</span> Street View</button>
+    </div>
+    <div id="svHint">📍 Clicca sulla mappa per aprire Street View — ESC per uscire</div>
+
+    <!-- Modal PDF -->
+    <div class="ab-modal-overlay" id="pdfModal">
+        <div class="ab-modal">
+            <h4>🖨️ Stampa Planimetria PDF</h4>
+            <label>Titolo</label>
+            <input type="text" id="pdfTitle" value="Planimetria Catastale">
+            <label>Orientamento</label>
+            <select id="pdfOrientation">
+                <option value="landscape">Orizzontale (A4) — mappa più larga</option>
+                <option value="portrait">Verticale (A4)</option>
+            </select>
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:14px;">
+                <input type="checkbox" id="pdfMapOnly" style="width:auto;margin:0;">
+                <span>Solo mappa (senza tabella misure)</span>
+            </label>
+            <div class="ab-modal-btns">
+                <button class="cancel" onclick="closePdfModal()">Annulla</button>
+                <button class="ok" onclick="doPrint()">Stampa</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

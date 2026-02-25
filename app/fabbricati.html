@@ -1,0 +1,2183 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FABBRICATI Beta v71</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2064%2064%27%3E%0A%3Cpath%20d%3D%27M12%2030%20L32%2014%20L52%2030%27%20fill%3D%27none%27%20stroke%3D%27%23ecf0f1%27%20stroke-width%3D%274%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%0A%3Cpath%20d%3D%27M18%2030%20V54%20H46%20V30%27%20fill%3D%27none%27%20stroke%3D%27%23ecf0f1%27%20stroke-width%3D%274%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%0A%3Cpath%20d%3D%27M40%2018%20V26%20H46%20V22%27%20fill%3D%27none%27%20stroke%3D%27%23ecf0f1%27%20stroke-width%3D%274%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%0A%3Cpath%20d%3D%27M28%2054%20V41%20H36%20V54%27%20fill%3D%27none%27%20stroke%3D%27%23ecf0f1%27%20stroke-width%3D%274%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%0A%3Ccircle%20cx%3D%2734.5%27%20cy%3D%2747.5%27%20r%3D%271.5%27%20fill%3D%27%23ecf0f1%27%2F%3E%0A%3Crect%20x%3D%2722%27%20y%3D%2736%27%20width%3D%278%27%20height%3D%278%27%20fill%3D%27none%27%20stroke%3D%27%23ecf0f1%27%20stroke-width%3D%273%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%0A%3Cpath%20d%3D%27M26%2036%20V44%20M22%2040%20H30%27%20fill%3D%27none%27%20stroke%3D%27%23ecf0f1%27%20stroke-width%3D%272.5%27%20stroke-linecap%3D%27round%27%2F%3E%0A%3Crect%20x%3D%2734%27%20y%3D%2736%27%20width%3D%278%27%20height%3D%278%27%20fill%3D%27none%27%20stroke%3D%27%23ecf0f1%27%20stroke-width%3D%273%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%0A%3Cpath%20d%3D%27M38%2036%20V44%20M34%2040%20H42%27%20fill%3D%27none%27%20stroke%3D%27%23ecf0f1%27%20stroke-width%3D%272.5%27%20stroke-linecap%3D%27round%27%2F%3E%0A%3Cpath%20d%3D%27M10%2056%20C18%2053%2C%2024%2058%2C%2032%2056%20S46%2054%2C%2054%2056%27%20fill%3D%27none%27%20stroke%3D%27%23ecf0f1%27%20stroke-width%3D%273%27%20stroke-linecap%3D%27round%27%2F%3E%0A%3C%2Fsvg%3E">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root{--primary:#2c3e50;--accent:#3498db;--bg:#ecf0f1;--magenta:#e91e63}
+        *{box-sizing:border-box}
+        body{font-family:'Segoe UI',sans-serif;margin:0;display:flex;height:100vh;overflow:hidden;background:var(--bg)}
+        .sidebar{width:400px;background:#fff;border-right:1px solid #bdc3c7;display:flex;flex-direction:column;z-index:100;box-shadow:2px 0 15px rgba(0,0,0,.1)}
+        .sidebar-header{padding:15px 20px;background:var(--primary);color:#fff;display:flex;align-items:center;gap:12px}
+        .sidebar-header .app-icon{width:60px;height:60px;flex-shrink:0}
+        .sidebar-header h3{margin:0;font-size:17px}
+        .sidebar-header .vb{display:inline-block;background:#e67e22;color:#fff;font-size:9px;font-weight:800;padding:3px 8px;border-radius:3px;margin-left:8px}
+        .sidebar-footer{padding:10px 15px;background:#f8f9fa;border-top:1px solid #dfe6e9;text-align:center;font-size:10px;color:#7f8c8d}
+        .sidebar-content{padding:15px;overflow-y:auto;flex:1}
+        .card{background:#fff;border:1px solid #dfe6e9;border-radius:8px;padding:15px;margin-bottom:15px}
+        .card-title{font-size:11px;font-weight:800;text-transform:uppercase;color:#7f8c8d;margin-bottom:10px;display:block;border-bottom:1px solid #eee;padding-bottom:6px}
+        .btn-group{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+        .btn{padding:10px;border:1px solid #dcdde1;border-radius:5px;cursor:pointer;font-size:13px;font-weight:600;background:#f5f6fa;transition:.2s;display:flex;align-items:center;justify-content:center;gap:6px}
+        .btn:hover{background:#dcdde1}
+        .btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+        .btn-success{background:#27ae60;color:#fff;border:none}
+        .btn-warning{background:#f39c12;color:#fff;border:none}
+        .btn-print{background:#34495e;color:#fff;border:none}
+        .btn-save{background:#8e44ad;color:#fff;border:none}
+        .btn-load{background:#2980b9;color:#fff;border:none}
+        .btn-magenta{background:var(--magenta);color:#fff;border:none;width:100%}
+        .btn-magenta:hover{background:#c2185b}
+        .field-group{display:flex;flex-direction:column;margin-bottom:8px}
+        .field-group label{font-size:10px;font-weight:700;text-transform:uppercase;color:#7f8c8d;margin-bottom:3px}
+        .field-group input,.field-group select,.field-group textarea{padding:7px 10px;border:1px solid #dcdde1;border-radius:4px;font-size:13px;font-weight:600;color:var(--primary);background:#f8f9fa}
+        .field-group input:focus,.field-group select:focus,.field-group textarea:focus{outline:none;border-color:var(--accent);background:#fff}
+        .status{padding:10px;font-size:12px;border-radius:4px;background:#e2e3e5;margin-top:10px;line-height:1.4;border:1px solid #ccc}
+        .status.ok{background:#d4edda;color:#155724;border:1px solid #c3e6cb}
+        .status.warn{background:#fff3cd;color:#856404;border:1px solid #ffeeba}
+        .stoggle{display:flex;align-items:center;justify-content:space-between;padding:10px;background:#f8f9fa;border:1px solid #dcdde1;border-radius:5px;margin-bottom:10px;cursor:pointer;transition:.2s;user-select:none}
+        .stoggle:hover{background:#ecf0f1}
+        .stoggle.on{background:#d4edda;border-color:#27ae60}
+        .stoggle.on-m{background:#fce4ec;border-color:var(--magenta)}
+        .stoggle-label{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--primary)}
+        .stoggle-sw{position:relative;width:44px;height:24px;background:#bdc3c7;border-radius:12px;transition:.2s;flex-shrink:0}
+        .stoggle.on .stoggle-sw{background:#27ae60}
+        .stoggle.on-m .stoggle-sw{background:var(--magenta)}
+        .stoggle-sw::after{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;top:3px;left:3px;transition:.2s;box-shadow:0 2px 4px rgba(0,0,0,.2)}
+        .stoggle.on .stoggle-sw::after,.stoggle.on-m .stoggle-sw::after{left:23px}
+        .edit-hint{font-size:11px;color:#7f8c8d;padding:8px;background:#f8f9fa;border-radius:4px;margin-bottom:8px;line-height:1.4}
+        .edit-hint b{color:var(--accent)}
+        .ptabs{background:#34495e;border-bottom:2px solid #2c3e50;display:none}
+        .ptabs-s{display:flex;overflow-x:auto;padding:0 5px}
+        .ptab{padding:10px 18px;color:rgba(255,255,255,.6);font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;border:none;background:none;border-bottom:3px solid transparent}
+        .ptab:hover{color:rgba(255,255,255,.9)}
+        .ptab.active{color:#fff;border-bottom-color:var(--accent);background:rgba(255,255,255,.1)}
+        .viewer-container{flex:1;position:relative;background:#ffffff;overflow:hidden;cursor:default;display:flex;flex-direction:column}
+        .viewer-area{flex:1;position:relative;overflow:hidden}
+        #canvas-viewport{position:absolute;transform-origin:0 0}
+        canvas{position:absolute;top:0;left:0}
+        .measuring{cursor:crosshair!important}
+        .panning{cursor:grabbing!important}
+        .editing{cursor:move!important}
+        #mt{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}
+        #mt col.c-name{width:auto}
+        #mt col.c-val{width:80px}
+        #mt col.c-del{width:28px}
+        #mb tr.tbl-sel{outline:2px solid #f39c12;outline-offset:-2px;position:relative;}
+        #mb tr.tbl-sel td:first-child::before{content:'▶';color:#f39c12;font-size:10px;position:absolute;left:2px;top:50%;transform:translateY(-50%)}
+        #mt th{text-align:left;padding:8px;background:#f8f9fa;border-bottom:2px solid #eee}
+        #mt td{padding:6px 8px;border-bottom:1px solid #eee;vertical-align:top}
+        .en{border:none;background:transparent;font-weight:bold;width:100%;cursor:text}
+        .mvl{display:block;line-height:1.5}
+        .zi{position:absolute;bottom:20px;right:20px;background:rgba(0,0,0,.7);color:#fff;padding:5px 15px;border-radius:20px;font-size:12px;pointer-events:none;z-index:10}
+        .pi{position:absolute;top:20px;right:20px;background:rgba(0,0,0,.7);color:#fff;padding:5px 15px;border-radius:20px;font-size:12px;pointer-events:none;z-index:10}
+        .hidden-input{display:none}
+        .rendite-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+        .rendite-table{width:100%;border-collapse:collapse;font-size:11px}
+        .rendite-table th,.rendite-table td{border:1px solid #dfe6e9;padding:6px 6px}
+        .rendite-table th{background:#f8f9fa;font-size:10px;text-transform:uppercase}
+        .rendite-table td input{width:100%;border:none;background:transparent;font-size:11px}
+        .rendite-section th{background:#34495e;color:#fff;text-align:left;font-size:11px}
+        .sidebar-right{width:320px;background:#fff;border-left:1px solid #bdc3c7;display:flex;flex-direction:column;z-index:100;box-shadow:-2px 0 15px rgba(0,0,0,.1);transition:width .3s}
+        .sidebar-right .sr-header{padding:12px 15px;background:#34495e;color:#fff;display:flex;align-items:center;justify-content:space-between}
+        .sidebar-right .sr-header h4{margin:0;font-size:14px}
+        .sidebar-right .sr-content{padding:15px;overflow-y:auto;flex:1}
+        .sidebar-right.hidden{width:0;min-width:0;overflow:hidden;border:none;padding:0}
+        .toggle-right{position:fixed;top:50%;right:320px;transform:translateY(-50%);z-index:101;background:var(--primary);color:#fff;border:none;padding:10px 5px;border-radius:4px 0 0 4px;cursor:pointer;font-size:14px;box-shadow:-2px 0 8px rgba(0,0,0,.2);transition:right .3s}
+        .toggle-right.closed{right:0}
+        .cal-ref{display:flex;align-items:center;gap:8px;margin-top:8px;margin-bottom:5px}
+        .cal-ref label{font-size:11px;font-weight:700;color:#7f8c8d}
+        .cal-ref input{width:70px;padding:5px 8px;border:1px solid #dcdde1;border-radius:4px;font-size:13px;font-weight:700;color:var(--accent);text-align:center}
+        .cal-ref span{font-size:12px;font-weight:600;color:var(--primary)}
+    </style>
+</head>
+<body>
+
+<!-- SIDEBAR SINISTRA -->
+<div class="sidebar">
+    <div class="sidebar-header">
+        <div class="app-icon" style="display:flex;align-items:center;justify-content:center;"><svg viewBox='0 0 64 64'>
+<path d='M12 30 L32 14 L52 30' fill='none' stroke='#ecf0f1' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/>
+<path d='M18 30 V54 H46 V30' fill='none' stroke='#ecf0f1' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/>
+<path d='M40 18 V26 H46 V22' fill='none' stroke='#ecf0f1' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/>
+<path d='M28 54 V41 H36 V54' fill='none' stroke='#ecf0f1' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/>
+<circle cx='34.5' cy='47.5' r='1.5' fill='#ecf0f1'/>
+<rect x='22' y='36' width='8' height='8' fill='none' stroke='#ecf0f1' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/>
+<path d='M26 36 V44 M22 40 H30' fill='none' stroke='#ecf0f1' stroke-width='2.5' stroke-linecap='round'/>
+<rect x='34' y='36' width='8' height='8' fill='none' stroke='#ecf0f1' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/>
+<path d='M38 36 V44 M34 40 H42' fill='none' stroke='#ecf0f1' stroke-width='2.5' stroke-linecap='round'/>
+<path d='M10 56 C18 53, 24 58, 32 56 S46 54, 54 56' fill='none' stroke='#ecf0f1' stroke-width='3' stroke-linecap='round'/>
+</svg></div>
+        <div><h3>FABBRICATI <span class="vb">Beta</span></h3></div>
+    </div>
+    <div class="sidebar-content">
+        <div class="card"><span class="card-title">📄 Documento PDF</span><input type="file" id="fileIn" accept="application/pdf" style="width:100%"></div>
+        <div class="card">
+            <span class="card-title">🎯 Calibrazione</span>
+            <div class="cal-ref">
+                <label>Distanza riferimento:</label>
+                <input type="number" id="calRefDist" value="10" min="0.1" step="0.1">
+                <span>m</span>
+            </div>
+            <div id="calSt" class="status">🔍 Analisi tacche...</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+                <button class="btn btn-warning" id="manCalBtn" onclick="startManCal()" style="display:none">⚠️ CALIBRA LIBERA</button>
+                <button class="btn" id="bordCalBtn" onclick="startBordCal()" style="display:none;background:#16a085;color:white;border:none">📐 CALIBRA BORDO</button>
+                <button class="btn" id="recalBtn" onclick="startManCal()" style="display:none;background:#8e44ad;color:white;border:none">🎯 CALIBRA</button>
+                <button class="btn btn-magenta" id="bordBtn" onclick="insertBorders()" style="display:none">🔷 BORDI</button>
+            </div>
+            <div id="bordTogWrap" style="margin-top:8px;display:none">
+                <div class="stoggle on-m" id="bordTog" onclick="toggleBorders()">
+                    <div class="stoggle-label">🔷 <span>Mostra Bordi</span></div>
+                    <div class="stoggle-sw"></div>
+                </div>
+            </div>
+            <div class="stoggle on" id="fillTog" onclick="toggleFills()" style="margin-top:8px">
+                <div class="stoggle-label">🎨 <span>Retini Superfici</span></div>
+                <div class="stoggle-sw"></div>
+            </div>
+            <div id="bordSt" style="font-size:11px;margin-top:5px;display:none"></div>
+        </div>
+        <div class="card" id="toolsCard" style="opacity:.5;pointer-events:none">
+            <span class="card-title">📐 Strumenti Misura</span>
+            <div class="stoggle on" id="snapTog" onclick="toggleSnap()">
+                <div class="stoggle-label">🧲 <span>Snap ai vertici</span></div>
+                <div class="stoggle-sw"></div>
+            </div>
+            <div class="stoggle" id="axisTog" onclick="toggleAxisLock()">
+                <div class="stoggle-label">📐 <span>Blocca assi X/Y</span></div>
+                <div class="stoggle-sw"></div>
+            </div>
+            <div id="editHint" class="edit-hint" style="display:none"><b>Click sinistro:</b> Sposta vertice o aggiungi su segmento<br><b>Click destro:</b> Elimina vertice</div>
+            <div class="btn-group">
+                <button class="btn" id="btn-line" onclick="setTool('line')">📏 Linea</button>
+                <button class="btn" id="btn-area" onclick="setTool('area')">📐 Area Poligono</button>
+                <button class="btn" id="btn-rect" onclick="setTool('rect')">▭ Rettangolo</button>
+                <button class="btn" id="btn-select" onclick="setTool('select')">🖱️ Modifica</button>
+                <button class="btn" id="btn-undo" onclick="undo()" style="opacity:0.4" disabled>↩️ Annulla</button>
+            </div>
+        </div>
+        <div class="card">
+            <span class="card-title">💾 Progetto</span>
+            <div class="btn-group">
+                <button class="btn btn-save" onclick="savePrj()">💾 Salva</button>
+                <button class="btn btn-load" onclick="document.getElementById('prjIn').click()">📂 Apri</button>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-success" onclick="exportXL()">📥 Excel</button>
+                <button class="btn btn-print" onclick="printPDF()">🖨️ Stampa PDF</button>
+            </div>
+            <div style="margin-top:6px">
+                <button class="btn" onclick="exportTIFF()" style="width:100%;background:#6c3483;color:white;border:none;font-weight:700">🗺️ Esporta TIFF Planimetria</button>
+            </div>
+            <input type="file" id="prjIn" class="hidden-input" accept=".mpj" onchange="loadPrj(event)">
+            <div id="prjSt" style="font-size:11px;color:#7f8c8d;margin-top:5px"></div>
+        </div>
+        <div class="card">
+            <span class="card-title">📊 Misure</span>
+            <div style="max-height:300px;overflow-y:auto">
+                <table id="mt"><thead><tr><th>Nome</th><th>Valore</th><th></th></tr></thead><tbody id="mb"></tbody></table>
+            </div>
+        </div>
+    </div>
+    <div class="sidebar-footer"><b>FABBRICATI</b><br>© 2026</div>
+</div>
+
+<!-- VIEWER -->
+<div class="viewer-container" id="container">
+    <div class="ptabs" id="ptabsC"><div class="ptabs-s" id="ptabsS"></div></div>
+    <div class="viewer-area" id="viewerArea">
+        <div id="canvas-viewport">
+            <canvas id="pdfCanvas"></canvas>
+            <canvas id="drawCanvas"></canvas>
+        </div>
+        <div class="zi" id="zoomLvl">Zoom: 100%</div>
+        <div class="pi" id="pageInf" style="display:none">Pagina 1/1</div>
+    </div>
+</div>
+
+<!-- TOGGLE + SIDEBAR DESTRA -->
+<button class="toggle-right" id="toggleRight" onclick="toggleRightPanel()">◀</button>
+<div class="sidebar-right" id="sidebarRight">
+    <div class="sr-header"><h4>📋 Rendite Catastali</h4></div>
+    <div class="sr-content">
+        <div class="card">
+            <span class="card-title">Consultazione</span>
+            <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px">
+                <button class="btn btn-load" onclick="openRenditeTab()" style="width:100%">🔗 CONSULTA RENDITE</button>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                    <button class="btn btn-success" onclick="readClipboardRendite()">📋 INCOLLA</button>
+                    <button class="btn" onclick="clearRendite()" style="background:#e74c3c;color:white;border:none">🗑️ PULISCI</button>
+                </div>
+            </div>
+            <div style="overflow:auto">
+                <table class="rendite-table">
+                    <tbody>
+                        <tr class="rendite-section"><th colspan="2">Dati Catastali (da clipboard)</th></tr>
+                        <tr><td><b>Ufficio provinciale di</b></td><td><input id="rend-ufficio" value=""></td></tr>
+                        <tr><td><b>Catasto</b></td><td><input id="rend-catasto" value=""></td></tr>
+                        <tr><td><b>Comune</b></td><td><input id="rend-comune" value=""></td></tr>
+                        <tr><td><b>Codice Comune</b></td><td><input id="rend-codice" value=""></td></tr>
+                        <tr><td><b>Foglio</b></td><td><input id="rend-foglio" value=""></td></tr>
+                        <tr><td><b>Particella</b></td><td><input id="rend-particella" value=""></td></tr>
+                        <tr><td><b>Subalterno</b></td><td><input id="rend-sub" value=""></td></tr>
+                        <tr><td><b>Indirizzo</b></td><td><input id="rend-indirizzo" value=""></td></tr>
+                        <tr><td><b>Zona cens</b></td><td><input id="rend-zona" value=""></td></tr>
+                        <tr><td><b>Categoria</b></td><td><input id="rend-categoria" value=""></td></tr>
+                        <tr><td><b>Classe</b></td><td><input id="rend-classe" value=""></td></tr>
+                        <tr><td><b>Consistenza</b></td><td><input id="rend-consistenza" value=""></td></tr>
+                        <tr><td><b>Rendita</b></td><td><input id="rend-rendita" value=""></td></tr>
+                        <tr><td><b>Partita</b></td><td><input id="rend-partita" value=""></td></tr>
+                        <tr><td><b>Graffati</b></td><td><input id="rend-graffati" value=""></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+const V="1.1-BETA",DPR=window.devicePixelRatio||1,PSC=6.0,SNAPD=15,VHD=10,SHD=8,MBL=150,CT=10;
+
+const CODE_COLORS={
+    A:'#e74c3c',B:'#2ecc71',C:'#3498db',D:'#9b59b6',E:'#f39c12',
+    F:'#1abc9c',G:'#e67e22',H:'#e91e63',I:'#27ae60',J:'#8e44ad',
+    K:'#2980b9',L:'#d35400',M:'#c0392b',N:'#16a085',O:'#7f8c8d',
+    P:'#f1c40f',Q:'#95a5a6',R:'#34495e',S:'#00bcd4',T:'#ff5722',
+    U:'#9c27b0',V2:'#607d8b',W:'#795548',X:'#ff9800',Y:'#4caf50',Z:'#e91e63'
+};
+function getCodeColor(code){return CODE_COLORS[code]||'#3498db';}
+
+const S={pdf:null,tp:0,ci:0,pages:[],tool:null,cur:null,drag:null,calMode:false,
+    mp:{x:0,y:0},snap:null,snapOn:true,bordVis:true,fillVis:true,selObj:null,uidCtr:1,history:[],pdfAB:null,axisLock:false,
+    colors:['#e74c3c','#2ecc71','#f1c40f','#9b59b6','#1abc9c','#e67e22'],
+    hSeg:null,hVtx:null};
+
+const VA=document.getElementById('viewerArea'),VP=document.getElementById('canvas-viewport');
+const PC=document.getElementById('pdfCanvas'),DC=document.getElementById('drawCanvas');
+const PX=PC.getContext('2d'),DX=DC.getContext('2d');
+
+function getCalRefDist(){return parseFloat(document.getElementById('calRefDist').value)||10}
+
+function buildFileName(ext){
+    const r=getRenditeData();
+    const parts=[r.codice,r.foglio,r.particella,r.subalterno].map(s=>(s||'').trim()).filter(Boolean);
+    if(parts.length>0)return parts.join('_')+'.'+ext;
+    return 'FABBRICATI_beta.'+ext;
+}
+
+function toggleRightPanel(){
+    const sr=document.getElementById('sidebarRight'),tb=document.getElementById('toggleRight');
+    sr.classList.toggle('hidden');tb.classList.toggle('closed');
+    tb.textContent=sr.classList.contains('hidden')?'▶':'◀';
+}
+
+function clearRendite(){
+    if(!confirm('Cancellare tutti i dati catastali?'))return;
+    ['rend-ufficio','rend-catasto','rend-comune','rend-codice','rend-foglio','rend-particella',
+     'rend-sub','rend-indirizzo','rend-zona','rend-categoria','rend-classe',
+     'rend-consistenza','rend-rendita','rend-partita','rend-graffati'].forEach(id=>{
+        document.getElementById(id).value='';
+    });
+}
+
+function openRenditeTab(){window.open('https://sister3.agenziaentrate.gov.it/CitizenVisure/','_blank')}
+
+function readClipboardRendite(){
+    if(navigator.clipboard&&navigator.clipboard.readText)
+        navigator.clipboard.readText().then(text=>parseRenditeText(text)).catch(()=>{});
+}
+
+function parseRenditeText(text){
+    const lines=text.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
+    const setVal=(id,val)=>{if(val!==undefined&&val!==null&&val!=='')document.getElementById(id).value=val};
+    let uff="",cat="",com="",cod="",fog="",par="",sub="";
+    for(const line of lines){
+        if(/Ufficio provinciale/i.test(line))uff=line.split(':').slice(1).join(':').trim();
+        else if(/Catasto:/i.test(line))cat=line.split(':').slice(1).join(':').trim();
+        else if(/Comune:/i.test(line)){const m=line.match(/Comune:\s*(.*?)\s*Codice:\s*([A-Z0-9]+)/i);if(m){com=m[1].trim();cod=m[2].trim()}}
+        else if(/Foglio:/i.test(line)&&/Particella:/i.test(line)&&/Subalterno:/i.test(line)){const m=line.match(/Foglio:\s*([^\s]+)\s*Particella:\s*([^\s]+)\s*Subalterno:\s*([^\s]+)/i);if(m){fog=m[1].trim();par=m[2].trim();sub=m[3].trim()}}
+    }
+    setVal('rend-ufficio',uff);setVal('rend-catasto',cat);setVal('rend-comune',com);setVal('rend-codice',cod);
+    setVal('rend-foglio',fog);setVal('rend-particella',par);setVal('rend-sub',sub);
+    const hi=lines.findIndex(l=>l.toLowerCase().startsWith('foglio')&&l.includes('\t'));
+    if(hi>=0&&lines[hi+1]){
+        const header=lines[hi].split('\t').map(h=>h.toLowerCase()),data=lines[hi+1].split('\t');
+        const fc=keys=>header.findIndex(h=>keys.some(k=>h.includes(k)));
+        const gv=keys=>{const i=fc(keys);return i>=0?data[i]?.trim():""};
+        setVal('rend-foglio',gv(['foglio']));setVal('rend-particella',gv(['particella']));setVal('rend-sub',gv(['sub']));
+        setVal('rend-indirizzo',gv(['indirizzo']));setVal('rend-zona',gv(['zona','zona cens']));
+        setVal('rend-categoria',gv(['categoria']));setVal('rend-classe',gv(['classe']));
+        setVal('rend-consistenza',gv(['consistenza']));setVal('rend-rendita',gv(['rendita']));
+        setVal('rend-partita',gv(['partita']));setVal('rend-graffati',gv(['graffati']));
+    }
+}
+
+function getRenditeData(){
+    return{ufficio:document.getElementById('rend-ufficio').value,catasto:document.getElementById('rend-catasto').value,
+        comune:document.getElementById('rend-comune').value,codice:document.getElementById('rend-codice').value,
+        foglio:document.getElementById('rend-foglio').value,particella:document.getElementById('rend-particella').value,
+        subalterno:document.getElementById('rend-sub').value,indirizzo:document.getElementById('rend-indirizzo').value,
+        zona:document.getElementById('rend-zona').value,categoria:document.getElementById('rend-categoria').value,
+        classe:document.getElementById('rend-classe').value,consistenza:document.getElementById('rend-consistenza').value,
+        rendita:document.getElementById('rend-rendita').value,partita:document.getElementById('rend-partita').value,
+        graffati:document.getElementById('rend-graffati').value};
+}
+
+function setRenditeData(d){
+    if(!d)return;
+    document.getElementById('rend-ufficio').value=d.ufficio||'';document.getElementById('rend-catasto').value=d.catasto||'';
+    document.getElementById('rend-comune').value=d.comune||'';document.getElementById('rend-codice').value=d.codice||'';
+    document.getElementById('rend-foglio').value=d.foglio||'';document.getElementById('rend-particella').value=d.particella||'';
+    document.getElementById('rend-sub').value=d.subalterno||'';document.getElementById('rend-indirizzo').value=d.indirizzo||'';
+    document.getElementById('rend-zona').value=d.zona||'';document.getElementById('rend-categoria').value=d.categoria||'';
+    document.getElementById('rend-classe').value=d.classe||'';document.getElementById('rend-consistenza').value=d.consistenza||'';
+    document.getElementById('rend-rendita').value=d.rendita||'';document.getElementById('rend-partita').value=d.partita||'';
+    document.getElementById('rend-graffati').value=d.graffati||'';
+}
+
+function P(){return S.pages[S.ci]}
+
+// ─── UNDO ────────────────────────────────────────────────────────────────────
+function pushHistory(){
+    // Deep-clone only the objects of every page (lightweight snapshot)
+    const snap=S.pages.map(ps=>({
+        objects:JSON.parse(JSON.stringify(ps.objects)),
+        mpp:ps.mpp, cal:ps.cal, calRef:ps.calRef, _cd:ps._cd
+    }));
+    // Idempotency guard: don't push if identical to last snapshot
+    if(S.history.length>0){
+        const last=JSON.stringify(S.history[S.history.length-1]);
+        if(JSON.stringify(snap)===last)return;
+    }
+    S.history.push(snap);
+    if(S.history.length>50)S.history.shift(); // cap at 50 steps
+    updateUndoBtn();
+}
+function undo(){
+    if(!S.history.length)return;
+    const snap=S.history.pop();
+    snap.forEach((pd,i)=>{
+        if(!S.pages[i])return;
+        S.pages[i].objects=pd.objects;
+        S.pages[i].mpp=pd.mpp;
+        S.pages[i].cal=pd.cal;
+        S.pages[i].calRef=pd.calRef;
+        S.pages[i]._cd=pd._cd;
+    });
+    S.cur=null;S.drag=null;S.selObj=null;S.hSeg=null;S.hVtx=null;
+    updateUndoBtn();
+    updateTbl();draw();updateTabs();
+}
+function updateUndoBtn(){
+    const btn=document.getElementById('btn-undo');
+    if(btn){btn.disabled=!S.history.length;btn.style.opacity=S.history.length?'1':'0.4';}
+}
+function toggleSnap(){S.snapOn=!S.snapOn;document.getElementById('snapTog').classList.toggle('on',S.snapOn);draw()}
+function toggleAxisLock(){S.axisLock=!S.axisLock;document.getElementById('axisTog').classList.toggle('on',S.axisLock);draw()}
+function toggleBorders(){S.bordVis=!S.bordVis;document.getElementById('bordTog').classList.toggle('on-m',S.bordVis);draw()}
+function toggleFills(){S.fillVis=!S.fillVis;document.getElementById('fillTog').classList.toggle('on',S.fillVis);draw()}
+
+function clearTool(){
+    S.tool=null;S.cur=null;S.hSeg=null;S.hVtx=null;
+    document.querySelectorAll('#toolsCard .btn').forEach(b=>b.classList.remove('active'));
+    VA.classList.remove('measuring','editing');document.getElementById('editHint').style.display='none';
+}
+
+function segInter(a,b,c,d){
+    const den=(a.x-b.x)*(c.y-d.y)-(a.y-b.y)*(c.x-d.x);if(den===0)return null;
+    const t=((a.x-c.x)*(c.y-d.y)-(a.y-c.y)*(c.x-d.x))/den;
+    const u=((a.x-c.x)*(a.y-b.y)-(a.y-c.y)*(a.x-b.x))/den;
+    if(t>=0&&t<=1&&u>=0&&u<=1)return{x:a.x+t*(b.x-a.x),y:a.y+t*(b.y-a.y)};return null;
+}
+
+function findSnap(mx,my){
+    if(!S.snapOn)return null;const ps=P();if(!ps)return null;let cp=null,md=SNAPD*DPR;
+    ps.objects.forEach(o=>{if(o.isB&&!S.bordVis)return;o.points.forEach(p=>{const d=Math.hypot(mx-p.x,my-p.y);if(d<md){md=d;cp={x:p.x,y:p.y}}})});
+    if(S.bordVis&&ps.grid){const pts=[];ps.grid.forEach(g=>{pts.push(g.p1,g.p2)});
+        for(let i=0;i<ps.grid.length;i++)for(let j=i+1;j<ps.grid.length;j++){const ip=segInter(ps.grid[i].p1,ps.grid[i].p2,ps.grid[j].p1,ps.grid[j].p2);if(ip)pts.push(ip)}
+        pts.forEach(p=>{const d=Math.hypot(mx-p.x,my-p.y);if(d<md){md=d;cp={x:p.x,y:p.y}}})}
+    if(S.cur&&S.cur.points.length>1)S.cur.points.slice(0,-1).forEach(p=>{const d=Math.hypot(mx-p.x,my-p.y);if(d<md){md=d;cp={x:p.x,y:p.y}}});
+    return cp;
+}
+
+function findVH(px,py){const ps=P();if(!ps)return null;const t=VHD*DPR/ps.scale;for(let o of ps.objects){if(o.isB)continue;for(let i=0;i<o.points.length;i++)if(Math.hypot(px-o.points[i].x,py-o.points[i].y)<t)return{obj:o,index:i}}return null}
+function d2s(px,py,p1,p2){const dx=p2.x-p1.x,dy=p2.y-p1.y,ls=dx*dx+dy*dy;if(ls===0)return{distance:Math.hypot(px-p1.x,py-p1.y),pp:{x:p1.x,y:p1.y},t:0};let t=Math.max(0,Math.min(1,((px-p1.x)*dx+(py-p1.y)*dy)/ls));const qx=p1.x+t*dx,qy=p1.y+t*dy;return{distance:Math.hypot(px-qx,py-qy),pp:{x:qx,y:qy},t}}
+function findSH(px,py){const ps=P();if(!ps)return null;const t=SHD*DPR/ps.scale;for(let o of ps.objects){if(o.isB)continue;for(let i=0;i<o.points.length-1;i++){const r=d2s(px,py,o.points[i],o.points[i+1]);if(r.distance<t)return{obj:o,segmentIndex:i,insertPoint:r.pp}}}return null}
+function canDel(o){if(o.type==='line'&&o.points.length<=2)return false;if(o.type==='area'&&o.points.length<=4)return false;if(o.type==='poly'&&o.points.length<=2)return false;return true}
+function delVtx(o,i){if(!canDel(o)){alert("Troppo pochi vertici!");return false}if(o.type==='area'){if(i===0){o.points.shift();o.points[o.points.length-1]={...o.points[0]}}else if(i===o.points.length-1){o.points.pop();o.points.push({...o.points[0]})}else o.points.splice(i,1)}else o.points.splice(i,1);return true}
+
+document.getElementById('fileIn').addEventListener('change',async e=>{if(!e.target.files[0])return;const ab=await e.target.files[0].arrayBuffer();S.pdfAB=ab.slice(0);await loadPDF(ab)});
+
+async function loadPDF(ab){
+    S.pdf=await pdfjsLib.getDocument(new Uint8Array(ab)).promise;S.tp=S.pdf.numPages;S.pages=[];
+    for(let i=0;i<S.tp;i++){const pg=await S.pdf.getPage(i+1),vp=pg.getViewport({scale:PSC});
+        S.pages.push({pn:i+1,page:pg,vp,mpp:null,cal:false,objects:[],vectors:[],blueV:[],scale:1,ox:0,oy:0,cw:vp.width/DPR,ch:vp.height/DPR,rendered:false,imgD:null,grid:[],analyzed:false,calRef:null})}
+    buildTabs();S.ci=0;await showPage(0);
+}
+
+async function showPage(pi){
+    S.ci=pi;const ps=P();
+    PC.width=DC.width=ps.vp.width;PC.height=DC.height=ps.vp.height;
+    PC.style.width=DC.style.width=ps.cw+'px';PC.style.height=DC.style.height=ps.ch+'px';
+    if(ps.imgD)PX.putImageData(ps.imgD,0,0);
+    else{await ps.page.render({canvasContext:PX,viewport:ps.vp}).promise;ps.imgD=PX.getImageData(0,0,PC.width,PC.height);ps.rendered=true}
+    if(!ps.analyzed){await analyzeV(ps);ps.analyzed=true}
+    S.cur=null;S.drag=null;S.calMode=false;S.snap=null;S.hSeg=null;S.hVtx=null;S.selObj=null;S.tool=null;
+    document.querySelectorAll('#toolsCard .btn').forEach(b=>b.classList.remove('active'));
+    VA.classList.remove('measuring','editing');document.getElementById('editHint').style.display='none';
+    updateCalUI(ps);updateBordUI(ps);updateTabs();
+    document.getElementById('pageInf').style.display='';document.getElementById('pageInf').textContent=`Pagina ${pi+1}/${S.tp}`;
+    updateTF();updateTbl();draw();
+}
+
+function buildTabs(){const c=document.getElementById('ptabsC'),s=document.getElementById('ptabsS');s.innerHTML='';if(S.tp<=1){c.style.display='none';return}c.style.display='block';for(let i=0;i<S.tp;i++){const t=document.createElement('button');t.className='ptab'+(i===0?' active':'');t.textContent='Pag. '+(i+1);t.onclick=()=>goPage(i);s.appendChild(t)}}
+function updateTabs(){document.querySelectorAll('.ptab').forEach((t,i)=>t.classList.toggle('active',i===S.ci))}
+async function goPage(i){if(i<0||i>=S.tp||i===S.ci)return;await showPage(i)}
+
+async function analyzeV(ps){
+    ps.vectors=[];ps.blueV=[];const ops=await ps.page.getOperatorList();let col='black';let ctm=[1,0,0,1,0,0];const stack=[];
+    for(let i=0;i<ops.fnArray.length;i++){const fn=ops.fnArray[i],args=ops.argsArray[i];
+        if(fn===pdfjsLib.OPS.save)stack.push(ctm.slice());
+        else if(fn===pdfjsLib.OPS.restore)ctm=stack.pop()||[1,0,0,1,0,0];
+        else if(fn===pdfjsLib.OPS.transform)ctm=pdfjsLib.Util.transform(ctm,args);
+        else if(fn===pdfjsLib.OPS.setStrokeRGBColor||fn===pdfjsLib.OPS.setStrokeRGBAColor){
+            const[r,g,b]=args;col=((b>0.5&&r<0.4&&g<0.4)||(b>r+0.2&&b>g+0.2))?'blue':'black';
+        }else if(fn===pdfjsLib.OPS.constructPath){const[pO,co]=args;let ci=0,cu={x:0,y:0};
+            for(let op of pO){if(op===pdfjsLib.OPS.moveTo){const pt=pdfjsLib.Util.applyTransform([co[ci],co[ci+1]],ctm);cu={x:pt[0],y:pt[1]};ci+=2}
+            else if(op===pdfjsLib.OPS.lineTo){const pt=pdfjsLib.Util.applyTransform([co[ci],co[ci+1]],ctm);const v1=ps.vp.convertToViewportPoint(cu.x,cu.y),v2=ps.vp.convertToViewportPoint(pt[0],pt[1]);const vec={x1:v1[0],y1:v1[1],x2:v2[0],y2:v2[1],color:col};ps.vectors.push(vec);if(col==='blue')ps.blueV.push(vec);cu={x:pt[0],y:pt[1]};ci+=2}}}}
+    calibrate(ps);
+}
+
+function getTickCandidates(ps){
+    const minTick=3*DPR,maxTick=Math.min(ps.vp.width,ps.vp.height)*0.12,margin=Math.min(ps.vp.width,ps.vp.height)*0.05;
+    const nearEdge=v=>{const x1=Math.min(v.x1,v.x2),x2=Math.max(v.x1,v.x2),y1=Math.min(v.y1,v.y2),y2=Math.max(v.y1,v.y2);return(x1<margin||x2>ps.vp.width-margin||y1<margin||y2>ps.vp.height-margin)};
+    const base=ps.blueV.length>=5?ps.blueV:ps.vectors;
+    return base.filter(v=>{const len=Math.hypot(v.x1-v.x2,v.y1-v.y2);if(len<minTick||len>maxTick)return false;if(base===ps.vectors)return nearEdge(v);return true});
+}
+
+function calibrate(ps){
+    if(ps.mpp){ps.cal=true;return}
+    const refDist=getCalRefDist();
+    const bl=getTickCandidates(ps);if(bl.length<5){ps.cal=false;return}
+    const cols={};
+    bl.forEach(v=>{const cx=(v.x1+v.x2)/2,cy=(v.y1+v.y2)/2,kx=Math.round(cx/10)*10,ky=Math.round(cy/10)*10;
+        if(!cols['x'+kx])cols['x'+kx]=[];cols['x'+kx].push(cy);if(!cols['y'+ky])cols['y'+ky]=[];cols['y'+ky].push(cx)});
+    let fd=null;for(let k in cols){const vs=cols[k].sort((a,b)=>a-b);if(vs.length<3)continue;
+        const df=[];for(let i=1;i<vs.length;i++)df.push(vs[i]-vs[i-1]);const vd=df.slice(1,df.length-1);if(!vd.length)continue;
+        const avg=vd.reduce((a,b)=>a+b,0)/vd.length;if(vd.every(d=>Math.abs(d-avg)<2*(PSC/2))&&avg>10){fd=avg;break}}
+    if(fd){ps.mpp=refDist/fd;ps.cal=true;ps._cd=fd;ps.calRef=refDist}
+}
+
+function buildGrid(ps){
+    ps.grid=[];const border=ps.objects.find(o=>o.isB&&o.type==='area');if(!border)return;
+    const lines=ps.blueV||[];if(!lines.length)return;
+    const bpts=border.points,bsegs=[];for(let i=0;i<bpts.length-1;i++)bsegs.push({a:bpts[i],b:bpts[i+1]});
+    const maxLen=Math.max(ps.vp.width,ps.vp.height)*2,keySet=new Set(),angleTol=0.15;
+    lines.forEach(v=>{const dx=v.x2-v.x1,dy=v.y2-v.y1,len=Math.hypot(dx,dy);if(len<1)return;
+        const ax=Math.abs(dx),ay=Math.abs(dy);if(!(ax<ay*angleTol)&&!(ay<ax*angleTol))return;
+        const ux=dx/len,uy=dy/len,cx=(v.x1+v.x2)/2,cy=(v.y1+v.y2)/2;
+        const p1={x:cx-ux*maxLen,y:cy-uy*maxLen},p2={x:cx+ux*maxLen,y:cy+uy*maxLen};
+        const inter=[];bsegs.forEach(s=>{const ip=segInter(p1,p2,s.a,s.b);if(ip)inter.push(ip)});
+        if(inter.length>=2){let maxD=0,best=[inter[0],inter[1]];for(let i=0;i<inter.length;i++)for(let j=i+1;j<inter.length;j++){const d=Math.hypot(inter[i].x-inter[j].x,inter[i].y-inter[j].y);if(d>maxD){maxD=d;best=[inter[i],inter[j]]}}
+            const nx=-uy,ny=ux,offset=Math.round((cx*nx+cy*ny)/8)*8,angle=Math.round(Math.atan2(uy,ux)*1000),key=angle+"_"+offset;
+            if(!keySet.has(key)){keySet.add(key);ps.grid.push({p1:best[0],p2:best[1]})}}});
+}
+
+function insertBorders(){
+    const ps=P();if(!ps||!ps.cal||!ps.mpp){alert("Prima calibra!");return}
+    if(ps.objects.find(o=>o.isB)){alert("Bordo già presente! Eliminalo prima.");return}
+    const st=document.getElementById('bordSt');st.style.display='block';st.style.color='#f39c12';st.innerHTML='⏳ Costruzione bordi...';
+    const minLen=Math.min(MBL,Math.min(ps.vp.width,ps.vp.height)*0.08),margin=Math.min(ps.vp.width,ps.vp.height)*0.05;
+    const nearEdge=v=>{const x1=Math.min(v.x1,v.x2),x2=Math.max(v.x1,v.x2),y1=Math.min(v.y1,v.y2),y2=Math.max(v.y1,v.y2);return(x1<margin||x2>ps.vp.width-margin||y1<margin||y2>ps.vp.height-margin)};
+    const src=ps.blueV.length>=5?ps.blueV:ps.vectors.filter(nearEdge);
+    const ll=src.filter(v=>Math.hypot(v.x2-v.x1,v.y2-v.y1)>=minLen);
+    if(ll.length<2){st.style.color='#e74c3c';st.innerHTML='❌ Linee insufficienti';return}
+    const ap=[];ll.forEach(v=>{ap.push({x:v.x1,y:v.y1});ap.push({x:v.x2,y:v.y2})});
+    const mp=[],used=new Array(ap.length).fill(false),tol=CT*DPR;
+    for(let i=0;i<ap.length;i++){if(used[i])continue;let mx=ap[i].x,my=ap[i].y,c=1;
+        for(let j=i+1;j<ap.length;j++){if(used[j])continue;if(Math.hypot(ap[i].x-ap[j].x,ap[i].y-ap[j].y)<tol){mx+=ap[j].x;my+=ap[j].y;c++;used[j]=true}}
+        mp.push({x:mx/c,y:my/c});used[i]=true}
+    const adj=new Map();mp.forEach((_,i)=>adj.set(i,[]));
+    ll.forEach(v=>{const i1=closestPt(mp,v.x1,v.y1),i2=closestPt(mp,v.x2,v.y2);if(i1!==i2){if(!adj.get(i1).includes(i2))adj.get(i1).push(i2);if(!adj.get(i2).includes(i1))adj.get(i2).push(i1)}});
+    const path=findCycle(adj,mp);
+    if(path&&path.length>=3){const bp=path.map(i=>({...mp[i]}));bp.push({...bp[0]});const bo={type:'area',name:'BORDO',points:bp,color:'#e91e63',isB:true};ps.objects.unshift(bo);
+        st.style.color='#27ae60';st.innerHTML=`✅ Area: <b>${calcA(bo,ps.mpp).toFixed(2)} m²</b> | Perimetro: <b>${calcP(bo,ps.mpp).toFixed(2)} m</b>`}
+    else{let cnt=0;ll.forEach(v=>{ps.objects.unshift({type:'line',name:'BORDO-'+(cnt+1),points:[{x:v.x1,y:v.y1},{x:v.x2,y:v.y2}],color:'#e91e63',isB:true});cnt++});
+        st.style.color='#e67e22';st.innerHTML=`⚠️ Perimetro non chiuso — <b>${cnt} linee</b> inserite`}
+    document.getElementById('bordTogWrap').style.display='block';S.bordVis=true;document.getElementById('bordTog').classList.add('on-m');
+    updateTbl();updateTabs();buildGrid(ps);clearTool();draw();
+}
+
+function closestPt(pts,x,y){let md=Infinity,mi=0;pts.forEach((p,i)=>{const d=Math.hypot(p.x-x,p.y-y);if(d<md){md=d;mi=i}});return mi}
+function findCycle(adj,pts){let best=null;for(let st=0;st<pts.length;st++){if(adj.get(st).length<2)continue;const cy=dfs(adj,st,st,new Set(),[],0);if(cy&&(!best||cy.length>best.length))best=cy}return best}
+function dfs(adj,cur,start,vis,path,depth){path.push(cur);vis.add(cur);for(let nx of adj.get(cur)){if(nx===start&&depth>=2)return[...path];if(!vis.has(nx)){const r=dfs(adj,nx,start,vis,path,depth+1);if(r)return r}}path.pop();vis.delete(cur);return null}
+
+function updateBordUI(ps){
+    const has=ps.objects.some(o=>o.isB);document.getElementById('bordTogWrap').style.display=has?'block':'none';
+    document.getElementById('bordTog').classList.toggle('on-m',has&&S.bordVis);const st=document.getElementById('bordSt');
+    if(has){const bo=ps.objects.find(o=>o.isB&&o.type==='area');
+        if(bo){st.style.display='block';st.style.color='#27ae60';st.innerHTML=`✅ Area: <b>${calcA(bo,ps.mpp).toFixed(2)} m²</b> | Perimetro: <b>${calcP(bo,ps.mpp).toFixed(2)} m</b>`}
+        else{st.style.display='block';st.style.color='#e67e22';st.innerHTML=`⚠️ ${ps.objects.filter(o=>o.isB).length} linee di riferimento`}}
+    else st.style.display='none';
+}
+
+function updateCalUI(ps){
+    const st=document.getElementById('calSt'),mb=document.getElementById('manCalBtn'),bcb=document.getElementById('bordCalBtn'),bb=document.getElementById('bordBtn'),rb=document.getElementById('recalBtn');
+    const ref=ps.calRef||getCalRefDist();
+    if(ps.cal&&ps.mpp){
+        st.innerHTML=`<b>✅ AUTO-CALIBRATO!</b><br>Pag. ${ps.pn} — ${ps._cd?ps._cd.toFixed(1)+'px = '+ref+'m':'OK'}`;
+        st.className='status ok';mb.style.display='none';bcb.style.display='none';rb.style.display='block';bb.style.display='block';unlock();
+        S.tool=null;S.cur=null;VA.classList.remove('measuring','editing');
+        document.querySelectorAll('#toolsCard .btn').forEach(b=>b.classList.remove('active'));
+        document.getElementById('editHint').style.display='none';
+    }else if(ps.mpp){
+        st.innerHTML=`<b>✅ CALIBRATO MANUALE</b><br>Pag. ${ps.pn} — Rif: ${ref}m`;
+        st.className='status ok';mb.style.display='none';bcb.style.display='none';rb.style.display='block';bb.style.display='block';unlock();
+        S.tool=null;S.cur=null;VA.classList.remove('measuring','editing');
+        document.querySelectorAll('#toolsCard .btn').forEach(b=>b.classList.remove('active'));
+        document.getElementById('editHint').style.display='none';
+    }else{
+        st.innerHTML=`❌ Pag. ${ps.pn}: Tacche non rilevate.<br>Calibra manualmente.`;
+        st.className='status warn';mb.style.display='block';bcb.style.display='block';rb.style.display='none';bb.style.display='none';lock();
+    }
+}
+
+function lock(){document.getElementById('toolsCard').style.opacity=.5;document.getElementById('toolsCard').style.pointerEvents='none'}
+function unlock(){document.getElementById('toolsCard').style.opacity=1;document.getElementById('toolsCard').style.pointerEvents='auto'}
+function startManCal(){S.tool='calManual';S.calMode=true;S.calKind='free';S.cur=null;VA.classList.add('measuring');alert("Calibrazione libera:\n- inserisci la distanza di riferimento (m)\n- poi clicca su DUE punti.\n\nDistanza: "+getCalRefDist()+" m")}
+
+// Calibrazione tramite diagonale del foglio (A4/A3) + scala
+// Valori forniti dall'utente: diagonale A4 @1:100 = 30.54 cm, diagonale A3 @1:100 = 48.13 cm
+function startBordCal(){
+    const fmtRaw=(prompt("Formato foglio? (A4 oppure A3)","A4")||"").trim().toUpperCase();
+    const fmt=(fmtRaw==="A3"?"A3":"A4");
+    const scRaw=(prompt("Scala? (es. 100, 200, 500...)","100")||"").trim();
+    const sc=parseFloat(scRaw);
+    if(!isFinite(sc)||sc<=0){alert("Scala non valida.");return;}
+    const diag100cm=(fmt==="A3"?48.13:30.54);
+    // a 1:100, 1 cm su carta = 1 m reale → quindi (diag100cm) vale già come metri a 1:100.
+    const refDist=diag100cm*(sc/100); // metri
+    S.tool='calManual';
+    S.calMode=true;
+    S.calKind='border';
+    S.calBorder={fmt,scale:sc,refDist};
+    S.cur=null;
+    VA.classList.add('measuring');
+    alert(`Calibrazione bordo (${fmt} 1:${sc}):\n- clicca su DUE punti corrispondenti agli angoli opposti della diagonale visibile del foglio\n\nDiagonale reale: ${refDist.toFixed(2)} m`);
+}
+function updateTF(){const ps=P();if(!ps)return;VP.style.transform=`translate(${ps.ox}px,${ps.oy}px) scale(${ps.scale})`;document.getElementById('zoomLvl').innerText=`Zoom: ${Math.round(ps.scale*100)}%`}
+
+function calcP(o,m){if(!m)return 0;let l=0;for(let i=1;i<o.points.length;i++)l+=Math.hypot(o.points[i].x-o.points[i-1].x,o.points[i].y-o.points[i-1].y);return l*m}
+function calcA(o,m){if(!m)return 0;let a=0;const p=o.points;for(let i=0;i<p.length-1;i++)a+=p[i].x*p[i+1].y-p[i+1].x*p[i].y;return Math.abs(a/2)*(m**2)}
+function tblHTML(o,m){if(!m)return"N/A";if(o.type==='area')return`<span class="mvl">Sup: <b>${calcA(o,m).toFixed(2)} m²</b></span>`;return`<span class="mvl">${calcP(o,m).toFixed(2)} m</span>`}
+
+// Point-in-polygon (ray casting)
+function pointInPolygon(px,py,pts){
+    let inside=false;
+    for(let i=0,j=pts.length-1;i<pts.length;j=i++){
+        const xi=pts[i].x,yi=pts[i].y,xj=pts[j].x,yj=pts[j].y;
+        if(((yi>py)!==(yj>py))&&(px<(xj-xi)*(py-yi)/(yj-yi)+xi))inside=!inside;
+    }
+    return inside;
+}
+// Centroid of polygon (excluding closing point)
+function centroid(pts){
+    const p=pts[0]===pts[pts.length-1]?pts.slice(0,-1):pts;
+    return{x:p.reduce((s,v)=>s+v.x,0)/p.length,y:p.reduce((s,v)=>s+v.y,0)/p.length};
+}
+
+// Bounding box of points
+function bboxPts(pts){
+    let minx=Infinity,miny=Infinity,maxx=-Infinity,maxy=-Infinity;
+    pts.forEach(p=>{minx=Math.min(minx,p.x);miny=Math.min(miny,p.y);maxx=Math.max(maxx,p.x);maxy=Math.max(maxy,p.y);});
+    return {minx,miny,maxx,maxy,w:maxx-minx,h:maxy-miny};
+}
+// Convert mm to px when rendering at 72 dpi (pdf.js viewport scale 1)
+function mmToPx(mm){ return mm*72/25.4; }
+
+// Draw multi-line label. If it doesn't fit inside polygon, place outside with leader line.
+function drawPolyLabel(ctx, pts, lines, fontPx, ds=1, occupiedRects, avoidPolys){
+    if(!pts || !pts.length || !lines || !lines.length) return;
+    occupiedRects = occupiedRects || [];
+
+avoidPolys = avoidPolys || []; // array of polygons (each is pts[]). Labels must stay outside ALL of them.
+
+function pointInRect(x,y,r){ return x>=r.bx && x<=r.bx+r.w && y>=r.by && y<=r.by+r.h; }
+
+function orient(p,q,r){ return (q.x-p.x)*(r.y-p.y)-(q.y-p.y)*(r.x-p.x); }
+function onSeg(p,q,r){
+    return (Math.min(p.x,r.x)-1e-6<=q.x && q.x<=Math.max(p.x,r.x)+1e-6 &&
+            Math.min(p.y,r.y)-1e-6<=q.y && q.y<=Math.max(p.y,r.y)+1e-6);
+}
+function segIntersectsSeg(p1,p2,q1,q2){
+    const o1=orient(p1,p2,q1), o2=orient(p1,p2,q2), o3=orient(q1,q2,p1), o4=orient(q1,q2,p2);
+    if((o1>0 && o2<0 || o1<0 && o2>0) && (o3>0 && o4<0 || o3<0 && o4>0)) return true;
+    if(Math.abs(o1)<1e-6 && onSeg(p1,q1,p2)) return true;
+    if(Math.abs(o2)<1e-6 && onSeg(p1,q2,p2)) return true;
+    if(Math.abs(o3)<1e-6 && onSeg(q1,p1,q2)) return true;
+    if(Math.abs(o4)<1e-6 && onSeg(q1,p2,q2)) return true;
+    return false;
+}
+function segIntersectsRect(p1,p2,r){
+    // quick reject by bbox
+    const minx=Math.min(p1.x,p2.x), maxx=Math.max(p1.x,p2.x);
+    const miny=Math.min(p1.y,p2.y), maxy=Math.max(p1.y,p2.y);
+    if(maxx<r.bx || minx>r.bx+r.w || maxy<r.by || miny>r.by+r.h) return false;
+
+    // if either endpoint inside rect
+    if(pointInRect(p1.x,p1.y,r) || pointInRect(p2.x,p2.y,r)) return true;
+
+    const a={x:r.bx,y:r.by}, b={x:r.bx+r.w,y:r.by}, c={x:r.bx+r.w,y:r.by+r.h}, d={x:r.bx,y:r.by+r.h};
+    return segIntersectsSeg(p1,p2,a,b) || segIntersectsSeg(p1,p2,b,c) || segIntersectsSeg(p1,p2,c,d) || segIntersectsSeg(p1,p2,d,a);
+}
+function rectIntersectsPolygon(r, polyPts){
+    if(!polyPts || polyPts.length<3) return false;
+
+    // any rect corner inside polygon?
+    const corners=[
+        {x:r.bx,y:r.by},
+        {x:r.bx+r.w,y:r.by},
+        {x:r.bx+r.w,y:r.by+r.h},
+        {x:r.bx,y:r.by+r.h}
+    ];
+    for(const c of corners){
+        if(pointInPolygon(c.x,c.y,polyPts)) return true;
+    }
+
+    // any polygon vertex inside rect?
+    for(const p of polyPts){
+        if(pointInRect(p.x,p.y,r)) return true;
+    }
+
+    // any polygon edge intersects rect?
+    for(let i=0;i<polyPts.length-1;i++){
+        const p1=polyPts[i], p2=polyPts[i+1];
+        if(segIntersectsRect(p1,p2,r)) return true;
+    }
+    // close edge if needed
+    const first=polyPts[0], last=polyPts[polyPts.length-1];
+    if(first.x!==last.x || first.y!==last.y){
+        if(segIntersectsRect(last, first, r)) return true;
+    }
+    return false;
+}
+
+function intersectsAnyPolygon(r){
+    for(const poly of avoidPolys){
+        if(rectIntersectsPolygon(r, poly)) return true;
+    }
+    return false;
+}
+
+    const bb=bboxPts(pts);
+    const c=centroid(pts);
+
+    ctx.save();
+    ctx.font=`bold ${fontPx}px Arial`;
+    const lh=fontPx*1.15;
+    let maxW=0;
+    for(const t of lines) maxW=Math.max(maxW, ctx.measureText(t).width);
+
+    const pad=4*ds;
+    const boxW=maxW+pad*2;
+    const boxH=lh*lines.length+pad*2;
+
+    const margin=6*ds;
+    const baseOff=12*ds;
+
+    function rectForCandidate(kind, offDist){
+        offDist = offDist==null?baseOff:offDist;
+        // Returns {kind, align, x, y, bx, by, w, h, cx, cy}
+        if(kind==='right'){
+            const x=bb.maxx+offDist, y=c.y;
+            const bx=x, by=y-boxH/2;
+            return {kind, align:'left', x, y, bx, by, w:boxW, h:boxH, cx:bx+boxW/2, cy:by+boxH/2};
+        }
+        if(kind==='left'){
+            const x=bb.minx-offDist, y=c.y;
+            const bx=x-boxW, by=y-boxH/2;
+            return {kind, align:'right', x, y, bx, by, w:boxW, h:boxH, cx:bx+boxW/2, cy:by+boxH/2};
+        }
+        if(kind==='top'){
+            const x=c.x, y=bb.miny-offDist;
+            const bx=x-boxW/2, by=y-boxH;
+            return {kind, align:'center', x, y, bx, by, w:boxW, h:boxH, cx:bx+boxW/2, cy:by+boxH/2};
+        }
+        // bottom
+        const x=c.x, y=bb.maxy+offDist;
+        const bx=x-boxW/2, by=y;
+        return {kind:'bottom', align:'center', x, y, bx, by, w:boxW, h:boxH, cx:bx+boxW/2, cy:by+boxH/2};
+    }
+
+    function overlapArea(r1,r2){
+        const x1=Math.max(r1.bx,r2.bx), y1=Math.max(r1.by,r2.by);
+        const x2=Math.min(r1.bx+r1.w,r2.bx+r2.w), y2=Math.min(r1.by+r1.h,r2.by+r2.h);
+        if(x2<=x1 || y2<=y1) return 0;
+        return (x2-x1)*(y2-y1);
+    }
+
+    function outPenalty(r){
+        let p=0;
+        const W=ctx.canvas.width, H=ctx.canvas.height;
+        if(r.bx<margin) p += (margin-r.bx);
+        if(r.by<margin) p += (margin-r.by);
+        if(r.bx+r.w>W-margin) p += (r.bx+r.w-(W-margin));
+        if(r.by+r.h>H-margin) p += (r.by+r.h-(H-margin));
+        return p;
+    }
+
+    const offSteps=[baseOff, baseOff*1.8, baseOff*2.6, baseOff*3.6, baseOff*5];
+    const candidates=[];
+    for(const od of offSteps){
+        for(const k of ['right','left','top','bottom']) candidates.push(rectForCandidate(k, od));
+    }
+
+    let best=candidates[0], bestScore=Infinity;
+    for(const cand of candidates){
+        // push it just inside canvas if it overflows (soft clamp), to avoid it disappearing
+        const W=ctx.canvas.width, H=ctx.canvas.height;
+        let bx=cand.bx, by=cand.by;
+        bx=Math.min(Math.max(bx, margin), W-margin-cand.w);
+        by=Math.min(Math.max(by, margin), H-margin-cand.h);
+        const adjusted={...cand, bx, by, cx:bx+cand.w/2, cy:by+cand.h/2};
+        let ov=0;
+        for(const r of occupiedRects) ov += overlapArea(adjusted, r);
+        const out=outPenalty(adjusted);
+        const dist=Math.hypot(adjusted.cx-c.x, adjusted.cy-c.y);
+        const hitPoly = intersectsAnyPolygon(adjusted);
+        // overlap is the main bad thing; then polygon intersections; then out-of-bounds; then keep it not too far
+        const score = ov*1000 + (hitPoly?1e9:0) + out*50 + dist;
+        if(score<bestScore){bestScore=score;best=adjusted;}
+    }
+
+    // Reserve
+    occupiedRects.push({bx:best.bx,by:best.by,w:best.w,h:best.h});
+
+    // Text style
+    ctx.textBaseline="middle";
+    ctx.textAlign=best.align;
+
+    // Background for readability (outside polygons => no vector coverage)
+    ctx.save();
+    ctx.shadowColor="transparent";
+    ctx.globalAlpha=0.55;
+    ctx.fillStyle="#ffffff";
+    ctx.fillRect(best.bx, best.by, best.w, best.h);
+    ctx.restore();
+
+    // Leader line: from polygon bbox edge toward label box
+    function intersectRayRect(p0, p1, rect){
+        const dx=p1.x-p0.x, dy=p1.y-p0.y;
+        let tMin=Infinity, hit=null;
+
+        function tryEdge(t, x, y){
+            if(t>0 && t<tMin && x>=rect.minx-1e-6 && x<=rect.maxx+1e-6 && y>=rect.miny-1e-6 && y<=rect.maxy+1e-6){
+                tMin=t; hit={x,y};
+            }
+        }
+
+        // left/right
+        if(Math.abs(dx)>1e-9){
+            let t=(rect.minx-p0.x)/dx; tryEdge(t, rect.minx, p0.y+t*dy);
+            t=(rect.maxx-p0.x)/dx; tryEdge(t, rect.maxx, p0.y+t*dy);
+        }
+        // top/bottom
+        if(Math.abs(dy)>1e-9){
+            let t=(rect.miny-p0.y)/dy; tryEdge(t, p0.x+t*dx, rect.miny);
+            t=(rect.maxy-p0.y)/dy; tryEdge(t, p0.x+t*dx, rect.maxy);
+        }
+        return hit || {x:p0.x,y:p0.y};
+    }
+
+    const bbRect={minx:bb.minx,miny:bb.miny,maxx:bb.maxx,maxy:bb.maxy};
+    const target={x:best.cx,y:best.cy};
+    const anchor=intersectRayRect(c, target, bbRect);
+
+    // Nearest point on label box edge to anchor
+    const edge={
+        x:Math.min(Math.max(anchor.x, best.bx), best.bx+best.w),
+        y:Math.min(Math.max(anchor.y, best.by), best.by+best.h),
+    };
+    // snap to actual edge (avoid ending inside the box)
+    const dl=Math.abs(edge.x-best.bx), dr=Math.abs(edge.x-(best.bx+best.w));
+    const dt=Math.abs(edge.y-best.by), db=Math.abs(edge.y-(best.by+best.h));
+    const mEdge=Math.min(dl,dr,dt,db);
+    if(mEdge===dl) edge.x=best.bx;
+    else if(mEdge===dr) edge.x=best.bx+best.w;
+    else if(mEdge===dt) edge.y=best.by;
+    else edge.y=best.by+best.h;
+
+    ctx.save();
+    ctx.shadowColor="transparent";
+    ctx.strokeStyle=ctx.fillStyle;
+    ctx.lineWidth=Math.max(1.5, 2*ds);
+    ctx.beginPath();
+    ctx.moveTo(anchor.x, anchor.y);
+    ctx.lineTo(edge.x, edge.y);
+    ctx.stroke();
+    ctx.restore();
+
+    // Text lines inside box
+    const startY=best.by + pad + lh/2;
+    let textX;
+    if(best.align==='left') textX=best.bx + pad;
+    else if(best.align==='right') textX=best.bx + best.w - pad;
+    else textX=best.bx + best.w/2;
+
+    // Use halo for readability
+    ctx.shadowColor="transparent";
+    ctx.shadowBlur=0;
+    ctx.strokeStyle='rgba(255,255,255,0.65)';
+    ctx.lineWidth=4*ds;
+    ctx.lineJoin='round';
+
+    for(let i=0;i<lines.length;i++){
+        ctx.strokeText(lines[i], textX, startY + i*lh);
+        ctx.fillText(lines[i], textX, startY + i*lh);
+    }
+
+    /**
+ * Print label inside polygon (no white background).
+ * Tries to keep the label fully inside the polygon bounding box and ensures the anchor point is inside polygon.
+ * Auto-shrinks the font if needed to fit within the polygon bbox (with padding).
+ */
+function drawPolyLabelInside(ctx, pts, lines, targetFontPx, ds=1){
+    if(!pts || !pts.length || !lines || !lines.length) return;
+
+    const bb=bboxPts(pts);
+    let c=centroid(pts);
+    // Ensure anchor is inside polygon; if centroid is outside (concave), nudge toward first vertex
+    if(!pointInPolygon(c.x,c.y,pts)){
+        const v=pts[0];
+        c={x:(c.x+v.x)/2, y:(c.y+v.y)/2};
+        if(!pointInPolygon(c.x,c.y,pts)){
+            c={x:v.x, y:v.y};
+        }
+    }
+
+    ctx.save();
+    ctx.textBaseline="middle";
+    ctx.textAlign="center";
+
+    const pad=4*ds;
+
+    // Start from targetFontPx and shrink until it fits within bbox
+    let fontPx=Math.max(6, targetFontPx);
+    while(fontPx>6){
+        ctx.font=`bold ${fontPx}px Arial`;
+        const lh=fontPx*1.15;
+        let maxW=0;
+        for(const t of lines) maxW=Math.max(maxW, ctx.measureText(t).width);
+        const boxW=maxW+pad*2;
+        const boxH=lh*lines.length+pad*2;
+
+        // Simple bbox fit (keeps label within polygon bbox, not necessarily fully within polygon for concave shapes,
+        // but anchor is inside and text won't spill outside the visible perimeter too much)
+        if(boxW <= bb.w - 2*pad && boxH <= bb.h - 2*pad){
+            break;
+        }
+        fontPx*=0.9;
+    }
+
+    ctx.font=`bold ${fontPx}px Arial`;
+    const lh=fontPx*1.15;
+
+    // Halo only (no background fill)
+    ctx.shadowColor="transparent";
+    ctx.shadowBlur=0;
+    ctx.strokeStyle='rgba(255,255,255,0.65)';
+    ctx.lineWidth=4*ds;
+    ctx.lineJoin='round';
+
+    const startY=c.y - (lh*(lines.length-1))/2;
+    for(let i=0;i<lines.length;i++){
+        ctx.strokeText(lines[i], c.x, startY + i*lh);
+        ctx.fillText(lines[i], c.x, startY + i*lh);
+    }
+
+    ctx.restore();
+}
+
+ctx.restore();
+}
+// Find parent area for a hole on a page (non-hole area that contains it) for a hole on a page (non-hole area that contains it)
+function findParent(hole, objs){
+    const c=centroid(hole.points);
+    return objs.find(o=>o!==hole&&!o.isB&&!o.isHole&&o.type==='area'&&
+        pointInPolygon(c.x,c.y,o.points));
+}
+// Net area: gross area - contained holes
+function calcNetA(obj, objs, mpp){
+    if(!mpp)return 0;
+    let net=calcA(obj,mpp);
+    objs.filter(o=>o.isHole&&o.type==='area'&&findParent(o,objs)===obj)
+        .forEach(h=>net-=calcA(h,mpp));
+    return Math.max(0,net);
+}
+function getC(pts){if(!pts.length)return{x:0,y:0};return{x:pts.reduce((a,b)=>a+b.x,0)/pts.length,y:pts.reduce((a,b)=>a+b.y,0)/pts.length}}
+function drawX(ctx,x,y,s){ctx.beginPath();ctx.moveTo(x-s,y);ctx.lineTo(x+s,y);ctx.moveTo(x,y-s);ctx.lineTo(x,y+s);ctx.stroke()}
+/* --- EVENTI MOUSE --- */
+VA.addEventListener('wheel',e=>{
+    e.preventDefault();const ps=P();if(!ps)return;
+    const d=e.deltaY>0?.9:1.1,r=VA.getBoundingClientRect();
+    const mx=e.clientX-r.left,my=e.clientY-r.top;
+    const gx=(mx-ps.ox)/ps.scale,gy=(my-ps.oy)/ps.scale;
+    ps.scale*=d;ps.ox=mx-gx*ps.scale;ps.oy=my-gy*ps.scale;
+    updateTF();draw();
+});
+
+let pan=false;
+VA.addEventListener('mousedown',e=>{
+    if(e.button===1){pan=true;VA.classList.add('panning');e.preventDefault()}
+});
+window.addEventListener('mouseup',()=>{pan=false;VA.classList.remove('panning')});
+
+window.addEventListener('mousemove',e=>{
+    const ps=P();if(!ps)return;
+    if(pan){ps.ox+=e.movementX;ps.oy+=e.movementY;updateTF();draw()}
+    const r=DC.getBoundingClientRect();
+    S.mp.x=(e.clientX-r.left)/r.width*DC.width;
+    S.mp.y=(e.clientY-r.top)/r.height*DC.height;
+    S.snap=findSnap(S.mp.x,S.mp.y);
+    if(S.axisLock&&S.cur&&S.cur.points.length){
+        const lp=S.cur.points[S.cur.points.length-1];
+        if(Math.abs(S.mp.x-lp.x)>Math.abs(S.mp.y-lp.y))S.mp.y=lp.y;
+        else S.mp.x=lp.x;
+    }
+    if(S.tool==='select'&&!S.drag){
+        S.hVtx=findVH(S.mp.x,S.mp.y);
+        S.hSeg=S.hVtx?null:findSH(S.mp.x,S.mp.y);
+    }else{S.hSeg=null;S.hVtx=null}
+    if(S.cur||S.tool==='select'||S.calMode)draw();
+});
+
+function setTool(t){
+    const ps=P();if(!ps||(!ps.mpp&&t!=='select')){alert("Prima calibra!");return}
+    S.tool=t;S.cur=null;S.hSeg=null;S.hVtx=null;S.selObj=null;
+    document.querySelectorAll('#toolsCard .btn').forEach(b=>b.classList.remove('active'));
+    VA.classList.remove('measuring','editing');
+    document.getElementById('editHint').style.display='none';
+    if(t){
+        document.getElementById('btn-'+t).classList.add('active');
+        if(t==='select'){VA.classList.add('editing');document.getElementById('editHint').style.display='block'}
+        else VA.classList.add('measuring');
+    }
+    draw();
+}
+
+DC.addEventListener('mousemove',e=>{if(!pan&&(S.tool||S.calMode))draw()});
+
+DC.addEventListener('mousedown',e=>{
+    if(e.button!==0||pan)return;
+    const ps=P();if(!ps)return;
+    const r=DC.getBoundingClientRect();
+    let px=(e.clientX-r.left)/r.width*DC.width;
+    let py=(e.clientY-r.top)/r.height*DC.height;
+    if(S.snap){px=S.snap.x;py=S.snap.y}
+    if(S.axisLock&&S.cur&&S.cur.points.length){
+        const lp=S.cur.points[S.cur.points.length-1];
+        if(Math.abs(px-lp.x)>Math.abs(py-lp.y))py=lp.y;else px=lp.x;
+    }
+
+    if(S.calMode){
+        if(!S.cur){S.cur={points:[{x:px,y:py}]}}
+        else{
+            S.cur.points.push({x:px,y:py});
+            pushHistory();
+            const refDist=(S.calKind==='border' && S.calBorder && isFinite(S.calBorder.refDist))?S.calBorder.refDist:getCalRefDist();
+            const d=Math.hypot(S.cur.points[1].x-S.cur.points[0].x,S.cur.points[1].y-S.cur.points[0].y);
+            ps.mpp=refDist/d;ps.cal=true;ps._cd=d;ps.calRef=refDist;
+            S.calMode=false;S.cur=null;VA.classList.remove('measuring');
+            updateCalUI(ps);
+        }
+        draw();return;
+    }
+    if(!ps.mpp)return;
+
+    if(S.tool==='select'){
+        const vh=findVH(px,py);
+        if(vh){pushHistory();S.drag=vh;S.selObj=vh.obj;draw();return}
+        const sh=findSH(px,py);
+        if(sh){
+            pushHistory();
+            sh.obj.points.splice(sh.segmentIndex+1,0,sh.insertPoint);
+            S.drag={obj:sh.obj,index:sh.segmentIndex+1};
+            S.selObj=sh.obj;
+            updateTbl();draw();
+            return;
+        }
+        // Click inside area polygon -> select it
+        const ps2=P();
+        let found=null;
+        // Check non-hole areas first, then holes (if visible in select mode)
+        for(let o of ps2.objects){
+            if(o.isB)continue;
+            if(o.type==='area'&&pointInPolygon(px,py,o.points)){found=o;break;}
+        }
+        S.selObj=found;
+        draw();
+        return;
+    }
+
+    if(!S.tool){
+        // No tool active: click area to highlight it and its table row
+        let found=null;
+        for(let o of ps.objects){
+            if(o.isB||o.isHole)continue;
+            if(o.type==='area'&&pointInPolygon(px,py,o.points)){found=o;break;}
+        }
+        // Also check lines (click near centroid)
+        if(!found){
+            for(let o of ps.objects){
+                if(o.isB||o.isHole)continue;
+                if(o.type!=='area'){
+                    const c=getC(o.points);
+                    if(Math.hypot(px-c.x,py-c.y)<30*ds){found=o;break;}
+                }
+            }
+        }
+        if(S.selObj===found&&found===null){return;}
+        S.selObj=found;
+        draw();
+        highlightTblRow(found);
+        return;
+    }
+    if(!S.cur){
+        // Global counter across all pages
+        let globalCount=0;
+        S.pages.forEach(p=>{ globalCount+=p.objects.filter(o=>!o.isB).length; });
+        const nonB=ps.objects.filter(o=>!o.isB);
+        const isAreaTool=(S.tool==='area'||S.tool==='rect');
+        const label=isAreaTool?`Area ${globalCount+1}`:`Lin ${globalCount+1}`;
+        S.cur={type:(S.tool==='rect'?'rect':S.tool),name:label,points:[{x:px,y:py}],color:S.colors[nonB.length%6]};
+    }else{
+        S.cur.points.push({x:px,y:py});
+        if(S.tool==='line'&&S.cur.points.length===2)finalize();
+        if(S.tool==='rect'&&S.cur.points.length===2)finalize();
+    }
+    draw();
+});
+
+DC.addEventListener('contextmenu',e=>{
+    e.preventDefault();
+    if(S.tool==='area'&&S.cur&&S.cur.points.length>2){finalize();return}
+    if(S.tool==='poly'&&S.cur&&S.cur.points.length>1){finalize();return}
+    if(S.tool==='select'){
+        const r=DC.getBoundingClientRect();
+        const px=(e.clientX-r.left)/r.width*DC.width;
+        const py=(e.clientY-r.top)/r.height*DC.height;
+        const vh=findVH(px,py);
+        if(vh){pushHistory();if(delVtx(vh.obj,vh.index)){updateTbl();draw()}}
+    }
+});
+
+DC.addEventListener('dblclick',finalize);
+
+function finalize(){
+    if(!S.cur)return;const ps=P();
+    pushHistory();
+    // Area tools: polygon or rectangle (2 diagonal vertices)
+    if(S.tool==='rect'){
+        const a=S.cur.points[0];
+        const b=S.cur.points[1]||a;
+        const x1=a.x, y1=a.y, x2=b.x, y2=b.y;
+        S.cur.type='area';
+        S.cur.points=[{x:x1,y:y1},{x:x2,y:y1},{x:x2,y:y2},{x:x1,y:y2},{x:x1,y:y1}];
+    }
+    if(S.tool==='area'){
+        S.cur.points.push({...S.cur.points[0]});
+    }
+    if(S.tool==='area'||S.tool==='rect'){
+        // Auto-detect if this area is inside another (= hole/detrazione)
+        const parent=findParent(S.cur, ps.objects);
+        if(parent){
+            S.cur.isHole=true;
+            S.cur.parentUid=parent.uid;
+            S.cur.codice=parent.codice||'A';
+            S.cur.destinazione=parent.destinazione||'';
+            S.cur.color=parent.color;
+        }else{
+            S.cur.isHole=false;
+            S.cur.parentUid=null;
+            S.cur.codice=S.cur.codice||'A';
+            S.cur.destinazione=S.cur.destinazione||'';
+            S.cur.color=getCodeColor(S.cur.codice);
+        }
+    }
+    // Assign stable uid to every object
+    if(!S.cur.uid)S.cur.uid=S.uidCtr++;
+    ps.objects.push(S.cur);S.cur=null;S.snap=null;
+    updateTbl();draw();updateTabs();
+}
+
+window.addEventListener('mousemove',e=>{
+    if(!S.drag)return;
+    const r=DC.getBoundingClientRect();
+    let px=(e.clientX-r.left)/r.width*DC.width;
+    let py=(e.clientY-r.top)/r.height*DC.height;
+    if(S.snap){px=S.snap.x;py=S.snap.y}
+    if(S.axisLock&&S.drag.obj&&S.drag.obj.points.length){
+        const obj=S.drag.obj,idx=S.drag.index;let ref=null;
+        if(idx>0)ref=obj.points[idx-1];
+        else if(idx===0&&obj.type==='area'&&obj.points.length>1)ref=obj.points[1];
+        if(ref){if(Math.abs(px-ref.x)>Math.abs(py-ref.y))py=ref.y;else px=ref.x}
+    }
+    S.drag.obj.points[S.drag.index]={x:px,y:py};
+    if(S.drag.obj.type==='area'){
+        if(S.drag.index===0)S.drag.obj.points[S.drag.obj.points.length-1]={x:px,y:py};
+        else if(S.drag.index===S.drag.obj.points.length-1)S.drag.obj.points[0]={x:px,y:py};
+    }
+    draw();updateTbl();
+});
+window.addEventListener('mouseup',()=>S.drag=null);
+
+/* --- DRAW --- */
+function draw(){
+    DX.clearRect(0,0,DC.width,DC.height);
+    const ps=P();if(!ps)return;
+    const ds=DPR,m=ps.mpp;
+
+    // Separate non-hole areas, holes, lines
+    const nonBObjs=ps.objects.filter(o=>!o.isB);
+    const areaObjs=nonBObjs.filter(o=>o.type==='area'&&!o.isHole);
+    const holeObjs=nonBObjs.filter(o=>o.type==='area'&&o.isHole);
+    const lineObjs=nonBObjs.filter(o=>o.type!=='area');
+
+    // Draw fills: each area with transparent holes punched via evenodd
+    if(S.fillVis){
+        areaObjs.forEach(obj=>{
+            const myHoles=holeObjs.filter(h=>findParent(h,ps.objects)===obj);
+            DX.beginPath();
+            DX.moveTo(obj.points[0].x,obj.points[0].y);
+            obj.points.forEach(p=>DX.lineTo(p.x,p.y));
+            // Add hole subpaths — evenodd makes them transparent
+            myHoles.forEach(h=>{
+                DX.moveTo(h.points[0].x,h.points[0].y);
+                h.points.forEach(p=>DX.lineTo(p.x,p.y));
+            });
+            DX.fillStyle=obj.color+'40';
+            DX.fill('evenodd');
+        });
+    }
+
+    // Draw outer area strokes (always visible)
+    areaObjs.forEach(obj=>{
+        DX.beginPath();
+        DX.moveTo(obj.points[0].x,obj.points[0].y);
+        obj.points.forEach(p=>DX.lineTo(p.x,p.y));
+        DX.strokeStyle=obj.color;DX.lineWidth=1.5*ds;DX.stroke();
+    });
+
+    // Hole borders: not drawn in canvas (invisible)
+
+    // Draw line objects
+    lineObjs.forEach(obj=>{
+        DX.beginPath();DX.moveTo(obj.points[0].x,obj.points[0].y);
+        obj.points.forEach(p=>DX.lineTo(p.x,p.y));
+        DX.strokeStyle=obj.color;DX.lineWidth=1.5*ds;
+        DX.stroke();
+    });
+
+    // Draw vertices and labels for all non-border objects (skip holes unless in select mode)
+    const vs=S.tool==='select'?10*ds:8*ds;
+    nonBObjs.forEach(obj=>{
+        if(obj.isHole&&S.tool!=='select')return;
+        obj.points.forEach((p,idx)=>{
+            if(S.tool==='select'){
+                DX.strokeStyle=obj.color;DX.lineWidth=1.5*ds;drawX(DX,p.x,p.y,vs);
+            }
+            if(S.hVtx&&S.hVtx.obj===obj&&S.hVtx.index===idx){
+                DX.beginPath();DX.arc(p.x,p.y,12*ds,0,Math.PI*2);
+                DX.strokeStyle='#e74c3c';DX.lineWidth=2*ds;DX.stroke();
+            }
+        });
+        if(obj.isHole)return;
+
+        // Guaranteed-inside centroid
+        let cen=centroid(obj.points);
+        if(obj.type==='area' && !pointInPolygon(cen.x,cen.y,obj.points)){
+            let found=false;
+            for(let vi=0;vi<obj.points.length&&!found;vi++){
+                const v=obj.points[vi];
+                const mid={x:(cen.x+v.x)/2,y:(cen.y+v.y)/2};
+                if(pointInPolygon(mid.x,mid.y,obj.points)){cen=mid;found=true;}
+            }
+            if(!found)cen=obj.points[0];
+        }
+
+        DX.fillStyle=obj.color;DX.textAlign='center';
+        DX.shadowColor='transparent';DX.shadowBlur=0;
+
+        if(obj.type==='area'){
+            const netA=calcNetA(obj,ps.objects,m);
+            const myHoles=holeObjs.filter(h=>findParent(h,ps.objects)===obj);
+            DX.font=`bold ${18*ds}px Arial`;
+            // White halo buffer
+            DX.strokeStyle='rgba(255,255,255,0.75)';DX.lineWidth=4*ds;DX.lineJoin='round';DX.strokeText(netA.toFixed(2)+' m²',cen.x,cen.y);
+            DX.fillText(netA.toFixed(2)+' m²',cen.x,cen.y);
+            if(myHoles.length>0){
+                DX.font=`bold ${12*ds}px Arial`;
+                DX.strokeStyle='rgba(255,255,255,0.75)';DX.lineWidth=3*ds;
+                DX.strokeText('(lordo: '+calcA(obj,m).toFixed(2)+')',cen.x,cen.y+20*ds);
+                DX.fillText('(lordo: '+calcA(obj,m).toFixed(2)+')',cen.x,cen.y+20*ds);
+            }
+            if(obj.codice){
+                DX.font=`bold ${14*ds}px Arial`;
+                DX.strokeStyle='rgba(255,255,255,0.75)';DX.lineWidth=3*ds;
+                DX.strokeText('['+obj.codice+']',cen.x,cen.y+(myHoles.length>0?38:20)*ds);
+                DX.fillText('['+obj.codice+']',cen.x,cen.y+(myHoles.length>0?38:20)*ds);
+            }
+        }else{
+            DX.font=`bold ${18*ds}px Arial`;
+            DX.strokeStyle='rgba(255,255,255,0.75)';DX.lineWidth=4*ds;DX.lineJoin='round';
+            DX.strokeText(calcP(obj,m).toFixed(2)+' m',cen.x,cen.y);
+            DX.fillText(calcP(obj,m).toFixed(2)+' m',cen.x,cen.y);
+        }
+        DX.shadowColor='transparent';
+    });
+
+    // Draw selected object highlight (any mode)
+    if(S.selObj){
+        const sel=S.selObj;
+        DX.save();
+        DX.beginPath();DX.moveTo(sel.points[0].x,sel.points[0].y);
+        sel.points.forEach(p=>DX.lineTo(p.x,p.y));
+        DX.strokeStyle='#f39c12';DX.lineWidth=3*ds;
+        DX.setLineDash([8*ds,4*ds]);DX.stroke();DX.setLineDash([]);
+        DX.restore();
+    }
+
+    if(S.bordVis&&ps.grid&&ps.grid.length){
+        DX.save();DX.strokeStyle='rgba(52,152,219,0.7)';DX.lineWidth=2.5*ds;
+        ps.grid.forEach(g=>{DX.beginPath();DX.moveTo(g.p1.x,g.p1.y);DX.lineTo(g.p2.x,g.p2.y);DX.stroke()});
+        DX.restore();
+    }
+
+    if(S.bordVis){
+        ps.objects.filter(o=>o.isB).forEach(obj=>{
+            DX.save();DX.lineJoin='round';DX.lineCap='round';
+            DX.beginPath();DX.moveTo(obj.points[0].x,obj.points[0].y);
+            obj.points.forEach(p=>DX.lineTo(p.x,p.y));
+            DX.strokeStyle='rgba(255,255,255,0.9)';DX.lineWidth=10*ds;DX.stroke();
+            DX.strokeStyle='#e91e63';DX.lineWidth=6*ds;DX.stroke();
+            if(obj.type==='area'){DX.fillStyle='rgba(233,30,99,0.12)';DX.fill()}
+            DX.restore();
+        });
+    }
+
+    if(S.hSeg&&S.tool==='select'){
+        const sg=S.hSeg;
+        const p1=sg.obj.points[sg.segmentIndex],p2=sg.obj.points[sg.segmentIndex+1];
+        DX.beginPath();DX.moveTo(p1.x,p1.y);DX.lineTo(p2.x,p2.y);
+        DX.strokeStyle='#3498db';DX.lineWidth=4*ds;DX.stroke();
+        if(sg.insertPoint){
+            DX.beginPath();DX.arc(sg.insertPoint.x,sg.insertPoint.y,5*ds,0,Math.PI*2);
+            DX.fillStyle='#3498db';DX.fill();
+            DX.strokeStyle='white';DX.lineWidth=2*ds;DX.stroke();
+        }
+    }
+
+    if(S.snap&&S.tool&&S.tool!=='select'){
+        DX.beginPath();DX.arc(S.snap.x,S.snap.y,8*ds,0,Math.PI*2);
+        DX.strokeStyle='#27ae60';DX.lineWidth=3*ds;DX.stroke();
+        DX.beginPath();DX.arc(S.snap.x,S.snap.y,3*ds,0,Math.PI*2);
+        DX.fillStyle='#27ae60';DX.fill();
+    }
+
+    if(S.calMode&&S.cur&&S.cur.points.length===1){
+        const p0=S.cur.points[0],tp=S.snap||S.mp;
+        DX.beginPath();DX.moveTo(p0.x,p0.y);DX.lineTo(tp.x,tp.y);
+        DX.strokeStyle='#e67e22';DX.lineWidth=3*ds;
+        DX.setLineDash([8*ds,4*ds]);DX.stroke();DX.setLineDash([]);
+        DX.strokeStyle='#e67e22';DX.lineWidth=2*ds;
+        drawX(DX,p0.x,p0.y,8*ds);
+        const pxDist=Math.hypot(tp.x-p0.x,tp.y-p0.y);
+        const refDist=getCalRefDist();
+        const mx2=(p0.x+tp.x)/2,my2=(p0.y+tp.y)/2;
+        DX.fillStyle='#e67e22';DX.font=`bold ${16*ds}px Arial`;
+        DX.textAlign="center";DX.shadowColor="white";DX.shadowBlur=4*ds;
+        DX.fillText(`${refDist} m (${Math.round(pxDist)}px)`,mx2,my2-12*ds);
+        DX.shadowColor="transparent";
+    }
+
+    if(S.cur&&S.cur.points.length>0&&!S.calMode){
+        const obj=S.cur,tp=S.snap||S.mp;
+        DX.save();
+        DX.strokeStyle=obj.color;DX.lineWidth=1.5*ds;
+        DX.setLineDash([6*ds,4*ds]);
+
+        // Rectangle tool preview (2 diagonal vertices)
+        if(obj.type==='rect'){
+            const a=obj.points[0], b=tp;
+            const x1=a.x, y1=a.y, x2=b.x, y2=b.y;
+            const rp=[{x:x1,y:y1},{x:x2,y:y1},{x:x2,y:y2},{x:x1,y:y2},{x:x1,y:y1}];
+            DX.beginPath();
+            DX.moveTo(rp[0].x,rp[0].y);
+            rp.forEach(p=>DX.lineTo(p.x,p.y));
+            DX.stroke();
+            DX.setLineDash([]);
+
+            DX.strokeStyle=obj.color;DX.lineWidth=1.5*ds;
+            drawX(DX,a.x,a.y,8*ds);
+            drawX(DX,b.x,b.y,8*ds);
+
+            DX.fillStyle=obj.color;DX.shadowColor='transparent';
+            const to={type:'area',points:rp,color:obj.color};
+            const cenR=getC(rp);DX.font=`bold ${18*ds}px Arial`;DX.textAlign="center";
+            DX.strokeStyle='rgba(255,255,255,0.75)';DX.lineWidth=4*ds;DX.lineJoin='round';
+            DX.strokeText(calcA(to,m).toFixed(2)+" m²",cenR.x,cenR.y);
+            DX.fillText(calcA(to,m).toFixed(2)+" m²",cenR.x,cenR.y);
+            DX.restore();
+            return;
+        }
+
+        DX.beginPath();
+        DX.moveTo(obj.points[0].x,obj.points[0].y);
+        obj.points.forEach(p=>DX.lineTo(p.x,p.y));
+        DX.lineTo(tp.x,tp.y);
+        DX.stroke();
+        DX.setLineDash([]);
+
+        obj.points.forEach(p=>{
+            DX.strokeStyle=obj.color;DX.lineWidth=1.5*ds;
+            drawX(DX,p.x,p.y,8*ds);
+        });
+
+        DX.fillStyle=obj.color;DX.shadowColor='transparent';
+        if(obj.type==='line'&&obj.points.length===1){
+            const td=Math.hypot(tp.x-obj.points[0].x,tp.y-obj.points[0].y)*m;
+            const mx2=(obj.points[0].x+tp.x)/2,my2=(obj.points[0].y+tp.y)/2;
+            DX.font=`bold ${18*ds}px Arial`;DX.textAlign="center";
+            DX.strokeStyle='rgba(255,255,255,0.75)';DX.lineWidth=4*ds;DX.lineJoin='round';
+            DX.strokeText(td.toFixed(2)+" m",mx2,my2-12*ds);
+            DX.fillText(td.toFixed(2)+" m",mx2,my2-12*ds);
+        }else if((obj.type==='area'||obj.type==='poly')&&obj.points.length>1){
+            const tps=[...obj.points,tp];
+            const to={...obj,points:tps},cenP=getC(tps);
+            DX.font=`bold ${18*ds}px Arial`;DX.textAlign="center";
+            DX.strokeStyle='rgba(255,255,255,0.75)';DX.lineWidth=4*ds;DX.lineJoin='round';
+            if(obj.type==='area'){
+                DX.strokeText(calcA(to,m).toFixed(2)+" m²",cenP.x,cenP.y);
+                DX.fillText(calcA(to,m).toFixed(2)+" m²",cenP.x,cenP.y);
+            }else{
+                DX.strokeText(calcP(to,m).toFixed(2)+" m",cenP.x,cenP.y);
+                DX.fillText(calcP(to,m).toFixed(2)+" m",cenP.x,cenP.y);
+            }
+        }
+        DX.shadowColor="transparent";
+        DX.restore();
+    }
+}
+
+
+/* --- TABELLA --- */
+const CODES='ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+function codeOpts(cur){return CODES.map(c=>`<option value="${c}"${c===cur?' selected':''}>${c}</option>`).join('')}
+
+function updateTbl(){
+    if(!S.pages||!S.pages.length){document.getElementById('mb').innerHTML='';return}
+
+    let html='';
+    let globalIdx=1; // progressive number across all pages
+
+    S.pages.forEach((ps,pi)=>{
+        const nonBObjs=ps.objects.map((o,oi)=>({o,oi,pi})).filter(r=>!r.o.isB);
+        if(!nonBObjs.length)return;
+
+        // Page header row
+        html+=`<tr style="background:#34495e"><td colspan="3" style="color:#fff;font-size:10px;font-weight:800;padding:4px 8px">
+            📄 PAG. ${ps.pn}${ps.cal?'':' — ⚠️ non calibrata'}</td></tr>`;
+
+        // Assign stable uids to objects missing them (old files)
+        nonBObjs.forEach(r=>{ if(!r.o.uid) r.o.uid = S.uidCtr++; });
+
+        const parentRecs = nonBObjs.filter(r => !r.o.isHole);
+        const holeRecs   = nonBObjs.filter(r =>  r.o.isHole);
+
+        // For each hole, find its parent record (uid-based, fallback geometric)
+        function getParentRec(hr){
+            if(hr.o.parentUid){
+                const byUid = parentRecs.find(pr => pr.o.uid === hr.o.parentUid);
+                if(byUid) return byUid;
+            }
+            // Geometric fallback for old files
+            const c = centroid(hr.o.points);
+            return parentRecs.find(pr => pr.o.type==='area' && pointInPolygon(c.x, c.y, pr.o.points)) || null;
+        }
+
+        function buildAreaRow(r, isHole){
+            const o=r.o, m=ps.mpp;
+            const codice=o.codice||'A';
+            const dest=o.destinazione||'';
+            const color=getCodeColor(codice);
+            const num=globalIdx++;
+            const grossA=calcA(o,m);
+            if(isHole){
+                const netLabel='<span style="color:#e74c3c;font-weight:800">− '+grossA.toFixed(2)+' m²</span>';
+                html += '<tr style="background:#ffffff;border-left:3px solid #e74c3c">'
+                      + '<td style="padding-left:16px"><span style="font-size:9px;background:#e74c3c;color:white;border-radius:3px;padding:1px 4px">- DETRAZ.</span> '
+                      + '<input class="en" style="color:#c0392b;font-size:11px" value="'+o.name.replace(/"/g,'&quot;')+'"'
+                      + ' onfocus="pushHistory()" onchange="S.pages['+r.pi+'].objects['+r.oi+'].name=this.value;draw()"></td>'
+                      + '<td style="white-space:nowrap">'+(m?netLabel:'N/A')+'</td>'
+                      + '<td><button onclick="remObjGlobal('+r.pi+','+r.oi+')" style="background:none;border:none;cursor:pointer;font-size:14px">❌</button></td>'
+                      + '</tr>';
+            } else {
+                const netA = calcNetA(o, ps.objects, m);
+                const hasHoles = grossA > netA;
+                const netLabel = '<b>'+netA.toFixed(2)+' m²</b>'+(hasHoles?' <small style="color:#999">(lordo '+grossA.toFixed(2)+')</small>':'');
+                const codDiv = '<div style="display:flex;gap:4px;margin-top:3px;align-items:center">'
+                    + '<label style="font-size:9px;color:#7f8c8d;font-weight:700">COD</label>'
+                    + '<select style="font-size:11px;font-weight:700;border:1px solid '+color+';border-radius:3px;background:'+color+'22;color:'+color+';width:48px;padding:1px"'
+                    + ' onfocus="pushHistory()" onchange="S.pages['+r.pi+'].objects['+r.oi+'].codice=this.value;S.pages['+r.pi+'].objects['+r.oi+'].color=getCodeColor(this.value);updateTbl();if('+r.pi+'==='+S.ci+')draw()">'
+                    + codeOpts(codice)+'</select></div>';
+                html += '<tr style="background:'+color+'22">'
+                      + '<td><span style="font-size:9px;color:#aaa;font-weight:700">#'+num+'</span> '
+                      + '<input class="en" placeholder="Nome / Destinazione" style="color:'+color+';font-size:11px" value="'+o.name.replace(/"/g,'&quot;')+'"'
+                      + ' onfocus="pushHistory()" onchange="S.pages['+r.pi+'].objects['+r.oi+'].name=this.value;draw()">'
+                      + codDiv+'</td>'
+                      + '<td style="white-space:nowrap">'+(m?netLabel:'N/A')+'</td>'
+                      + '<td><button onclick="remObjGlobal('+r.pi+','+r.oi+')" style="background:none;border:none;cursor:pointer;font-size:14px">❌</button></td>'
+                      + '</tr>';
+            }
+        }
+
+        function buildLineRow(r){
+            const o=r.o, m=ps.mpp;
+            const num=globalIdx++;
+            html += '<tr style="background:'+o.color+'22">'
+                  + '<td><span style="font-size:9px;color:#aaa;font-weight:700">#'+num+'</span> '
+                  + '<input class="en" style="color:'+o.color+'" value="'+o.name.replace(/"/g,'&quot;')+'"'
+                  + ' onfocus="pushHistory()" onchange="S.pages['+r.pi+'].objects['+r.oi+'].name=this.value;draw()"></td>'
+                  + '<td style="white-space:nowrap">'+(m?calcP(o,m).toFixed(2)+' m':'N/A')+'</td>'
+                  + '<td><button onclick="remObjGlobal('+r.pi+','+r.oi+')" style="background:none;border:none;cursor:pointer;font-size:14px">❌</button></td>'
+                  + '</tr>';
+        }
+
+        // Emit each parent followed immediately by its holes
+        parentRecs.forEach(r => {
+            if(r.o.type === 'area'){
+                buildAreaRow(r, false);
+                holeRecs.filter(hr => getParentRec(hr) === r).forEach(hr => buildAreaRow(hr, true));
+            } else {
+                buildLineRow(r);
+            }
+        });
+        // Orphan holes (parent not on this page)
+        holeRecs.filter(hr => !getParentRec(hr)).forEach(hr => buildAreaRow(hr, true));
+    });
+
+    // Cross-page partial sums
+    const byCode={};
+    S.pages.forEach(ps=>{
+        ps.objects.filter(o=>!o.isB&&o.type==='area'&&!o.isHole).forEach(o=>{
+            const code=o.codice||'A';
+            if(!byCode[code])byCode[code]={sum:0,dest:o.destinazione||'',color:getCodeColor(code)};
+            byCode[code].sum+=calcNetA(o,ps.objects,ps.mpp||0);
+        });
+    });
+    const totalMeasures=S.pages.reduce((s,ps)=>s+ps.objects.filter(o=>!o.isB).length,0);
+
+    if(Object.keys(byCode).length>0){
+        html+=`<tr style="background:#ecf0f1"><td colspan="3" style="font-size:10px;font-weight:800;color:#34495e;padding:6px 8px 2px">
+            📊 RIEPILOGO SUPERFICI</td></tr>`;
+        Object.entries(byCode).sort((a,b)=>a[0].localeCompare(b[0])).forEach(([code,d])=>{
+            html+=`<tr style="background:${d.color}33">
+                <td style="font-weight:700;color:${d.color}">
+                  <span style="display:inline-block;width:20px;height:20px;background:${d.color};color:white;border-radius:50%;text-align:center;line-height:20px;font-size:11px;font-weight:800;flex-shrink:0">${code}</span>
+
+                </td>
+                <td style="font-weight:800;color:${d.color};white-space:nowrap">${d.sum.toFixed(2)} m²</td>
+                <td></td>
+            </tr>`;
+        });
+        const total=Object.values(byCode).reduce((s,d)=>s+d.sum,0);
+        html+=`<tr style="background:#2c3e50">
+            <td style="color:white;font-weight:800;font-size:12px">TOTALE</td>
+            <td style="color:#f1c40f;font-weight:800;font-size:13px;white-space:nowrap">${total.toFixed(2)} m²</td>
+            <td></td>
+        </tr>`;
+    }
+
+    if(!totalMeasures) html='<tr><td colspan="3" style="color:#aaa;font-size:12px;padding:10px;text-align:center">Nessuna misura</td></tr>';
+    document.getElementById('mb').innerHTML=html;
+}
+
+function highlightTblRow(obj){
+    // Remove previous highlight
+    document.querySelectorAll('#mb tr.tbl-sel').forEach(r=>r.classList.remove('tbl-sel'));
+    if(!obj)return;
+    // Find table row: look for input whose value matches obj.name and whose onchange references the right page/index
+    const ps=P();
+    const pi=S.ci;
+    const oi=ps.objects.indexOf(obj);
+    if(oi<0)return;
+    // The row has a button with remObjGlobal(pi,oi)
+    const btns=document.querySelectorAll('#mb button');
+    for(const btn of btns){
+        if(btn.getAttribute('onclick')===`remObjGlobal(${pi},${oi})`){
+            const row=btn.closest('tr');
+            if(row){
+                row.classList.add('tbl-sel');
+                row.scrollIntoView({block:'nearest',behavior:'smooth'});
+            }
+            break;
+        }
+    }
+}
+
+function removeWithHoles(ps, obj){
+    pushHistory();
+    // If obj is a parent area, remove its holes first
+    if(!obj.isHole && obj.type==='area'){
+        // collect holes that belong to this parent, remove backwards
+        const holes=ps.objects.filter(o=>o.isHole&&o.type==='area'&&findParent(o,ps.objects)===obj);
+        holes.forEach(h=>{
+            const hi=ps.objects.indexOf(h);
+            if(hi>=0)ps.objects.splice(hi,1);
+        });
+    }
+    const oi=ps.objects.indexOf(obj);
+    if(oi>=0)ps.objects.splice(oi,1);
+}
+
+function remObjGlobal(pi,oi){
+    const ps=S.pages[pi];if(!ps)return;
+    const o=ps.objects[oi];
+    removeWithHoles(ps,o);
+    updateTbl();
+    if(pi===S.ci)draw();
+    updateTabs();
+    if(o&&o.isB)updateBordUI(ps);
+}
+
+/* --- SALVATAGGIO / CARICAMENTO --- */
+function ab2b64(buf){
+    const b=new Uint8Array(buf);const cs=8192;let s='';
+    for(let i=0;i<b.length;i+=cs){const c=b.subarray(i,i+cs);s+=String.fromCharCode.apply(null,c)}
+    return btoa(s);
+}
+
+function b642ab(b64){
+    const s=atob(b64);const b=new Uint8Array(s.length);
+    for(let i=0;i<s.length;i++)b[i]=s.charCodeAt(i);return b.buffer;
+}
+
+function savePrj(){
+    if(!S.pdfAB){alert("Nessun PDF.");return}
+    const pd=S.pages.map(ps=>({
+        pn:ps.pn,mpp:ps.mpp,cal:ps.cal,calRef:ps.calRef,
+        objects:ps.objects.map(o=>({type:o.type,name:o.name,points:o.points.map(p=>({x:p.x,y:p.y})),color:o.color,isB:o.isB||false,isHole:o.isHole||false,parentUid:o.parentUid||null,uid:o.uid||null,codice:o.codice||'',destinazione:o.destinazione||''}))
+    }));
+    const prj={v:V,app:"FABBRICATI_beta",t:new Date().toISOString(),
+        psc:PSC,
+        rendite:getRenditeData(),cp:S.ci,sn:S.snapOn,bv:S.bordVis,fv:S.fillVis,pages:pd,pdf:ab2b64(S.pdfAB)};
+    const bl=new Blob([JSON.stringify(prj)],{type:'application/json'});
+    const fn=buildFileName('mpj');
+    const a=document.createElement('a');a.href=URL.createObjectURL(bl);a.download=fn;a.click();
+    URL.revokeObjectURL(a.href);
+    document.getElementById('prjSt').innerHTML=`✅ Salvato: <b>${fn}</b>`;
+    document.getElementById('prjSt').style.color='#27ae60';
+}
+
+async function loadPrj(ev){
+    const f=ev.target.files[0];if(!f)return;
+    const st=document.getElementById('prjSt');st.innerHTML='⏳...';st.style.color='#f39c12';
+    try{
+        const txt=await f.text(),prj=JSON.parse(txt);
+        if(!prj.app)throw new Error("File non valido.");
+        const buf=b642ab(prj.pdf);S.pdfAB=buf.slice(0);await loadPDF(buf);
+        // Compatibility: rescale coordinates if saved PSC differs from current PSC
+        const savedPSC=prj.psc||4.0;
+        const pscRatio=PSC/savedPSC;
+        if(prj.pages)prj.pages.forEach((pd,i)=>{
+            if(i<S.pages.length){
+                if(pd.mpp){
+                    // mpp is meters/pixel — if PSC increases, pixels are smaller so mpp decreases
+                    S.pages[i].mpp=pd.mpp*(savedPSC/PSC);
+                    S.pages[i].cal=true;
+                    S.pages[i].calRef=pd.calRef||10;
+                    if(pd._cd)S.pages[i]._cd=pd._cd*pscRatio;
+                }
+                S.pages[i].objects=(pd.objects||[]).map(o=>({
+                    type:o.type,name:o.name,
+                    // Rescale all point coordinates to current PSC canvas space
+                    points:o.points.map(p=>({x:p.x*pscRatio,y:p.y*pscRatio})),
+                    color:o.color,isB:o.isB||false,isHole:o.isHole||false,parentUid:o.parentUid||null,uid:o.uid||null,
+                    codice:o.codice||'',destinazione:o.destinazione||''
+                }));
+            }
+        });
+        // Restore uidCtr above max existing uid
+        let maxUid=0;S.pages.forEach(p=>p.objects.forEach(o=>{if(o.uid>maxUid)maxUid=o.uid;}));S.uidCtr=maxUid+1;
+        if(prj.rendite)setRenditeData(prj.rendite);
+        if(prj.sn!==undefined){S.snapOn=prj.sn;document.getElementById('snapTog').classList.toggle('on',S.snapOn)}
+        if(prj.bv!==undefined)S.bordVis=prj.bv;
+        if(prj.fv!==undefined){S.fillVis=prj.fv;document.getElementById('fillTog').classList.toggle('on',S.fillVis);}
+        await showPage(prj.cp||0);buildGrid(P());
+        st.innerHTML=`✅ <b>${f.name}</b>`;st.style.color='#27ae60';
+    }catch(e){st.innerHTML='❌ '+e.message;st.style.color='#e74c3c'}
+    ev.target.value='';
+}
+
+/* --- EXPORT EXCEL --- */
+function rgbToHex(rgb){return rgb.replace('#','').toUpperCase()}
+function setCellStyle(ws,addr,fillHex,textHex,bold){
+    if(!ws[addr])ws[addr]={t:'s',v:''};
+    ws[addr].s={fill:{patternType:"solid",fgColor:{rgb:fillHex}},font:{color:{rgb:textHex},bold:!!bold}};
+}
+
+function exportXL(){
+    let tot=0;S.pages.forEach(ps=>tot+=ps.objects.filter(o=>!o.isB).length);
+    if(!tot){alert("Nessuna misura.");return}
+    const rend=getRenditeData(),data=[];
+    data.push(["FABBRICATI Beta v"+V]);data.push([]);
+    data.push(["Dati Catastali"]);
+    data.push(["Ufficio provinciale",rend.ufficio]);
+    data.push(["Catasto",rend.catasto]);
+    data.push(["Comune",rend.comune]);
+    data.push(["Codice Comune",rend.codice]);
+    data.push(["Foglio",rend.foglio]);
+    data.push(["Particella",rend.particella]);
+    data.push(["Subalterno",rend.subalterno]);
+    data.push(["Indirizzo",rend.indirizzo]);
+    data.push(["Zona cens",rend.zona]);
+    data.push(["Categoria",rend.categoria]);
+    data.push(["Classe",rend.classe]);
+    data.push(["Consistenza",rend.consistenza]);
+    data.push(["Rendita",rend.rendita]);
+    data.push(["Partita",rend.partita]);
+    data.push(["Graffati",rend.graffati]);
+    data.push([]);data.push(["MISURE"]);
+    data.push(["#","Nome / Destinazione","Codice","Superficie"]);
+    // Build ordered rows mirroring sidebar: parent then its holes, grouped by page
+    const measureRows=[];let globalNum=1;
+    S.pages.forEach((ps,pi)=>{
+        if(!ps.objects.filter(o=>!o.isB).length)return;
+        if(pi>0)data.push([]);data.push(["--- PAG. "+ps.pn+" ---"]);
+        const nonBRecs=ps.objects.map((o,oi)=>({o,oi})).filter(r=>!r.o.isB);
+        const parentRecs2=nonBRecs.filter(r=>!r.o.isHole);
+        const holeRecs2=nonBRecs.filter(r=>r.o.isHole);
+        function getParentXL(hr){
+            if(hr.o.parentUid){const p=parentRecs2.find(pr=>pr.o.uid===hr.o.parentUid);if(p)return p;}
+            const c=centroid(hr.o.points);
+            return parentRecs2.find(pr=>pr.o.type==='area'&&pointInPolygon(c.x,c.y,pr.o.points))||null;
+        }
+        parentRecs2.forEach(r=>{
+            const o=r.o;
+            if(o.type==='area'){
+                const netA=calcNetA(o,ps.objects,ps.mpp);
+                measureRows.push({num:globalNum++,pn:ps.pn,name:o.name,cod:o.codice||'A',surf:netA.toFixed(2)+' m²',color:getCodeColor(o.codice||'A'),isHole:false});
+                holeRecs2.filter(hr=>getParentXL(hr)===r).forEach(hr=>{
+                    measureRows.push({num:globalNum++,pn:ps.pn,name:'  - '+hr.o.name,cod:'',surf:'-'+calcA(hr.o,ps.mpp).toFixed(2)+' m²',color:'#e74c3c',isHole:true});
+                });
+            }else{
+                measureRows.push({num:globalNum++,pn:ps.pn,name:o.name,cod:'',surf:calcP(o,ps.mpp).toFixed(2)+' m',color:o.color,isHole:false});
+            }
+        });
+        holeRecs2.filter(hr=>!getParentXL(hr)).forEach(hr=>{
+            measureRows.push({num:globalNum++,pn:ps.pn,name:'  - '+hr.o.name,cod:'',surf:'-'+calcA(hr.o,ps.mpp).toFixed(2)+' m²',color:'#e74c3c',isHole:true});
+        });
+    });
+    measureRows.forEach(r=>data.push([r.num,r.name,r.cod,r.surf]));
+    // Riepilogo cross-page per codice
+    data.push([]);data.push(["RIEPILOGO SUPERFICI PER CODICE"]);
+    data.push(["Codice","Superficie netta"]);
+    const byCode={};
+    measureRows.filter(r=>r.cod&&!r.isHole).forEach(r=>{
+        if(!byCode[r.cod])byCode[r.cod]={sum:0};
+        byCode[r.cod].sum+=parseFloat(r.surf)||0;
+    });
+    Object.entries(byCode).sort((a,b)=>a[0].localeCompare(b[0])).forEach(([c,d])=>{
+        data.push([c,d.sum.toFixed(2)+' m²']);
+    });
+    const totalSup=Object.values(byCode).reduce((s,d)=>s+d.sum,0);
+    data.push([]);data.push(["TOTALE SUPERFICI",totalSup.toFixed(2)+' m²']);
+    const ws=XLSX.utils.aoa_to_sheet(data);
+    ws['!cols']=[{wch:5},{wch:35},{wch:8},{wch:18}];
+    // Style header row
+    const mhr=data.findIndex(r=>r[0]==="#"&&r[1]==="Pag");
+    if(mhr>=0)for(let c=0;c<4;c++)setCellStyle(ws,XLSX.utils.encode_cell({r:mhr,c}),"2C3E50","FFFFFF",true);
+    // Style page separator rows (--- PAG. N ---)
+    data.forEach((row,ri)=>{
+        if(typeof row[0]==='string'&&row[0].startsWith('---')){
+            for(let c=0;c<4;c++){const addr=XLSX.utils.encode_cell({r:ri,c});if(ws[addr])setCellStyle(ws,addr,"34495E","ECEFF1",true)}
+        }
+    });
+    // Style measure rows with matching sidebar colors
+    let dataOffset=mhr+1;
+    measureRows.forEach((r,idx)=>{
+        const row=dataOffset+idx;
+        if(r.isHole){
+            // Holes: light red background matching sidebar #fdecea
+            for(let c=0;c<4;c++){const addr=XLSX.utils.encode_cell({r:row,c});if(ws[addr])setCellStyle(ws,addr,"FFFFFF","C0392B",true)}
+        } else {
+            // Areas/lines: light version of code color (like sidebar color+'22')
+            const hex=r.color.replace('#','').toUpperCase();
+            // Light fill = mix color with white at 85%
+            const rr=parseInt(hex.substr(0,2),16),gg=parseInt(hex.substr(2,2),16),bb=parseInt(hex.substr(4,2),16);
+            const lr=Math.round(rr+(255-rr)*0.82).toString(16).padStart(2,'0');
+            const lg=Math.round(gg+(255-gg)*0.82).toString(16).padStart(2,'0');
+            const lb=Math.round(bb+(255-bb)*0.82).toString(16).padStart(2,'0');
+            const lightHex=(lr+lg+lb).toUpperCase();
+            for(let c=0;c<4;c++){const addr=XLSX.utils.encode_cell({r:row,c});if(ws[addr])setCellStyle(ws,addr,lightHex,hex,true)}
+        }
+    });
+    // Style riepilogo section
+    const riepIdx=data.findIndex(r=>r[0]==="RIEPILOGO SUPERFICI PER CODICE");
+    if(riepIdx>=0){
+        // header
+        for(let c=0;c<2;c++){const addr=XLSX.utils.encode_cell({r:riepIdx+1,c});if(ws[addr])setCellStyle(ws,addr,"2C3E50","FFFFFF",true)}
+        // code rows: color each by code color
+        let ri2=riepIdx+2;
+        Object.entries(byCode).sort((a,b)=>a[0].localeCompare(b[0])).forEach(([c,d])=>{
+            const col=getCodeColor(c).replace('#','').toUpperCase();
+            const rr2=parseInt(col.substr(0,2),16),gg2=parseInt(col.substr(2,2),16),bb2=parseInt(col.substr(4,2),16);
+            const lr2=Math.round(rr2+(255-rr2)*0.7).toString(16).padStart(2,'0');
+            const lg2=Math.round(gg2+(255-gg2)*0.7).toString(16).padStart(2,'0');
+            const lb2=Math.round(bb2+(255-bb2)*0.7).toString(16).padStart(2,'0');
+            const lhex=(lr2+lg2+lb2).toUpperCase();
+            for(let ci=0;ci<2;ci++){const addr=XLSX.utils.encode_cell({r:ri2,c:ci});if(ws[addr])setCellStyle(ws,addr,lhex,col,true)}
+            ri2++;
+        });
+        // skip empty row, style TOTALE
+        const totIdx=data.findIndex((r,i)=>i>riepIdx&&r[0]==="TOTALE SUPERFICI");
+        if(totIdx>=0)for(let c=0;c<2;c++){const addr=XLSX.utils.encode_cell({r:totIdx,c});if(ws[addr])setCellStyle(ws,addr,"2C3E50","F1C40F",true)}
+    }
+    const wb=XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb,ws,"Rilievo");
+    XLSX.writeFile(wb,buildFileName('xlsx'));
+}
+
+/* --- STAMPA PDF --- */
+async function printPDF(){
+    if(!S.pages||!S.pages.length){alert("Nessuna pagina caricata.");return}
+    const rend=getRenditeData(),ds=DPR,{jsPDF}=window.jspdf;
+    let doc=null;
+
+    for(let pi=0;pi<S.pages.length;pi++){
+        const ps=S.pages[pi];
+        // Always render every page; uncalibrated pages printed at original PDF size
+        if(!ps.imgD){
+            const tc=document.createElement('canvas');
+            tc.width=ps.vp.width;tc.height=ps.vp.height;
+            const tx=tc.getContext('2d');
+            await ps.page.render({canvasContext:tx,viewport:ps.vp}).promise;
+            ps.imgD=tx.getImageData(0,0,tc.width,tc.height);
+        }
+        const pc=document.createElement('canvas');
+        pc.width=ps.vp.width;pc.height=ps.vp.height;
+        const pxc=pc.getContext('2d');
+        pxc.putImageData(ps.imgD,0,0);
+        const px=pxc; // alias for code below
+        // --- A4 fit scale (to keep label height constant in mm) ---
+        const bvp=ps.page.getViewport({scale:1});
+        const srcWmm=bvp.width/72*25.4, srcHmm=bvp.height/72*25.4;
+        const ori=srcWmm>srcHmm?'landscape':'portrait';
+        const a4W=ori==='landscape'?297:210;
+        const a4H=ori==='landscape'?210:297;
+        const fitScale=Math.min(a4W/srcWmm, a4H/srcHmm); // how much the page image will be scaled inside A4
+        const imgW=srcWmm*fitScale, imgH=srcHmm*fitScale;
+        const imgX=(a4W-imgW)/2, imgY=(a4H-imgH)/2;
+
+
+        // PDF canvas: mirror draw() logic exactly
+        // Skip measurements for uncalibrated pages
+        const pdfNonB=ps.objects.filter(o=>!o.isB);
+        const pdfAreasFill=pdfNonB.filter(o=>o.type==='area'&&!o.isHole);
+        const pdfHolesFill=pdfNonB.filter(o=>o.type==='area'&&o.isHole);
+        const pdfLinesFill=pdfNonB.filter(o=>o.type!=='area');
+
+        if(ps.cal && ps.mpp){
+        // Fill areas (respects fillVis toggle)
+        if(S.fillVis){
+            pdfAreasFill.forEach(obj=>{
+                const myH=pdfHolesFill.filter(h=>findParent(h,ps.objects)===obj);
+                px.beginPath();
+                px.moveTo(obj.points[0].x,obj.points[0].y);
+                obj.points.forEach(p=>px.lineTo(p.x,p.y));
+                myH.forEach(h=>{px.moveTo(h.points[0].x,h.points[0].y);h.points.forEach(p=>px.lineTo(p.x,p.y));});
+                px.fillStyle=obj.color+'40';px.fill('evenodd');
+            });
+        }
+
+        // Strokes for areas
+        pdfAreasFill.forEach(obj=>{
+            px.beginPath();px.moveTo(obj.points[0].x,obj.points[0].y);
+            obj.points.forEach(p=>px.lineTo(p.x,p.y));
+            px.strokeStyle=obj.color;px.lineWidth=1.5*ds;px.stroke();
+        });
+
+        // Lines
+        pdfLinesFill.forEach(obj=>{
+            px.beginPath();px.moveTo(obj.points[0].x,obj.points[0].y);
+            obj.points.forEach(p=>px.lineTo(p.x,p.y));
+            px.strokeStyle=obj.color;px.lineWidth=1.5*ds;px.stroke();
+        });
+
+        // Vertices and labels for non-hole objects — v71: no vertex crosses, halo text
+        pdfNonB.forEach(obj=>{
+            if(obj.isHole)return;
+
+            // Guaranteed-inside centroid: if geometric centroid is outside (concave poly), nudge toward a vertex
+            let cen=getC(obj.points);
+            if(obj.type==='area' && !pointInPolygon(cen.x,cen.y,obj.points)){
+                // Try midpoint toward each vertex until we land inside
+                let found=false;
+                for(let vi=0;vi<obj.points.length&&!found;vi++){
+                    const v=obj.points[vi];
+                    const mid={x:(cen.x+v.x)/2,y:(cen.y+v.y)/2};
+                    if(pointInPolygon(mid.x,mid.y,obj.points)){cen=mid;found=true;}
+                }
+                if(!found) cen=obj.points[0]; // fallback: first vertex
+            }
+
+            px.fillStyle=obj.color;px.textAlign='center';
+            px.shadowColor='transparent';px.shadowBlur=0;
+            if(obj.type==='area'){
+                const netA3=calcNetA(obj,ps.objects,ps.mpp);
+                const myH2=pdfHolesFill.filter(h=>findParent(h,ps.objects)===obj);
+                px.font=`bold ${18*ds}px Arial`;
+                px.strokeStyle='rgba(255,255,255,0.75)';px.lineWidth=4*ds;px.lineJoin='round';
+                px.strokeText(netA3.toFixed(2)+' m²',cen.x,cen.y);
+                px.fillText(netA3.toFixed(2)+' m²',cen.x,cen.y);
+                if(myH2.length>0){
+                    px.font=`bold ${12*ds}px Arial`;
+                    px.strokeStyle='rgba(255,255,255,0.75)';px.lineWidth=3*ds;
+                    px.strokeText('(lordo: '+calcA(obj,ps.mpp).toFixed(2)+')',cen.x,cen.y+18*ds);
+                    px.fillText('(lordo: '+calcA(obj,ps.mpp).toFixed(2)+')',cen.x,cen.y+18*ds);
+                }
+                if(obj.codice){
+                    px.font=`bold ${13*ds}px Arial`;
+                    px.strokeStyle='rgba(255,255,255,0.75)';px.lineWidth=3*ds;
+                    px.strokeText('['+obj.codice+']',cen.x,cen.y+(myH2.length>0?34:18)*ds);
+                    px.fillText('['+obj.codice+']',cen.x,cen.y+(myH2.length>0?34:18)*ds);
+                }
+            }else{
+                px.font=`bold ${18*ds}px Arial`;
+                px.strokeStyle='rgba(255,255,255,0.75)';px.lineWidth=4*ds;px.lineJoin='round';
+                px.strokeText(calcP(obj,ps.mpp).toFixed(2)+' m',cen.x,cen.y);
+                px.fillText(calcP(obj,ps.mpp).toFixed(2)+' m',cen.x,cen.y);
+            }
+            px.shadowColor='transparent';
+        });
+
+        } // end calibrated measurements
+
+        if(S.bordVis){
+            ps.objects.filter(o=>o.isB).forEach(obj=>{
+                px.save();px.lineJoin='round';px.lineCap='round';
+                px.beginPath();px.moveTo(obj.points[0].x,obj.points[0].y);
+                obj.points.forEach(p=>px.lineTo(p.x,p.y));
+                px.strokeStyle='rgba(255,255,255,0.9)';px.lineWidth=10*ds;px.stroke();
+                px.strokeStyle='#e91e63';px.lineWidth=6*ds;px.stroke();
+                if(obj.type==='area'){px.fillStyle='rgba(233,30,99,0.12)';px.fill()}
+                px.restore();
+            });
+            if(ps.grid&&ps.grid.length){
+                px.save();px.strokeStyle='rgba(52,152,219,0.7)';px.lineWidth=2.5*ds;
+                ps.grid.forEach(g=>{px.beginPath();px.moveTo(g.p1.x,g.p1.y);px.lineTo(g.p2.x,g.p2.y);px.stroke()});
+                px.restore();
+            }
+        }
+
+        // Output always on A4; plan page image fitted to page (labels keep fixed mm size)
+        if(!doc)doc=new jsPDF({orientation:ori,unit:'mm',format:'a4'});
+        else doc.addPage('a4',ori);
+        doc.addImage(pc.toDataURL('image/png'),'PNG',imgX,imgY,imgW,imgH,undefined,'FAST');
+    }
+
+    doc.addPage([210,297],'portrait');
+    doc.setFontSize(18);doc.setFont('helvetica','bold');doc.setTextColor(44,62,80);
+    doc.text('FABBRICATI Beta v'+V,105,20,{align:'center'});
+
+    const rows=[
+        ["Ufficio provinciale",rend.ufficio],["Catasto",rend.catasto],
+        ["Comune",rend.comune],["Codice Comune",rend.codice],
+        ["Foglio",rend.foglio],["Particella",rend.particella],
+        ["Subalterno",rend.subalterno],["Indirizzo",rend.indirizzo],
+        ["Zona cens",rend.zona],["Categoria",rend.categoria],
+        ["Classe",rend.classe],["Consistenza",rend.consistenza],
+        ["Rendita",rend.rendita],["Partita",rend.partita],
+        ["Graffati",rend.graffati]
+    ];
+
+    const bY=28,rowH=6,maxWidth=110;
+    const wrappedRows=rows.map(rw=>{
+        const val=(rw[1]||'—').toString();
+        const wrapped=doc.splitTextToSize(val,maxWidth);
+        return{label:rw[0],lines:wrapped,linesCount:wrapped.length};
+    });
+    const totalLines=wrappedRows.reduce((sum,r)=>sum+r.linesCount,0);
+    const boxH=totalLines*rowH+6;
+    doc.setDrawColor(52,152,219);doc.setLineWidth(.5);
+    doc.roundedRect(15,bY,180,boxH,3,3,'S');
+    let y=bY+8;
+    wrappedRows.forEach(rw=>{
+        doc.setFontSize(8);doc.setTextColor(127,140,141);doc.text(rw.label,20,y);
+        doc.setFontSize(10);doc.setTextColor(44,62,80);doc.text(rw.lines,70,y);
+        y+=rowH*rw.linesCount;
+    });
+
+    // ─ TABLE SETUP ──────────────────────────────────────────────────────────
+    const ML=12,MR=12,MT=bY+boxH+8;  // margins + start Y
+    const PW=210-ML-MR;               // usable width = 186mm
+    const PAGE_H=297,PAGE_B=285;      // A4 height, bottom margin
+    // Columns: #(8) | Pag(10) | Nome(50) | Cod(12) | Dest(54) | Sup(52)
+    const tcx=[ML, ML+10, ML+148, ML+148, ML+148, ML+160];
+    const tcw=[10,  138,  12,     0,      0,      26];
+    const rh=8;
+    let cy=MT;  // current Y position
+
+    function pdfNewPage(){
+        doc.addPage([210,297],'portrait');
+        cy=15;
+    }
+    function pdfCheckY(needed){
+        if(cy+needed>PAGE_B) pdfNewPage();
+    }
+    function hexLight(hex,f){
+        const h=hex.replace('#','');
+        const r=parseInt(h.substr(0,2),16),g=parseInt(h.substr(2,2),16),b=parseInt(h.substr(4,2),16);
+        return[Math.round(r+(255-r)*f),Math.round(g+(255-g)*f),Math.round(b+(255-b)*f)];
+    }
+
+    // Header row
+    pdfCheckY(rh);
+    doc.setFillColor(44,62,80);
+    doc.rect(ML,cy,PW,rh,'F');
+    doc.setTextColor(255,255,255);doc.setFontSize(7);doc.setFont('helvetica','bold');
+    doc.text('#',tcx[0]+1,cy+5.5);
+    doc.text('Nome / Destinazione',tcx[1]+1,cy+5.5);
+    doc.text('Cod',tcx[2]+1,cy+5.5);
+    doc.text('m²/m',tcx[5]+1,cy+5.5);
+    cy+=rh;
+
+    let pdfNum=1;
+    // Build same grouped structure as sidebar
+    S.pages.forEach(ps=>{
+        const nonBRecs=ps.objects.map((o,oi)=>({o,oi})).filter(r=>!r.o.isB);
+        if(!nonBRecs.length)return;
+        const parentsPDF=nonBRecs.filter(r=>!r.o.isHole);
+        const holesPDF=nonBRecs.filter(r=>r.o.isHole);
+        function getParentPDF(hr){
+            if(hr.o.parentUid){const p=parentsPDF.find(pr=>pr.o.uid===hr.o.parentUid);if(p)return p;}
+            const c=centroid(hr.o.points);
+            return parentsPDF.find(pr=>pr.o.type==='area'&&pointInPolygon(c.x,c.y,pr.o.points))||null;
+        }
+
+        // Page header band
+        pdfCheckY(rh);
+        doc.setFillColor(52,73,94);doc.rect(ML,cy,PW,rh,'F');
+        doc.setTextColor(220,220,220);doc.setFontSize(7);doc.setFont('helvetica','bold');
+        doc.text('PAGINA '+ps.pn+(ps.cal?'':' — NON CALIBRATA'),ML+2,cy+5.5);
+        cy+=rh;
+
+        function drawObjRow(o, isHole, num){
+            pdfCheckY(rh);
+            if(isHole){
+                // Detrazione: sfondo bianco, bordo rosso sinistro
+                doc.setFillColor(255,255,255);
+                doc.rect(ML,cy,PW,rh,'F');
+                doc.setDrawColor(231,76,60);doc.setLineWidth(0.8);
+                doc.line(ML,cy,ML,cy+rh);
+                doc.setLineWidth(0.3);
+                doc.setTextColor(192,57,43);doc.setFont('helvetica','bold');doc.setFontSize(6.5);
+                doc.text(String(num),tcx[0]+1,cy+5.5);
+                doc.text(('- '+o.name).substring(0,46),tcx[1]+3,cy+5.5);
+                doc.text('-'+calcA(o,ps.mpp).toFixed(2)+' m²',ML+PW-2,cy+5.5,{align:'right'});
+            }else{
+                const col=o.type==='area'?getCodeColor(o.codice||'A'):o.color;
+                const [lr,lg,lb]=hexLight(col,0.78);
+                doc.setFillColor(lr,lg,lb);doc.rect(ML,cy,PW,rh,'F');
+                doc.setDrawColor(200,200,200);doc.setLineWidth(0.3);
+                doc.setTextColor(30,30,30);doc.setFont('helvetica','bold');doc.setFontSize(7);
+                doc.text(String(num),tcx[0]+1,cy+5.5);
+                const nameStr=doc.splitTextToSize(o.name.substring(0,50),tcw[1]-2);
+                doc.text(nameStr[0],tcx[1]+1,cy+5.5);
+                if(o.type==='area'){
+                    doc.text((o.codice||'A'),tcx[2]+1,cy+5.5);
+                    const netA=calcNetA(o,ps.objects,ps.mpp);
+                    doc.text(netA.toFixed(2)+' m²',ML+PW-2,cy+5.5,{align:'right'});
+                }else{
+                    doc.text(calcP(o,ps.mpp).toFixed(2)+' m',ML+PW-2,cy+5.5,{align:'right'});
+                }
+            }
+            cy+=rh;
+        }
+
+        parentsPDF.forEach(r=>{
+            drawObjRow(r.o,false,pdfNum++);
+            if(r.o.type==='area'){
+                holesPDF.filter(hr=>getParentPDF(hr)===r).forEach(hr=>drawObjRow(hr.o,true,pdfNum++));
+            }
+        });
+        holesPDF.filter(hr=>!getParentPDF(hr)).forEach(hr=>drawObjRow(hr.o,true,pdfNum++));
+    });
+
+    // Riepilogo per codice
+    pdfCheckY(rh*3);
+    cy+=4;
+    doc.setFontSize(9);doc.setFont('helvetica','bold');doc.setTextColor(44,62,80);
+    doc.text('RIEPILOGO SUPERFICI PER CODICE',ML,cy+5);cy+=9;
+    const sumW1=55;                 // colonna Codice
+    const sumW2=PW-sumW1;             // colonna Superficie (riempie tutta la pagina)
+    const sumX2=ML+sumW1;
+    doc.setFillColor(44,62,80);doc.rect(ML,cy,PW,rh,'F');
+    doc.setTextColor(255,255,255);doc.setFontSize(7);
+    doc.text('Codice',ML+2,cy+5.5);
+    doc.text('Superficie netta',sumX2+2,cy+5.5);
+    cy+=rh;
+    const byCode2={};
+    S.pages.forEach(ps=>{
+        ps.objects.filter(o=>!o.isB&&o.type==='area'&&!o.isHole).forEach(o=>{
+            const c=o.codice||'A';
+            if(!byCode2[c])byCode2[c]={sum:0,color:getCodeColor(c)};
+            byCode2[c].sum+=calcNetA(o,ps.objects,ps.mpp);
+        });
+    });
+    Object.entries(byCode2).sort((a,b)=>a[0].localeCompare(b[0])).forEach(([c,d])=>{
+        pdfCheckY(rh);
+        const [lr,lg,lb]=hexLight(d.color,0.7);
+        doc.setFillColor(lr,lg,lb);doc.rect(ML,cy,PW,rh,'F');
+        doc.setTextColor(30,30,30);doc.setFontSize(8);doc.setFont('helvetica','bold');
+        doc.text('['+c+']',ML+2,cy+5.5);
+        doc.text(d.sum.toFixed(2)+' m²',ML+PW-2,cy+5.5,{align:'right'});
+        cy+=rh;
+    });
+    pdfCheckY(rh);
+    const total2=Object.values(byCode2).reduce((s,d)=>s+d.sum,0);
+    doc.setFillColor(44,62,80);doc.rect(ML,cy,PW,rh,'F');
+    doc.setTextColor(255,241,0);doc.setFontSize(9);doc.setFont('helvetica','bold');
+    doc.text('TOTALE SUPERFICI',ML+2,cy+5.5);
+    doc.text(total2.toFixed(2)+' m²',ML+PW-2,cy+5.5,{align:'right'});
+    doc.save(buildFileName('pdf'));
+}
+
+async function exportTIFF(){
+    const ps=P();
+    if(!ps){alert('Nessuna pagina caricata.');return;}
+    if(!ps.mpp){alert('Pagina non calibrata.\nCalibra prima di esportare il TIFF.');return;}
+    if(!ps.imgD){
+        const tc=document.createElement('canvas');
+        tc.width=ps.vp.width;tc.height=ps.vp.height;
+        const tx=tc.getContext('2d');
+        await ps.page.render({canvasContext:tx,viewport:ps.vp}).promise;
+        ps.imgD=tx.getImageData(0,0,tc.width,tc.height);ps.rendered=true;
+    }
+    const oc=document.createElement('canvas');
+    oc.width=ps.vp.width;oc.height=ps.vp.height;
+    const ox=oc.getContext('2d');
+    ox.putImageData(ps.imgD,0,0);
+    const ds=DPR,m=ps.mpp;
+    const nonBObjs=ps.objects.filter(o=>!o.isB);
+    const areaObjs=nonBObjs.filter(o=>o.type==='area'&&!o.isHole);
+    const holeObjs=nonBObjs.filter(o=>o.type==='area'&&o.isHole);
+    const lineObjs=nonBObjs.filter(o=>o.type!=='area');
+    if(S.fillVis){
+        areaObjs.forEach(obj=>{
+            const myH=holeObjs.filter(h=>findParent(h,ps.objects)===obj);
+            ox.beginPath();ox.moveTo(obj.points[0].x,obj.points[0].y);
+            obj.points.forEach(p=>ox.lineTo(p.x,p.y));
+            myH.forEach(h=>{ox.moveTo(h.points[0].x,h.points[0].y);h.points.forEach(p=>ox.lineTo(p.x,p.y));});
+            ox.fillStyle=obj.color+'40';ox.fill('evenodd');
+        });
+    }
+    areaObjs.forEach(obj=>{
+        ox.beginPath();ox.moveTo(obj.points[0].x,obj.points[0].y);
+        obj.points.forEach(p=>ox.lineTo(p.x,p.y));
+        ox.strokeStyle=obj.color;ox.lineWidth=1.5*ds;ox.stroke();
+    });
+    lineObjs.forEach(obj=>{
+        ox.beginPath();ox.moveTo(obj.points[0].x,obj.points[0].y);
+        obj.points.forEach(p=>ox.lineTo(p.x,p.y));
+        ox.strokeStyle=obj.color;ox.lineWidth=1.5*ds;ox.stroke();
+    });
+        const occTiffLbl=[];
+    nonBObjs.forEach(obj=>{
+        if(obj.isHole)return;
+        const cen=getC(obj.points);
+        ox.fillStyle=obj.color;ox.textAlign='center';
+        ox.shadowColor='transparent';ox.shadowBlur=0;
+        if(obj.type==='area'){
+            const netA=calcNetA(obj,ps.objects,m);
+            const myH=holeObjs.filter(h=>findParent(h,ps.objects)===obj);
+            const LABEL_PX=Math.round(24*ds);
+            const lines=[netA.toFixed(2)+' m²'];
+            if(myH.length>0) lines.push('(lordo: '+calcA(obj,m).toFixed(2)+')');
+            if(obj.codice) lines.push('['+obj.codice+']');
+            drawPolyLabel(ox,obj.points,lines,LABEL_PX,ds,occTiffLbl, objs.filter(o=>o.type==='area'&&!o.isB&&!o.isHole).map(o=>o.points));
+        }else{
+            const LABEL_PX=Math.round(24*ds);
+            drawPolyLabel(ox,obj.points,[calcP(obj,m).toFixed(2)+' m'],LABEL_PX,ds,occTiffLbl, objs.filter(o=>o.type==='area'&&!o.isB&&!o.isHole).map(o=>o.points));
+        }ox.shadowColor='transparent';
+    });
+    const W=oc.width,H=oc.height;
+    const imgData=ox.getImageData(0,0,W,H);
+    const pixels=imgData.data;
+    const rgb=new Uint8Array(W*H*3);
+    for(let i=0;i<W*H;i++){rgb[i*3]=pixels[i*4];rgb[i*3+1]=pixels[i*4+1];rgb[i*3+2]=pixels[i*4+2];}
+    // DPI from calibration: pixels per meter / 39.3701 = pixels per inch
+    const ppi=Math.max(72,Math.round((1/ps.mpp)/39.3701));
+    function writeTIFF(w,h,rgbData,dpi){
+        const stripSize=rgbData.length;
+        const numEntries=14;
+        const ifdOff=8;
+        const ifdSize=2+numEntries*12+4;
+        const xResOff=ifdOff+ifdSize;
+        const yResOff=xResOff+8;
+        const dataOff=yResOff+8;
+        const buf=new ArrayBuffer(dataOff+stripSize);
+        const v=new DataView(buf);
+        v.setUint8(0,0x49);v.setUint8(1,0x49);v.setUint16(2,42,true);v.setUint32(4,ifdOff,true);
+        let o=ifdOff;
+        const w16=(n)=>{v.setUint16(o,n,true);o+=2;}
+        const w32=(n)=>{v.setUint32(o,n,true);o+=4;}
+        w16(numEntries);
+        function ie(tag,type,count,val){w16(tag);w16(type);w32(count);w32(val);}
+        ie(256,4,1,w);ie(257,4,1,h);ie(258,3,1,8);ie(259,3,1,1);
+        ie(262,3,1,2);ie(273,4,1,dataOff);ie(277,3,1,3);ie(278,4,1,h);
+        ie(279,4,1,stripSize);ie(282,5,1,xResOff);ie(283,5,1,yResOff);
+        ie(284,3,1,1);ie(296,3,1,2);ie(339,3,1,1);
+        w32(0);
+        v.setUint32(xResOff,dpi,true);v.setUint32(xResOff+4,1,true);
+        v.setUint32(yResOff,dpi,true);v.setUint32(yResOff+4,1,true);
+        new Uint8Array(buf).set(rgbData,dataOff);
+        return buf;
+    }
+    const buf=writeTIFF(W,H,rgb,ppi);
+    const blob=new Blob([buf],{type:'image/tiff'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');a.href=url;a.download=buildFileName('tif');a.click();
+    setTimeout(()=>URL.revokeObjectURL(url),5000);
+}
+
+
+document.addEventListener('keydown',e=>{
+    if(e.key==='Escape'){
+        S.calMode=false;S.cur=null;S.drag=null;S.hSeg=null;S.hVtx=null;S.selObj=null;
+        S.tool=null;
+        document.querySelectorAll('#toolsCard .btn').forEach(b=>b.classList.remove('active'));
+        VA.classList.remove('measuring','editing');
+        document.getElementById('editHint').style.display='none';
+        draw();
+    }
+    if((e.key==='z'||e.key==='Z')&&(e.ctrlKey||e.metaKey)){e.preventDefault();undo();return;}
+    if((e.key==='Delete'||e.key==='Backspace')&&S.tool==='select'&&S.selObj){
+        e.preventDefault();
+        const ps=P();if(!ps)return;
+        const selToDelete=S.selObj;
+        S.selObj=null;S.drag=null;S.hVtx=null;S.hSeg=null;
+        removeWithHoles(ps,selToDelete);
+        updateTbl();draw();updateTabs();
+    }
+});
+document.getElementById('snapTog').classList.add('on');
+</script>
+</body>
+</html>
