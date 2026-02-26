@@ -12,13 +12,17 @@
         :root{--primary:#2c3e50;--accent:#3498db;--bg:#ecf0f1;--magenta:#e91e63}
         *{box-sizing:border-box}
         body{font-family:'Segoe UI',sans-serif;margin:0;display:flex;height:100vh;overflow:hidden;background:var(--bg)}
-        .sidebar{width:400px;background:#fff;border-right:1px solid #bdc3c7;display:flex;flex-direction:column;z-index:100;box-shadow:2px 0 15px rgba(0,0,0,.1)}
+        .sidebar{width:400px;background:#fff;border-right:1px solid #bdc3c7;display:flex;flex-direction:column;z-index:100;box-shadow:2px 0 15px rgba(0,0,0,.1);transition:transform .3s,width .3s}
+        .sidebar.hidden{width:0;min-width:0;overflow:hidden;border:none}
         .sidebar-header{padding:15px 20px;background:var(--primary);color:#fff;display:flex;align-items:center;gap:12px}
         .sidebar-header .app-icon{width:60px;height:60px;flex-shrink:0}
         .sidebar-header h3{margin:0;font-size:17px}
         .sidebar-header .vb{display:inline-block;background:#e67e22;color:#fff;font-size:9px;font-weight:800;padding:3px 8px;border-radius:3px;margin-left:8px}
         .sidebar-footer{padding:10px 15px;background:#f8f9fa;border-top:1px solid #dfe6e9;text-align:center;font-size:10px;color:#7f8c8d}
         .sidebar-content{padding:15px;overflow-y:auto;flex:1}
+        /* ── Pulsante toggle sinistra ── */
+        .toggle-left{position:fixed;top:50%;left:400px;transform:translateY(-50%);z-index:201;background:var(--primary);color:#fff;border:none;padding:10px 5px;border-radius:0 4px 4px 0;cursor:pointer;font-size:14px;box-shadow:2px 0 8px rgba(0,0,0,.2);transition:left .3s;line-height:1}
+        .toggle-left.closed{left:0}
         .card{background:#fff;border:1px solid #dfe6e9;border-radius:8px;padding:15px;margin-bottom:15px}
         .card-title{font-size:11px;font-weight:800;text-transform:uppercase;color:#7f8c8d;margin-bottom:10px;display:block;border-bottom:1px solid #eee;padding-bottom:6px}
         .btn-group{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
@@ -82,23 +86,43 @@
         .rendite-table th{background:#f8f9fa;font-size:10px;text-transform:uppercase}
         .rendite-table td input{width:100%;border:none;background:transparent;font-size:11px}
         .rendite-section th{background:#34495e;color:#fff;text-align:left;font-size:11px}
-        .sidebar-right{width:320px;background:#fff;border-left:1px solid #bdc3c7;display:flex;flex-direction:column;z-index:100;box-shadow:-2px 0 15px rgba(0,0,0,.1);transition:width .3s}
+        .sidebar-right{width:320px;background:#fff;border-left:1px solid #bdc3c7;display:flex;flex-direction:column;z-index:100;box-shadow:-2px 0 15px rgba(0,0,0,.1);transition:transform .3s,width .3s}
         .sidebar-right .sr-header{padding:12px 15px;background:#34495e;color:#fff;display:flex;align-items:center;justify-content:space-between}
         .sidebar-right .sr-header h4{margin:0;font-size:14px}
         .sidebar-right .sr-content{padding:15px;overflow-y:auto;flex:1}
         .sidebar-right.hidden{width:0;min-width:0;overflow:hidden;border:none;padding:0}
-        .toggle-right{position:fixed;top:50%;right:320px;transform:translateY(-50%);z-index:101;background:var(--primary);color:#fff;border:none;padding:10px 5px;border-radius:4px 0 0 4px;cursor:pointer;font-size:14px;box-shadow:-2px 0 8px rgba(0,0,0,.2);transition:right .3s}
+        .toggle-right{position:fixed;top:50%;right:320px;transform:translateY(-50%);z-index:201;background:var(--primary);color:#fff;border:none;padding:10px 5px;border-radius:4px 0 0 4px;cursor:pointer;font-size:14px;box-shadow:-2px 0 8px rgba(0,0,0,.2);transition:right .3s;line-height:1}
         .toggle-right.closed{right:0}
         .cal-ref{display:flex;align-items:center;gap:8px;margin-top:8px;margin-bottom:5px}
         .cal-ref label{font-size:11px;font-weight:700;color:#7f8c8d}
         .cal-ref input{width:70px;padding:5px 8px;border:1px solid #dcdde1;border-radius:4px;font-size:13px;font-weight:700;color:var(--accent);text-align:center}
         .cal-ref span{font-size:12px;font-weight:600;color:var(--primary)}
+
+        /* ── MOBILE ── */
+        @media(max-width:768px){
+            body{overflow:hidden}
+            .sidebar{position:fixed;left:0;top:0;height:100%;width:85vw;max-width:360px;z-index:200;transform:translateX(0);transition:transform .3s}
+            .sidebar.hidden{transform:translateX(-100%);width:85vw;max-width:360px;overflow:hidden}
+            .toggle-left{left:calc(min(85vw, 360px));transition:left .3s}
+            .toggle-left.closed{left:0}
+            .sidebar-right{position:fixed;right:0;top:0;height:100%;width:85vw;max-width:340px;z-index:200;transform:translateX(0);transition:transform .3s}
+            .sidebar-right.hidden{transform:translateX(100%);width:85vw;max-width:340px;overflow:hidden}
+            .toggle-right{right:calc(min(85vw, 340px));transition:right .3s}
+            .toggle-right.closed{right:0}
+        }
+        .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:199;}
     </style>
 </head>
 <body>
 
+<!-- Overlay mobile -->
+<div class="overlay" id="overlay" onclick="closeAllSidebars()"></div>
+
+<!-- TOGGLE SINISTRA -->
+<button class="toggle-left" id="toggleLeft" onclick="toggleLeftPanel()" title="Pannello strumenti">◀</button>
+
 <!-- SIDEBAR SINISTRA -->
-<div class="sidebar">
+<div class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <div class="app-icon" style="display:flex;align-items:center;justify-content:center;"><svg viewBox='0 0 64 64'>
 <path d='M12 30 L32 14 L52 30' fill='none' stroke='#ecf0f1' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/>
@@ -271,10 +295,56 @@ function buildFileName(ext){
     return 'FABBRICATI_beta.'+ext;
 }
 
+function isMobile(){return window.innerWidth<=768}
+
+function toggleLeftPanel(){
+    const sl=document.getElementById('sidebar'),tb=document.getElementById('toggleLeft');
+    const ov=document.getElementById('overlay');
+    const isHidden=sl.classList.toggle('hidden');
+    tb.classList.toggle('closed',isHidden);
+    tb.textContent=isHidden?'▶':'◀';
+    if(isMobile()){
+        ov.style.display=isHidden?'none':'block';
+        if(!isHidden){
+            const sr=document.getElementById('sidebarRight'),tbR=document.getElementById('toggleRight');
+            sr.classList.add('hidden');tbR.classList.add('closed');tbR.textContent='◀';
+        }
+    }
+}
+
 function toggleRightPanel(){
     const sr=document.getElementById('sidebarRight'),tb=document.getElementById('toggleRight');
-    sr.classList.toggle('hidden');tb.classList.toggle('closed');
-    tb.textContent=sr.classList.contains('hidden')?'▶':'◀';
+    const ov=document.getElementById('overlay');
+    const isHidden=sr.classList.toggle('hidden');
+    tb.classList.toggle('closed',isHidden);
+    tb.textContent=isHidden?'◀':'▶';
+    if(isMobile()){
+        ov.style.display=isHidden?'none':'block';
+        if(!isHidden){
+            const sl=document.getElementById('sidebar'),tbL=document.getElementById('toggleLeft');
+            sl.classList.add('hidden');tbL.classList.add('closed');tbL.textContent='▶';
+        }
+    }
+}
+
+function closeAllSidebars(){
+    const ov=document.getElementById('overlay');
+    ov.style.display='none';
+    const sl=document.getElementById('sidebar'),tbL=document.getElementById('toggleLeft');
+    sl.classList.add('hidden');tbL.classList.add('closed');tbL.textContent='▶';
+    const sr=document.getElementById('sidebarRight'),tbR=document.getElementById('toggleRight');
+    sr.classList.add('hidden');tbR.classList.add('closed');tbR.textContent='◀';
+}
+
+// Adatta al cambio dimensione schermo
+window.addEventListener('resize',()=>{
+    const ov=document.getElementById('overlay');
+    if(!isMobile())ov.style.display='none';
+});
+
+// Su mobile chiudi i pannelli all'avvio
+if(isMobile()){
+    closeAllSidebars();
 }
 
 function clearRendite(){
