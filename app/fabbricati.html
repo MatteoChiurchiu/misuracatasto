@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FABBRICATI Beta v71</title>
+    <title>FABBRICATI Beta v82</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2064%2064%27%3E%0A%3Cpath%20d%3D%27M12%2030%20L32%2014%20L52%2030%27%20fill%3D%27none%27%20stroke%3D%27%23ecf0f1%27%20stroke-width%3D%274%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%0A%3Cpath%20d%3D%27M18%2030%20V54%20H46%20V30%27%20fill%3D%27none%27%20stroke%3D%27%23ecf0f1%27%20stroke-width%3D%274%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%0A%3Cpath%20d%3D%27M40%2018%20V26%20H46%20V22%27%20fill%3D%27none%27%20stroke%3D%27%23ecf0f1%27%20stroke-width%3D%274%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%0A%3Cpath%20d%3D%27M28%2054%20V41%20H36%20V54%27%20fill%3D%27none%27%20stroke%3D%27%23ecf0f1%27%20stroke-width%3D%274%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%0A%3Ccircle%20cx%3D%2734.5%27%20cy%3D%2747.5%27%20r%3D%271.5%27%20fill%3D%27%23ecf0f1%27%2F%3E%0A%3Crect%20x%3D%2722%27%20y%3D%2736%27%20width%3D%278%27%20height%3D%278%27%20fill%3D%27none%27%20stroke%3D%27%23ecf0f1%27%20stroke-width%3D%273%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%0A%3Cpath%20d%3D%27M26%2036%20V44%20M22%2040%20H30%27%20fill%3D%27none%27%20stroke%3D%27%23ecf0f1%27%20stroke-width%3D%272.5%27%20stroke-linecap%3D%27round%27%2F%3E%0A%3Crect%20x%3D%2734%27%20y%3D%2736%27%20width%3D%278%27%20height%3D%278%27%20fill%3D%27none%27%20stroke%3D%27%23ecf0f1%27%20stroke-width%3D%273%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%0A%3Cpath%20d%3D%27M38%2036%20V44%20M34%2040%20H42%27%20fill%3D%27none%27%20stroke%3D%27%23ecf0f1%27%20stroke-width%3D%272.5%27%20stroke-linecap%3D%27round%27%2F%3E%0A%3Cpath%20d%3D%27M10%2056%20C18%2053%2C%2024%2058%2C%2032%2056%20S46%2054%2C%2054%2056%27%20fill%3D%27none%27%20stroke%3D%27%23ecf0f1%27%20stroke-width%3D%273%27%20stroke-linecap%3D%27round%27%2F%3E%0A%3C%2Fsvg%3E">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -12,17 +12,13 @@
         :root{--primary:#2c3e50;--accent:#3498db;--bg:#ecf0f1;--magenta:#e91e63}
         *{box-sizing:border-box}
         body{font-family:'Segoe UI',sans-serif;margin:0;display:flex;height:100vh;overflow:hidden;background:var(--bg)}
-        .sidebar{width:400px;background:#fff;border-right:1px solid #bdc3c7;display:flex;flex-direction:column;z-index:100;box-shadow:2px 0 15px rgba(0,0,0,.1);transition:transform .3s,width .3s}
-        .sidebar.hidden{width:0;min-width:0;overflow:hidden;border:none}
+        .sidebar{width:400px;background:#fff;border-right:1px solid #bdc3c7;display:flex;flex-direction:column;z-index:100;box-shadow:2px 0 15px rgba(0,0,0,.1)}
         .sidebar-header{padding:15px 20px;background:var(--primary);color:#fff;display:flex;align-items:center;gap:12px}
         .sidebar-header .app-icon{width:60px;height:60px;flex-shrink:0}
         .sidebar-header h3{margin:0;font-size:17px}
         .sidebar-header .vb{display:inline-block;background:#e67e22;color:#fff;font-size:9px;font-weight:800;padding:3px 8px;border-radius:3px;margin-left:8px}
         .sidebar-footer{padding:10px 15px;background:#f8f9fa;border-top:1px solid #dfe6e9;text-align:center;font-size:10px;color:#7f8c8d}
         .sidebar-content{padding:15px;overflow-y:auto;flex:1}
-        /* ── Pulsante toggle sinistra ── */
-        .toggle-left{position:fixed;top:50%;left:400px;transform:translateY(-50%);z-index:201;background:var(--primary);color:#fff;border:none;padding:10px 5px;border-radius:0 4px 4px 0;cursor:pointer;font-size:14px;box-shadow:2px 0 8px rgba(0,0,0,.2);transition:left .3s;line-height:1}
-        .toggle-left.closed{left:0}
         .card{background:#fff;border:1px solid #dfe6e9;border-radius:8px;padding:15px;margin-bottom:15px}
         .card-title{font-size:11px;font-weight:800;text-transform:uppercase;color:#7f8c8d;margin-bottom:10px;display:block;border-bottom:1px solid #eee;padding-bottom:6px}
         .btn-group{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
@@ -86,43 +82,23 @@
         .rendite-table th{background:#f8f9fa;font-size:10px;text-transform:uppercase}
         .rendite-table td input{width:100%;border:none;background:transparent;font-size:11px}
         .rendite-section th{background:#34495e;color:#fff;text-align:left;font-size:11px}
-        .sidebar-right{width:320px;background:#fff;border-left:1px solid #bdc3c7;display:flex;flex-direction:column;z-index:100;box-shadow:-2px 0 15px rgba(0,0,0,.1);transition:transform .3s,width .3s}
+        .sidebar-right{width:320px;background:#fff;border-left:1px solid #bdc3c7;display:flex;flex-direction:column;z-index:100;box-shadow:-2px 0 15px rgba(0,0,0,.1);transition:width .3s}
         .sidebar-right .sr-header{padding:12px 15px;background:#34495e;color:#fff;display:flex;align-items:center;justify-content:space-between}
         .sidebar-right .sr-header h4{margin:0;font-size:14px}
         .sidebar-right .sr-content{padding:15px;overflow-y:auto;flex:1}
         .sidebar-right.hidden{width:0;min-width:0;overflow:hidden;border:none;padding:0}
-        .toggle-right{position:fixed;top:50%;right:320px;transform:translateY(-50%);z-index:201;background:var(--primary);color:#fff;border:none;padding:10px 5px;border-radius:4px 0 0 4px;cursor:pointer;font-size:14px;box-shadow:-2px 0 8px rgba(0,0,0,.2);transition:right .3s;line-height:1}
+        .toggle-right{position:fixed;top:50%;right:320px;transform:translateY(-50%);z-index:101;background:var(--primary);color:#fff;border:none;padding:10px 5px;border-radius:4px 0 0 4px;cursor:pointer;font-size:14px;box-shadow:-2px 0 8px rgba(0,0,0,.2);transition:right .3s}
         .toggle-right.closed{right:0}
         .cal-ref{display:flex;align-items:center;gap:8px;margin-top:8px;margin-bottom:5px}
         .cal-ref label{font-size:11px;font-weight:700;color:#7f8c8d}
         .cal-ref input{width:70px;padding:5px 8px;border:1px solid #dcdde1;border-radius:4px;font-size:13px;font-weight:700;color:var(--accent);text-align:center}
         .cal-ref span{font-size:12px;font-weight:600;color:var(--primary)}
-
-        /* ── MOBILE ── */
-        @media(max-width:768px){
-            body{overflow:hidden}
-            .sidebar{position:fixed;left:0;top:0;height:100%;width:85vw;max-width:360px;z-index:200;transform:translateX(0);transition:transform .3s}
-            .sidebar.hidden{transform:translateX(-100%);width:85vw;max-width:360px;overflow:hidden}
-            .toggle-left{left:calc(min(85vw, 360px));transition:left .3s}
-            .toggle-left.closed{left:0}
-            .sidebar-right{position:fixed;right:0;top:0;height:100%;width:85vw;max-width:340px;z-index:200;transform:translateX(0);transition:transform .3s}
-            .sidebar-right.hidden{transform:translateX(100%);width:85vw;max-width:340px;overflow:hidden}
-            .toggle-right{right:calc(min(85vw, 340px));transition:right .3s}
-            .toggle-right.closed{right:0}
-        }
-        .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:199;}
     </style>
 </head>
 <body>
 
-<!-- Overlay mobile -->
-<div class="overlay" id="overlay" onclick="closeAllSidebars()"></div>
-
-<!-- TOGGLE SINISTRA -->
-<button class="toggle-left" id="toggleLeft" onclick="toggleLeftPanel()" title="Pannello strumenti">◀</button>
-
 <!-- SIDEBAR SINISTRA -->
-<div class="sidebar" id="sidebar">
+<div class="sidebar">
     <div class="sidebar-header">
         <div class="app-icon" style="display:flex;align-items:center;justify-content:center;"><svg viewBox='0 0 64 64'>
 <path d='M12 30 L32 14 L52 30' fill='none' stroke='#ecf0f1' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/>
@@ -168,12 +144,16 @@
         </div>
         <div class="card" id="toolsCard" style="opacity:.5;pointer-events:none">
             <span class="card-title">📐 Strumenti Misura</span>
+            <div class="stoggle" id="axisTog" onclick="toggleAxisLock()">
+                <div class="stoggle-label">📐 <span>Blocca assi X/Y</span></div>
+                <div class="stoggle-sw"></div>
+            </div>
             <div class="stoggle on" id="snapTog" onclick="toggleSnap()">
                 <div class="stoggle-label">🧲 <span>Snap ai vertici</span></div>
                 <div class="stoggle-sw"></div>
             </div>
-            <div class="stoggle" id="axisTog" onclick="toggleAxisLock()">
-                <div class="stoggle-label">📐 <span>Blocca assi X/Y</span></div>
+            <div class="stoggle on" id="perpTog" onclick="togglePerpSnap()">
+                <div class="stoggle-label">∟ <span>Snap perpendicolare</span></div>
                 <div class="stoggle-sw"></div>
             </div>
             <div id="editHint" class="edit-hint" style="display:none"><b>Click sinistro:</b> Sposta vertice o aggiungi su segmento<br><b>Click destro:</b> Elimina vertice</div>
@@ -185,6 +165,23 @@
                 <button class="btn" id="btn-undo" onclick="undo()" style="opacity:0.4" disabled>↩️ Annulla</button>
             </div>
         </div>
+        <!-- CARD ALTEZZA UTILE / TRAPEZIO -->
+        <div class="card" id="trapCard" style="opacity:.5;pointer-events:none">
+            <span class="card-title">🏠 Altezza Utile (1.50 m)</span>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                <div class="field-group">
+                    <label>Altezza sx (m)</label>
+                    <input type="number" id="trapH1" value="0.80" min="0" step="0.01">
+                </div>
+                <div class="field-group">
+                    <label>Altezza dx (m)</label>
+                    <input type="number" id="trapH2" value="2.50" min="0" step="0.01">
+                </div>
+            </div>
+            <button class="btn" id="btn-trapezio" onclick="setTool('trapezio')" style="width:100%;background:#8e44ad;color:white;border:none;margin-bottom:6px">📐 Trova h = 1.50 m</button>
+            <div id="trapResult" class="status" style="display:none;font-size:11px;line-height:1.5"></div>
+        </div>
+
         <div class="card">
             <span class="card-title">💾 Progetto</span>
             <div class="btn-group">
@@ -200,12 +197,6 @@
             </div>
             <input type="file" id="prjIn" class="hidden-input" accept=".mpj" onchange="loadPrj(event)">
             <div id="prjSt" style="font-size:11px;color:#7f8c8d;margin-top:5px"></div>
-        </div>
-        <div class="card">
-            <span class="card-title">📊 Misure</span>
-            <div style="max-height:300px;overflow-y:auto">
-                <table id="mt"><thead><tr><th>Nome</th><th>Valore</th><th></th></tr></thead><tbody id="mb"></tbody></table>
-            </div>
         </div>
     </div>
     <div class="sidebar-footer"><b>FABBRICATI</b><br>© 2026</div>
@@ -261,12 +252,16 @@
                 </table>
             </div>
         </div>
+        <div class="card">
+            <span class="card-title">📊 Misure</span>
+            <table id="mt"><thead><tr><th>Nome</th><th>Valore</th><th></th></tr></thead><tbody id="mb"></tbody></table>
+        </div>
     </div>
 </div>
 <script>
 pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-const V="1.1-BETA",DPR=window.devicePixelRatio||1,PSC=6.0,SNAPD=15,VHD=10,SHD=8,MBL=150,CT=10;
+const V="1.1-BETA",DPR=window.devicePixelRatio||1,GDS=1.8,PSC=6.0,SNAPD=15,VHD=10,SHD=8,MBL=150,CT=10;
 
 const CODE_COLORS={
     A:'#e74c3c',B:'#2ecc71',C:'#3498db',D:'#9b59b6',E:'#f39c12',
@@ -278,7 +273,7 @@ const CODE_COLORS={
 function getCodeColor(code){return CODE_COLORS[code]||'#3498db';}
 
 const S={pdf:null,tp:0,ci:0,pages:[],tool:null,cur:null,drag:null,calMode:false,
-    mp:{x:0,y:0},snap:null,snapOn:true,bordVis:true,fillVis:true,selObj:null,uidCtr:1,history:[],pdfAB:null,axisLock:false,
+    mp:{x:0,y:0},snap:null,snapOn:true,perpSnapOn:true,bordVis:true,fillVis:true,selObj:null,uidCtr:1,history:[],pdfAB:null,axisLock:false,
     colors:['#e74c3c','#2ecc71','#f1c40f','#9b59b6','#1abc9c','#e67e22'],
     hSeg:null,hVtx:null};
 
@@ -295,56 +290,10 @@ function buildFileName(ext){
     return 'FABBRICATI_beta.'+ext;
 }
 
-function isMobile(){return window.innerWidth<=768}
-
-function toggleLeftPanel(){
-    const sl=document.getElementById('sidebar'),tb=document.getElementById('toggleLeft');
-    const ov=document.getElementById('overlay');
-    const isHidden=sl.classList.toggle('hidden');
-    tb.classList.toggle('closed',isHidden);
-    tb.textContent=isHidden?'▶':'◀';
-    if(isMobile()){
-        ov.style.display=isHidden?'none':'block';
-        if(!isHidden){
-            const sr=document.getElementById('sidebarRight'),tbR=document.getElementById('toggleRight');
-            sr.classList.add('hidden');tbR.classList.add('closed');tbR.textContent='◀';
-        }
-    }
-}
-
 function toggleRightPanel(){
     const sr=document.getElementById('sidebarRight'),tb=document.getElementById('toggleRight');
-    const ov=document.getElementById('overlay');
-    const isHidden=sr.classList.toggle('hidden');
-    tb.classList.toggle('closed',isHidden);
-    tb.textContent=isHidden?'◀':'▶';
-    if(isMobile()){
-        ov.style.display=isHidden?'none':'block';
-        if(!isHidden){
-            const sl=document.getElementById('sidebar'),tbL=document.getElementById('toggleLeft');
-            sl.classList.add('hidden');tbL.classList.add('closed');tbL.textContent='▶';
-        }
-    }
-}
-
-function closeAllSidebars(){
-    const ov=document.getElementById('overlay');
-    ov.style.display='none';
-    const sl=document.getElementById('sidebar'),tbL=document.getElementById('toggleLeft');
-    sl.classList.add('hidden');tbL.classList.add('closed');tbL.textContent='▶';
-    const sr=document.getElementById('sidebarRight'),tbR=document.getElementById('toggleRight');
-    sr.classList.add('hidden');tbR.classList.add('closed');tbR.textContent='◀';
-}
-
-// Adatta al cambio dimensione schermo
-window.addEventListener('resize',()=>{
-    const ov=document.getElementById('overlay');
-    if(!isMobile())ov.style.display='none';
-});
-
-// Su mobile chiudi i pannelli all'avvio
-if(isMobile()){
-    closeAllSidebars();
+    sr.classList.toggle('hidden');tb.classList.toggle('closed');
+    tb.textContent=sr.classList.contains('hidden')?'▶':'◀';
 }
 
 function clearRendite(){
@@ -450,6 +399,7 @@ function updateUndoBtn(){
 }
 function toggleSnap(){S.snapOn=!S.snapOn;document.getElementById('snapTog').classList.toggle('on',S.snapOn);draw()}
 function toggleAxisLock(){S.axisLock=!S.axisLock;document.getElementById('axisTog').classList.toggle('on',S.axisLock);draw()}
+function togglePerpSnap(){S.perpSnapOn=!S.perpSnapOn;document.getElementById('perpTog').classList.toggle('on',S.perpSnapOn);draw()}
 function toggleBorders(){S.bordVis=!S.bordVis;document.getElementById('bordTog').classList.toggle('on-m',S.bordVis);draw()}
 function toggleFills(){S.fillVis=!S.fillVis;document.getElementById('fillTog').classList.toggle('on',S.fillVis);draw()}
 
@@ -468,11 +418,87 @@ function segInter(a,b,c,d){
 
 function findSnap(mx,my){
     if(!S.snapOn)return null;const ps=P();if(!ps)return null;let cp=null,md=SNAPD*DPR;
-    ps.objects.forEach(o=>{if(o.isB&&!S.bordVis)return;o.points.forEach(p=>{const d=Math.hypot(mx-p.x,my-p.y);if(d<md){md=d;cp={x:p.x,y:p.y}}})});
-    if(S.bordVis&&ps.grid){const pts=[];ps.grid.forEach(g=>{pts.push(g.p1,g.p2)});
+
+    // ── Vertex snap (highest priority) ──────────────────────────────────────
+    ps.objects.forEach(o=>{
+        if(o.isB&&!S.bordVis)return;
+        o.points.forEach(p=>{const d=Math.hypot(mx-p.x,my-p.y);if(d<md){md=d;cp={x:p.x,y:p.y,snapType:'vertex'}}});
+    });
+
+    // ── Segment (edge) snap + perpendicular snap ─────────────────────────────
+    const segRadius=SNAPD*DPR*2.5;
+    const perpRadius=SNAPD*DPR*4;
+    let perpBest=null,perpMd=Infinity;
+
+    ps.objects.forEach(o=>{
+        if(o.isB&&!S.bordVis)return;
+        if(o.type==='trapezio')return;
+        const pts=o.points;
+        for(let i=0;i<pts.length-1;i++){
+            const p1=pts[i],p2=pts[i+1];
+            if(!p2)continue;
+            const dx=p2.x-p1.x,dy=p2.y-p1.y,ls=dx*dx+dy*dy;
+            if(ls<1)continue;
+            const sLen=Math.sqrt(ls);
+            const uDx=dx/sLen,uDy=dy/sLen;
+
+            // ── Edge snap (cursor projected onto segment) ──────────────────
+            const t=Math.max(0,Math.min(1,((mx-p1.x)*dx+(my-p1.y)*dy)/ls));
+            const qx=p1.x+t*dx,qy=p1.y+t*dy;
+            const d=Math.hypot(mx-qx,my-qy);
+            if(d<segRadius&&d<md){
+                md=d;cp={x:qx,y:qy,snapType:'edge',segDir:{dx:uDx,dy:uDy},segP1:p1,segP2:p2};
+            }
+
+            // ── Perpendicular snap ─────────────────────────────────────────
+            if(S.perpSnapOn&&S.cur&&S.cur.points.length>0){
+                const lp=S.cur.points[S.cur.points.length-1];
+                const tp=((lp.x-p1.x)*dx+(lp.y-p1.y)*dy)/ls;
+                if(tp>=0&&tp<=1){
+                    const fx=p1.x+tp*dx,fy=p1.y+tp*dy;
+                    const dFoot=Math.hypot(mx-fx,my-fy);
+                    if(dFoot<perpRadius){
+                        const rayLen=Math.hypot(fx-lp.x,fy-lp.y);
+                        let onRay=true;
+                        if(rayLen>2){
+                            // Distance from cursor to the infinite line through lp→foot
+                            const crossDist=Math.abs((mx-lp.x)*(fy-lp.y)-(my-lp.y)*(fx-lp.x))/rayLen;
+                            // Cursor must be roughly on the same side as foot (dot > 0)
+                            const dot=(mx-lp.x)*(fx-lp.x)+(my-lp.y)*(fy-lp.y);
+                            onRay=crossDist<perpRadius*1.5&&dot>0;
+                        }
+                        if(onRay&&dFoot<perpMd){
+                            perpMd=dFoot;
+                            perpBest={x:fx,y:fy,snapType:'perp',segDir:{dx:uDx,dy:uDy},segP1:p1,segP2:p2};
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Perp wins unconditionally if found (it's more specific than edge snap)
+    if(perpBest!==null) cp=perpBest;
+
+    // ── Trapezio 1.50m cross-points ──────────────────────────────────────────
+    ps.objects.filter(o=>o.type==='trapezio').forEach(o=>{
+        const g=calcTrapezioGeom(o,ps.mpp);
+        if(!g||!g.cross)return;
+        [{x:g.cross.bx,y:g.cross.by,label:'base'},{x:g.cross.ex,y:g.cross.ey,label:'top'}]
+            .forEach(p=>{const d=Math.hypot(mx-p.x,my-p.y);if(d<md){md=d;cp={x:p.x,y:p.y,snapType:'trapCross',label:p.label}}});
+    });
+
+    // ── Grid intersections ───────────────────────────────────────────────────
+    if(S.bordVis&&ps.grid){
+        const pts=[];ps.grid.forEach(g=>{pts.push(g.p1,g.p2)});
         for(let i=0;i<ps.grid.length;i++)for(let j=i+1;j<ps.grid.length;j++){const ip=segInter(ps.grid[i].p1,ps.grid[i].p2,ps.grid[j].p1,ps.grid[j].p2);if(ip)pts.push(ip)}
-        pts.forEach(p=>{const d=Math.hypot(mx-p.x,my-p.y);if(d<md){md=d;cp={x:p.x,y:p.y}}})}
-    if(S.cur&&S.cur.points.length>1)S.cur.points.slice(0,-1).forEach(p=>{const d=Math.hypot(mx-p.x,my-p.y);if(d<md){md=d;cp={x:p.x,y:p.y}}});
+        pts.forEach(p=>{const d=Math.hypot(mx-p.x,my-p.y);if(d<md){md=d;cp={x:p.x,y:p.y,snapType:'grid'}}});
+    }
+
+    // ── In-progress polygon vertices ─────────────────────────────────────────
+    if(S.cur&&S.cur.points.length>1)S.cur.points.slice(0,-1).forEach(p=>{
+        const d=Math.hypot(mx-p.x,my-p.y);if(d<md){md=d;cp={x:p.x,y:p.y,snapType:'vertex'}}});
+
     return cp;
 }
 
@@ -618,8 +644,8 @@ function updateCalUI(ps){
     }
 }
 
-function lock(){document.getElementById('toolsCard').style.opacity=.5;document.getElementById('toolsCard').style.pointerEvents='none'}
-function unlock(){document.getElementById('toolsCard').style.opacity=1;document.getElementById('toolsCard').style.pointerEvents='auto'}
+function lock(){document.getElementById('toolsCard').style.opacity=.5;document.getElementById('toolsCard').style.pointerEvents='none';document.getElementById('trapCard').style.opacity=.5;document.getElementById('trapCard').style.pointerEvents='none'}
+function unlock(){document.getElementById('toolsCard').style.opacity=1;document.getElementById('toolsCard').style.pointerEvents='auto';document.getElementById('trapCard').style.opacity=1;document.getElementById('trapCard').style.pointerEvents='auto'}
 function startManCal(){S.tool='calManual';S.calMode=true;S.calKind='free';S.cur=null;VA.classList.add('measuring');alert("Calibrazione libera:\n- inserisci la distanza di riferimento (m)\n- poi clicca su DUE punti.\n\nDistanza: "+getCalRefDist()+" m")}
 
 // Calibrazione tramite diagonale del foglio (A4/A3) + scala
@@ -1124,12 +1150,14 @@ DC.addEventListener('mousedown',e=>{
         S.pages.forEach(p=>{ globalCount+=p.objects.filter(o=>!o.isB).length; });
         const nonB=ps.objects.filter(o=>!o.isB);
         const isAreaTool=(S.tool==='area'||S.tool==='rect');
-        const label=isAreaTool?`Area ${globalCount+1}`:`Lin ${globalCount+1}`;
+        const isTrapTool=(S.tool==='trapezio');
+        const label=isAreaTool?`Area ${globalCount+1}`:isTrapTool?`Sez ${globalCount+1}`:`Lin ${globalCount+1}`;
         S.cur={type:(S.tool==='rect'?'rect':S.tool),name:label,points:[{x:px,y:py}],color:S.colors[nonB.length%6]};
     }else{
         S.cur.points.push({x:px,y:py});
         if(S.tool==='line'&&S.cur.points.length===2)finalize();
         if(S.tool==='rect'&&S.cur.points.length===2)finalize();
+        if(S.tool==='trapezio'&&S.cur.points.length===2)finalize();
     }
     draw();
 });
@@ -1162,6 +1190,11 @@ function finalize(){
     }
     if(S.tool==='area'){
         S.cur.points.push({...S.cur.points[0]});
+    }
+    if(S.tool==='trapezio'){
+        S.cur.h1=parseFloat(document.getElementById('trapH1').value)||0;
+        S.cur.h2=parseFloat(document.getElementById('trapH2').value)||0;
+        // Force to next tool action without closing loop
     }
     if(S.tool==='area'||S.tool==='rect'){
         // Auto-detect if this area is inside another (= hole/detrazione)
@@ -1207,17 +1240,103 @@ window.addEventListener('mousemove',e=>{
 });
 window.addEventListener('mouseup',()=>S.drag=null);
 
+/* --- TRAPEZIO 1.50m --- */
+function calcTrapezioGeom(obj, m){
+    if(!obj||obj.points.length<2||!m)return null;
+    const p1=obj.points[0], p2=obj.points[1];
+    const dx=p2.x-p1.x, dy=p2.y-p1.y;
+    const len=Math.hypot(dx,dy);
+    if(len<1)return null;
+    const pxPerM=1/m;
+    const h1=obj.h1||0, h2=obj.h2||0;
+    // Perpendicular direction pointing "up" (negative y component)
+    let perpX=-dy/len, perpY=dx/len;
+    if(perpY>0){perpX=-perpX;perpY=-perpY;}
+    const h1px=h1*pxPerM, h2px=h2*pxPerM;
+    const tl={x:p1.x+perpX*h1px, y:p1.y+perpY*h1px};
+    const tr={x:p2.x+perpX*h2px, y:p2.y+perpY*h2px};
+    // 1.50m crossing
+    const TARGET=1.5;
+    let cross=null;
+    const dh=h2-h1;
+    if(Math.abs(dh)>1e-6){
+        const t=(TARGET-h1)/dh;
+        if(t>=0&&t<=1){
+            const bx=p1.x+t*dx, by=p1.y+t*dy;
+            const ex=bx+perpX*TARGET*pxPerM, ey=by+perpY*TARGET*pxPerM;
+            const distM=t*len*m;
+            cross={bx,by,ex,ey,t,distM};
+        }
+    }else if(Math.abs(h1-TARGET)<1e-6){
+        cross={bx:p1.x,by:p1.y,ex:tl.x,ey:tl.y,t:0,distM:0,allEqual:true};
+    }
+    return{p1,p2,tl,tr,len,h1,h2,perpX,perpY,pxPerM,cross};
+}
+
+function drawTrapezio(ctx, obj, m, ds){
+    const g=calcTrapezioGeom(obj,m);
+    if(!g)return;
+    const{p1,p2,tl,tr,h1,h2,cross}=g;
+    ctx.save();
+    // Fill
+    ctx.beginPath();
+    ctx.moveTo(p1.x,p1.y);ctx.lineTo(p2.x,p2.y);
+    ctx.lineTo(tr.x,tr.y);ctx.lineTo(tl.x,tl.y);
+    ctx.closePath();
+    ctx.fillStyle=obj.color+'22';
+    ctx.fill();
+    // Outline
+    ctx.strokeStyle=obj.color;ctx.lineWidth=2*ds;ctx.lineJoin='round';
+    ctx.stroke();
+    // Height labels at extremes
+    ctx.fillStyle=obj.color;ctx.font=`bold ${12*ds}px Arial`;ctx.textAlign='center';
+    ctx.shadowColor='white';ctx.shadowBlur=3*ds;
+    // h1 label along left side
+    ctx.fillText(h1.toFixed(2)+'m', (p1.x+tl.x)/2, (p1.y+tl.y)/2);
+    // h2 label along right side
+    ctx.fillText(h2.toFixed(2)+'m', (p2.x+tr.x)/2, (p2.y+tr.y)/2);
+    ctx.shadowColor='transparent';
+    // Dashed 1.50m perpendicular line
+    if(cross&&!cross.allEqual){
+        ctx.beginPath();
+        ctx.moveTo(cross.bx,cross.by);ctx.lineTo(cross.ex,cross.ey);
+        ctx.strokeStyle='#e74c3c';ctx.lineWidth=2.5*ds;
+        ctx.setLineDash([7*ds,4*ds]);ctx.stroke();ctx.setLineDash([]);
+        // Dot at base and top of dashed line
+        ctx.beginPath();ctx.arc(cross.bx,cross.by,4*ds,0,Math.PI*2);
+        ctx.fillStyle='#e74c3c';ctx.fill();
+        ctx.beginPath();ctx.arc(cross.ex,cross.ey,4*ds,0,Math.PI*2);
+        ctx.fill();
+        // Label
+        ctx.font=`bold ${13*ds}px Arial`;ctx.fillStyle='#e74c3c';
+        ctx.shadowColor='white';ctx.shadowBlur=4*ds;ctx.textAlign='center';
+        ctx.fillText(`h=1.50m`, cross.ex+(g.perpX*20*ds), cross.ey+(g.perpY*20*ds));
+        ctx.font=`bold ${11*ds}px Arial`;ctx.fillStyle='#c0392b';
+        ctx.fillText(`dist: ${cross.distM.toFixed(2)}m`, cross.bx, cross.by+(g.perpY>0?20:-20)*ds);
+        ctx.shadowColor='transparent';
+    }else if(!cross){
+        // No crossing: show whether all above or all below
+        const cen={x:(p1.x+p2.x+tl.x+tr.x)/4, y:(p1.y+p2.y+tl.y+tr.y)/4};
+        const msg=Math.min(h1,h2)>=1.5?'✅ Tutto ≥ 1.50m':'⚠️ Tutto < 1.50m';
+        ctx.font=`bold ${13*ds}px Arial`;ctx.fillStyle=Math.min(h1,h2)>=1.5?'#27ae60':'#e67e22';
+        ctx.shadowColor='white';ctx.shadowBlur=4*ds;ctx.textAlign='center';
+        ctx.fillText(msg,cen.x,cen.y);ctx.shadowColor='transparent';
+    }
+    ctx.restore();
+}
+
 /* --- DRAW --- */
 function draw(){
     DX.clearRect(0,0,DC.width,DC.height);
     const ps=P();if(!ps)return;
-    const ds=DPR,m=ps.mpp;
+    const ds=DPR*GDS,m=ps.mpp;
 
     // Separate non-hole areas, holes, lines
     const nonBObjs=ps.objects.filter(o=>!o.isB);
     const areaObjs=nonBObjs.filter(o=>o.type==='area'&&!o.isHole);
     const holeObjs=nonBObjs.filter(o=>o.type==='area'&&o.isHole);
-    const lineObjs=nonBObjs.filter(o=>o.type!=='area');
+    const trapObjs=nonBObjs.filter(o=>o.type==='trapezio');
+    const lineObjs=nonBObjs.filter(o=>o.type!=='area'&&o.type!=='trapezio');
 
     // Draw fills: each area with transparent holes punched via evenodd
     if(S.fillVis){
@@ -1253,6 +1372,9 @@ function draw(){
         DX.strokeStyle=obj.color;DX.lineWidth=1.5*ds;
         DX.stroke();
     });
+
+    // Draw trapezio objects (sezione altezza utile)
+    trapObjs.forEach(obj=>drawTrapezio(DX,obj,m,ds));
 
     // Draw vertices and labels for all non-border objects (skip holes unless in select mode)
     const vs=S.tool==='select'?10*ds:8*ds;
@@ -1354,10 +1476,58 @@ function draw(){
     }
 
     if(S.snap&&S.tool&&S.tool!=='select'){
-        DX.beginPath();DX.arc(S.snap.x,S.snap.y,8*ds,0,Math.PI*2);
-        DX.strokeStyle='#27ae60';DX.lineWidth=3*ds;DX.stroke();
-        DX.beginPath();DX.arc(S.snap.x,S.snap.y,3*ds,0,Math.PI*2);
-        DX.fillStyle='#27ae60';DX.fill();
+        const sp=S.snap, sx=sp.x, sy=sp.y;
+        DX.save();
+        if(sp.snapType==='trapCross'){
+            // ◆ Rombo rosso — punto h=1.50m
+            const s=10*ds;
+            DX.translate(sx,sy);DX.rotate(Math.PI/4);
+            DX.beginPath();DX.rect(-s/2,-s/2,s,s);
+            DX.strokeStyle='#e74c3c';DX.lineWidth=2.5*ds;DX.stroke();
+            DX.fillStyle='rgba(231,76,60,0.25)';DX.fill();
+            DX.restore();DX.save();
+            DX.beginPath();DX.arc(sx,sy,3*ds,0,Math.PI*2);DX.fillStyle='#e74c3c';DX.fill();
+            DX.fillStyle='#e74c3c';DX.font=`bold ${11*ds}px Arial`;DX.textAlign='left';
+            DX.shadowColor='white';DX.shadowBlur=3*ds;
+            DX.fillText(sp.label==='base'?'⊥ base h=1.50m':'⊥ cima h=1.50m',sx+14*ds,sy-6*ds);
+        } else if(sp.snapType==='perp'){
+            // ∟ Squadra gialla — snap perpendicolare al segmento
+            const s=9*ds;
+            // Draw the perpendicular symbol (small right-angle)
+            const segDx=sp.segDir.dx, segDy=sp.segDir.dy;
+            DX.strokeStyle='#f1c40f';DX.lineWidth=2.5*ds;DX.lineJoin='round';
+            // Line along segment direction
+            DX.beginPath();DX.moveTo(sx-segDx*s,sy-segDy*s);DX.lineTo(sx+segDx*s,sy+segDy*s);DX.stroke();
+            // Perpendicular tick
+            DX.beginPath();DX.moveTo(sx,sy);DX.lineTo(sx-segDy*s,sy+segDx*s);DX.stroke();
+            // Small square at corner
+            DX.beginPath();
+            DX.moveTo(sx+segDx*s*0.4-segDy*s*0.4, sy+segDy*s*0.4+segDx*s*0.4);
+            DX.lineTo(sx-segDy*s*0.4, sy+segDx*s*0.4);
+            DX.lineTo(sx-segDx*s*0.4-segDy*s*0.4, sy-segDy*s*0.4+segDx*s*0.4);
+            DX.strokeStyle='#f1c40f';DX.lineWidth=1.5*ds;DX.stroke();
+            // Dot at snap point
+            DX.beginPath();DX.arc(sx,sy,3.5*ds,0,Math.PI*2);DX.fillStyle='#f1c40f';DX.fill();
+            // Label
+            DX.fillStyle='#d4ac0d';DX.font=`bold ${10*ds}px Arial`;DX.textAlign='left';
+            DX.shadowColor='white';DX.shadowBlur=3*ds;
+            DX.fillText('⊥',sx+12*ds,sy-5*ds);
+        } else if(sp.snapType==='edge'){
+            // ── Quadratino ciano — snap su bordo/segmento
+            const s=7*ds;
+            DX.strokeStyle='#00bcd4';DX.lineWidth=2.5*ds;
+            DX.beginPath();DX.rect(sx-s/2,sy-s/2,s,s);DX.stroke();
+            DX.fillStyle='rgba(0,188,212,0.2)';DX.fill();
+            DX.beginPath();DX.arc(sx,sy,2.5*ds,0,Math.PI*2);DX.fillStyle='#00bcd4';DX.fill();
+        } else {
+            // ● Cerchio verde — snap a vertice (default)
+            DX.beginPath();DX.arc(sx,sy,8*ds,0,Math.PI*2);
+            DX.strokeStyle='#27ae60';DX.lineWidth=3*ds;DX.stroke();
+            DX.beginPath();DX.arc(sx,sy,3*ds,0,Math.PI*2);
+            DX.fillStyle='#27ae60';DX.fill();
+        }
+        DX.shadowColor='transparent';
+        DX.restore();
     }
 
     if(S.calMode&&S.cur&&S.cur.points.length===1){
@@ -1381,6 +1551,17 @@ function draw(){
         DX.save();
         DX.strokeStyle=obj.color;DX.lineWidth=1.5*ds;
         DX.setLineDash([6*ds,4*ds]);
+
+        // Trapezio tool preview
+        if(obj.type==='trapezio'&&obj.points.length===1){
+            const h1=parseFloat(document.getElementById('trapH1').value)||0;
+            const h2=parseFloat(document.getElementById('trapH2').value)||0;
+            const previewObj={...obj,points:[obj.points[0],tp],h1,h2};
+            DX.setLineDash([]);DX.restore();
+            drawTrapezio(DX,previewObj,m,ds);
+            DX.save();
+            return;
+        }
 
         // Rectangle tool preview (2 diagonal vertices)
         if(obj.type==='rect'){
@@ -1531,6 +1712,7 @@ function updateTbl(){
 
         // Emit each parent followed immediately by its holes
         parentRecs.forEach(r => {
+            if(r.o.type === 'trapezio') return; // non appare nell'elenco misure
             if(r.o.type === 'area'){
                 buildAreaRow(r, false);
                 holeRecs.filter(hr => getParentRec(hr) === r).forEach(hr => buildAreaRow(hr, true));
@@ -1642,11 +1824,11 @@ function savePrj(){
     if(!S.pdfAB){alert("Nessun PDF.");return}
     const pd=S.pages.map(ps=>({
         pn:ps.pn,mpp:ps.mpp,cal:ps.cal,calRef:ps.calRef,
-        objects:ps.objects.map(o=>({type:o.type,name:o.name,points:o.points.map(p=>({x:p.x,y:p.y})),color:o.color,isB:o.isB||false,isHole:o.isHole||false,parentUid:o.parentUid||null,uid:o.uid||null,codice:o.codice||'',destinazione:o.destinazione||''}))
+        objects:ps.objects.map(o=>({type:o.type,name:o.name,points:o.points.map(p=>({x:p.x,y:p.y})),color:o.color,isB:o.isB||false,isHole:o.isHole||false,parentUid:o.parentUid||null,uid:o.uid||null,codice:o.codice||'',destinazione:o.destinazione||'',h1:o.h1??null,h2:o.h2??null}))
     }));
     const prj={v:V,app:"FABBRICATI_beta",t:new Date().toISOString(),
         psc:PSC,
-        rendite:getRenditeData(),cp:S.ci,sn:S.snapOn,bv:S.bordVis,fv:S.fillVis,pages:pd,pdf:ab2b64(S.pdfAB)};
+        rendite:getRenditeData(),cp:S.ci,sn:S.snapOn,ps:S.perpSnapOn,bv:S.bordVis,fv:S.fillVis,pages:pd,pdf:ab2b64(S.pdfAB)};
     const bl=new Blob([JSON.stringify(prj)],{type:'application/json'});
     const fn=buildFileName('mpj');
     const a=document.createElement('a');a.href=URL.createObjectURL(bl);a.download=fn;a.click();
@@ -1679,7 +1861,7 @@ async function loadPrj(ev){
                     // Rescale all point coordinates to current PSC canvas space
                     points:o.points.map(p=>({x:p.x*pscRatio,y:p.y*pscRatio})),
                     color:o.color,isB:o.isB||false,isHole:o.isHole||false,parentUid:o.parentUid||null,uid:o.uid||null,
-                    codice:o.codice||'',destinazione:o.destinazione||''
+                    codice:o.codice||'',destinazione:o.destinazione||'',h1:o.h1??null,h2:o.h2??null
                 }));
             }
         });
@@ -1687,6 +1869,7 @@ async function loadPrj(ev){
         let maxUid=0;S.pages.forEach(p=>p.objects.forEach(o=>{if(o.uid>maxUid)maxUid=o.uid;}));S.uidCtr=maxUid+1;
         if(prj.rendite)setRenditeData(prj.rendite);
         if(prj.sn!==undefined){S.snapOn=prj.sn;document.getElementById('snapTog').classList.toggle('on',S.snapOn)}
+        if(prj.ps!==undefined){S.perpSnapOn=prj.ps;document.getElementById('perpTog').classList.toggle('on',S.perpSnapOn)}
         if(prj.bv!==undefined)S.bordVis=prj.bv;
         if(prj.fv!==undefined){S.fillVis=prj.fv;document.getElementById('fillTog').classList.toggle('on',S.fillVis);}
         await showPage(prj.cp||0);buildGrid(P());
@@ -1827,7 +2010,7 @@ function exportXL(){
 /* --- STAMPA PDF --- */
 async function printPDF(){
     if(!S.pages||!S.pages.length){alert("Nessuna pagina caricata.");return}
-    const rend=getRenditeData(),ds=DPR,{jsPDF}=window.jspdf;
+    const rend=getRenditeData(),ds=DPR*GDS,{jsPDF}=window.jspdf;
     let doc=null;
 
     for(let pi=0;pi<S.pages.length;pi++){
@@ -1936,6 +2119,9 @@ async function printPDF(){
             }
             px.shadowColor='transparent';
         });
+
+        // Trapezio h=1.50m: always drawn in print
+        pdfNonB.filter(o=>o.type==='trapezio').forEach(obj=>drawTrapezio(px,obj,ps.mpp,ds));
 
         } // end calibrated measurements
 
@@ -2144,7 +2330,7 @@ async function exportTIFF(){
     oc.width=ps.vp.width;oc.height=ps.vp.height;
     const ox=oc.getContext('2d');
     ox.putImageData(ps.imgD,0,0);
-    const ds=DPR,m=ps.mpp;
+    const ds=DPR*GDS,m=ps.mpp;
     const nonBObjs=ps.objects.filter(o=>!o.isB);
     const areaObjs=nonBObjs.filter(o=>o.type==='area'&&!o.isHole);
     const holeObjs=nonBObjs.filter(o=>o.type==='area'&&o.isHole);
@@ -2248,6 +2434,7 @@ document.addEventListener('keydown',e=>{
     }
 });
 document.getElementById('snapTog').classList.add('on');
+document.getElementById('perpTog').classList.add('on');
 </script>
 </body>
 </html>
