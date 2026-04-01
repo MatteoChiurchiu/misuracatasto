@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FABBRICATI Beta v82</title>
+    <title>FABBRICATI Beta </title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2064%2064%27%3E%0A%3Cpath%20d%3D%27M12%2030%20L32%2014%20L52%2030%27%20fill%3D%27none%27%20stroke%3D%27%23ecf0f1%27%20stroke-width%3D%274%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%0A%3Cpath%20d%3D%27M18%2030%20V54%20H46%20V30%27%20fill%3D%27none%27%20stroke%3D%27%23ecf0f1%27%20stroke-width%3D%274%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%0A%3Cpath%20d%3D%27M40%2018%20V26%20H46%20V22%27%20fill%3D%27none%27%20stroke%3D%27%23ecf0f1%27%20stroke-width%3D%274%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%0A%3Cpath%20d%3D%27M28%2054%20V41%20H36%20V54%27%20fill%3D%27none%27%20stroke%3D%27%23ecf0f1%27%20stroke-width%3D%274%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%0A%3Ccircle%20cx%3D%2734.5%27%20cy%3D%2747.5%27%20r%3D%271.5%27%20fill%3D%27%23ecf0f1%27%2F%3E%0A%3Crect%20x%3D%2722%27%20y%3D%2736%27%20width%3D%278%27%20height%3D%278%27%20fill%3D%27none%27%20stroke%3D%27%23ecf0f1%27%20stroke-width%3D%273%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%0A%3Cpath%20d%3D%27M26%2036%20V44%20M22%2040%20H30%27%20fill%3D%27none%27%20stroke%3D%27%23ecf0f1%27%20stroke-width%3D%272.5%27%20stroke-linecap%3D%27round%27%2F%3E%0A%3Crect%20x%3D%2734%27%20y%3D%2736%27%20width%3D%278%27%20height%3D%278%27%20fill%3D%27none%27%20stroke%3D%27%23ecf0f1%27%20stroke-width%3D%273%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%0A%3Cpath%20d%3D%27M38%2036%20V44%20M34%2040%20H42%27%20fill%3D%27none%27%20stroke%3D%27%23ecf0f1%27%20stroke-width%3D%272.5%27%20stroke-linecap%3D%27round%27%2F%3E%0A%3Cpath%20d%3D%27M10%2056%20C18%2053%2C%2024%2058%2C%2032%2056%20S46%2054%2C%2054%2056%27%20fill%3D%27none%27%20stroke%3D%27%23ecf0f1%27%20stroke-width%3D%273%27%20stroke-linecap%3D%27round%27%2F%3E%0A%3C%2Fsvg%3E">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -51,6 +51,14 @@
         .stoggle.on .stoggle-sw::after,.stoggle.on-m .stoggle-sw::after{left:23px}
         .edit-hint{font-size:11px;color:#7f8c8d;padding:8px;background:#f8f9fa;border-radius:4px;margin-bottom:8px;line-height:1.4}
         .edit-hint b{color:var(--accent)}
+        .edit-hint{font-size:11px;color:#7f8c8d;padding:8px;background:#f8f9fa;border-radius:4px;margin-bottom:8px;line-height:1.4}
+        .edit-hint b{color:var(--accent)}
+        .edit-mode-row{display:none;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px}
+        .edit-mode-row.show{display:grid}
+        .edit-mode-row .btn{padding:8px;font-size:12px}
+        .edit-offset-row{display:none;grid-template-columns:1fr;gap:6px;margin-bottom:8px}
+        .edit-offset-row.show{display:grid}
+        .edit-offset-row input{padding:6px;border:1px solid #dcdde1;border-radius:4px;font-size:12px;font-weight:600}
         .ptabs{background:#34495e;border-bottom:2px solid #2c3e50;display:none}
         .ptabs-s{display:flex;overflow-x:auto;padding:0 5px}
         .ptab{padding:10px 18px;color:rgba(255,255,255,.6);font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;border:none;background:none;border-bottom:3px solid transparent}
@@ -60,7 +68,7 @@
         .viewer-area{flex:1;position:relative;overflow:hidden}
         #canvas-viewport{position:absolute;transform-origin:0 0}
         canvas{position:absolute;top:0;left:0}
-        .measuring{cursor:crosshair!important}
+        .measuring{cursor:none!important}
         .panning{cursor:grabbing!important}
         .editing{cursor:move!important}
         #mt{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}
@@ -149,25 +157,64 @@
                 <div class="stoggle-sw"></div>
             </div>
             <div class="stoggle on" id="snapTog" onclick="toggleSnap()">
-                <div class="stoggle-label">🧲 <span>Snap ai vertici</span></div>
+                <div class="stoggle-label">🧲 <span>Snap</span></div>
                 <div class="stoggle-sw"></div>
             </div>
             <div class="stoggle on" id="perpTog" onclick="togglePerpSnap()">
                 <div class="stoggle-label">∟ <span>Snap perpendicolare</span></div>
                 <div class="stoggle-sw"></div>
             </div>
+            <div id="snapDistRow" style="display:grid;grid-template-columns:1fr auto auto auto;gap:6px;align-items:center;margin:6px 0 10px 0;padding:8px;border:1px solid #d8dee6;border-radius:6px;background:#f8fafc">
+                <div style="font-size:12px;font-weight:700;color:#2c3e50">Distanza snap</div>
+                <button class="btn" type="button" onclick="adjustSnapDistance(-0.1)" style="padding:6px 8px;background:#eef2f7">−</button>
+                <div id="snapScaleLbl" style="min-width:58px;text-align:center;font-size:12px;font-weight:700;color:#1f2d3d">100%</div>
+                <button class="btn" type="button" onclick="adjustSnapDistance(0.1)" style="padding:6px 8px;background:#eef2f7">+</button>
+            </div>
             <div id="editHint" class="edit-hint" style="display:none"><b>Click sinistro:</b> Sposta vertice o aggiungi su segmento<br><b>Click destro:</b> Elimina vertice</div>
+            <div id="editModeBar" class="edit-mode-row">
+                <button class="btn" id="btn-edit-move" onclick="setEditMode('move')">✋ Sposta</button>
+                <button class="btn" id="btn-edit-extend" onclick="setEditMode('extend')">↔️ Estendi</button>
+                <button class="btn" id="btn-edit-trim" onclick="setEditMode('trim')">✂️ Taglia</button>
+                <button class="btn" id="btn-edit-delete" onclick="setEditMode('delete')">🗑️ Cancella</button>
+                <button class="btn" id="btn-edit-offset" onclick="setEditMode('offset')" style="font-size:13px">📏 Offset</button>
+                <button class="btn" id="btn-edit-copy-parallel" onclick="setEditMode('copyParallel')" style="font-size:12px">📋 ∥ Copia</button>
+                <button class="btn" id="btn-edit-move-line" onclick="setEditMode('moveLine')" style="font-size:12px">↕️ ∥ Sposta</button>
+            </div>
+            <div id="editOffsetRow" class="edit-offset-row">
+                <input type="number" id="offsetValue" placeholder="Distanza offset (m)" step="0.1" value="0.5" onchange="draw()" oninput="draw()" style="display:none">
+                <input type="number" id="copyParallelValue" placeholder="Distanza copia parallela (m)" step="0.1" value="0.5" onchange="draw()" oninput="draw()" style="display:none">
+                <input type="number" id="moveLineValue" placeholder="Distanza sposta linea (m)" step="0.1" value="0.5" onchange="draw()" oninput="draw()" style="display:none">
+            </div>
             <div class="btn-group">
                 <button class="btn" id="btn-line" onclick="setTool('line')">📏 Linea</button>
-                <button class="btn" id="btn-area" onclick="setTool('area')">📐 Area Poligono</button>
+                <button class="btn" id="btn-area" onclick="setTool('area')">📐 Poligono</button>
                 <button class="btn" id="btn-rect" onclick="setTool('rect')">▭ Rettangolo</button>
                 <button class="btn" id="btn-select" onclick="setTool('select')">🖱️ Modifica</button>
                 <button class="btn" id="btn-undo" onclick="undo()" style="opacity:0.4" disabled>↩️ Annulla</button>
             </div>
+            <div id="lineLengthRow" class="edit-offset-row" style="display:none;margin-top:8px">
+                <input type="text" id="lineLengthValue" placeholder="Lunghezza linea (m) + Invio" inputmode="decimal" autocomplete="off">
+            </div>
+            <div class="card" style="margin:8px 0 0 0;padding:10px;border:1px solid #e3e7ea">
+                <span class="card-title" style="margin-bottom:8px">🛠️ Aspetto Disegno</span>
+                <div style="display:grid;grid-template-columns:1fr auto auto auto;gap:6px;align-items:center;margin-bottom:6px">
+                    <div style="font-size:12px;font-weight:700;color:#2c3e50">Testo</div>
+                    <button class="btn" type="button" onclick="adjustTextScale(-0.1)" style="padding:6px 8px">−</button>
+                    <div id="textScaleLbl" style="min-width:50px;text-align:center;font-size:12px;font-weight:700">100%</div>
+                    <button class="btn" type="button" onclick="adjustTextScale(0.1)" style="padding:6px 8px">+</button>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr auto auto auto;gap:6px;align-items:center">
+                    <div style="font-size:12px;font-weight:700;color:#2c3e50">Linee</div>
+                    <button class="btn" type="button" onclick="adjustLineScale(-0.1)" style="padding:6px 8px">−</button>
+                    <div id="lineScaleLbl" style="min-width:50px;text-align:center;font-size:12px;font-weight:700">100%</div>
+                    <button class="btn" type="button" onclick="adjustLineScale(0.1)" style="padding:6px 8px">+</button>
+                </div>
+                <button class="btn" type="button" onclick="resetVisualScale()" style="margin-top:8px;padding:7px">Reset 100%</button>
+            </div>
         </div>
         <!-- CARD ALTEZZA UTILE / TRAPEZIO -->
         <div class="card" id="trapCard" style="opacity:.5;pointer-events:none">
-            <span class="card-title">🏠 Altezza Utile (1.50 m)</span>
+            <span class="card-title">🏠 Altezza Utile Falde inclinate (1.50 m)</span>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
                 <div class="field-group">
                     <label>Altezza sx (m)</label>
@@ -178,7 +225,11 @@
                     <input type="number" id="trapH2" value="2.50" min="0" step="0.01">
                 </div>
             </div>
-            <button class="btn" id="btn-trapezio" onclick="setTool('trapezio')" style="width:100%;background:#8e44ad;color:white;border:none;margin-bottom:6px">📐 Trova h = 1.50 m</button>
+            <button class="btn" id="btn-trapezio" onclick="setTool('trapezio')" style="width:100%;background:#8e44ad;color:white;border:none;margin-bottom:6px">📐 Disegna Falda</button>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px">
+                <button class="btn" id="btn-trap-edit" onclick="startTrapEditMode()" style="background:#16a085;color:white;border:none">✏️ Modifica Altezze</button>
+                <button class="btn" id="btn-trap-delete" onclick="startTrapDeleteMode()" style="background:#c0392b;color:white;border:none">🗑️ Cancella</button>
+            </div>
             <div id="trapResult" class="status" style="display:none;font-size:11px;line-height:1.5"></div>
         </div>
 
@@ -261,7 +312,9 @@
 <script>
 pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-const V="1.1-BETA",DPR=window.devicePixelRatio||1,GDS=1.8,PSC=6.0,SNAPD=15,VHD=10,SHD=8,MBL=150,CT=10;
+const DPR_DEVICE=window.devicePixelRatio||1;
+const DPR=Math.min(5,Math.max(2.5,DPR_DEVICE*1.4));
+const V="1.1-BETA",GDS=1.8,PSC=10.0,SNAPD=15,VHD=10,SHD=8,MBL=150,CT=10;
 
 const CODE_COLORS={
     A:'#e74c3c',B:'#2ecc71',C:'#3498db',D:'#9b59b6',E:'#f39c12',
@@ -275,11 +328,87 @@ function getCodeColor(code){return CODE_COLORS[code]||'#3498db';}
 const S={pdf:null,tp:0,ci:0,pages:[],tool:null,cur:null,drag:null,calMode:false,
     mp:{x:0,y:0},snap:null,snapOn:true,perpSnapOn:true,bordVis:true,fillVis:true,selObj:null,uidCtr:1,history:[],pdfAB:null,axisLock:false,
     colors:['#e74c3c','#2ecc71','#f1c40f','#9b59b6','#1abc9c','#e67e22'],
-    hSeg:null,hVtx:null};
+    hSeg:null,hVtx:null,editMode:'move',editPick:null,offsetPreview:null,textScale:1,lineScale:1,snapScale:1,trapPickMode:false,trapActionMode:null};
 
 const VA=document.getElementById('viewerArea'),VP=document.getElementById('canvas-viewport');
 const PC=document.getElementById('pdfCanvas'),DC=document.getElementById('drawCanvas');
 const PX=PC.getContext('2d'),DX=DC.getContext('2d');
+function setCanvasQuality(ctx){
+    if(!ctx)return;
+    ctx.imageSmoothingEnabled=true;
+    if('imageSmoothingQuality' in ctx)ctx.imageSmoothingQuality='high';
+    ctx.lineCap='round';
+    ctx.lineJoin='round';
+}
+function scaledFont(fontText){
+    if(!fontText)return fontText;
+    return fontText.replace(/(\d+(?:\.\d+)?)px/g,(m,n)=>`${(parseFloat(n)*S.textScale).toFixed(2)}px`);
+}
+function enhanceContext(ctx){
+    if(!ctx||ctx.__fabEnhanced)return ctx;
+    setCanvasQuality(ctx);
+    const origFillText=ctx.fillText.bind(ctx);
+    const origStrokeText=ctx.strokeText.bind(ctx);
+    const origMeasureText=ctx.measureText.bind(ctx);
+    const origStroke=ctx.stroke.bind(ctx);
+    ctx.fillText=function(text,x,y,maxWidth){
+        const prev=ctx.font,scaled=scaledFont(prev);
+        if(scaled!==prev)ctx.font=scaled;
+        try{return maxWidth!==undefined?origFillText(text,x,y,maxWidth):origFillText(text,x,y);}finally{ctx.font=prev;}
+    };
+    ctx.strokeText=function(text,x,y,maxWidth){
+        const prev=ctx.font,scaled=scaledFont(prev);
+        if(scaled!==prev)ctx.font=scaled;
+        try{return maxWidth!==undefined?origStrokeText(text,x,y,maxWidth):origStrokeText(text,x,y);}finally{ctx.font=prev;}
+    };
+    ctx.measureText=function(text){
+        const prev=ctx.font,scaled=scaledFont(prev);
+        if(scaled!==prev)ctx.font=scaled;
+        try{return origMeasureText(text);}finally{ctx.font=prev;}
+    };
+    ctx.stroke=function(...args){
+        const prev=ctx.lineWidth;
+        ctx.lineWidth=prev*S.lineScale;
+        try{return origStroke(...args);}finally{ctx.lineWidth=prev;}
+    };
+    ctx.__fabEnhanced=true;
+    return ctx;
+}
+enhanceContext(PX);
+enhanceContext(DX);
+function clamp(v,min,max){return Math.max(min,Math.min(max,v));}
+function updateVisualScaleLabels(){
+    const t=document.getElementById('textScaleLbl'),l=document.getElementById('lineScaleLbl');
+    if(t)t.textContent=Math.round(S.textScale*100)+'%';
+    if(l)l.textContent=Math.round(S.lineScale*100)+'%';
+}
+function adjustTextScale(delta){
+    S.textScale=clamp(Math.round((S.textScale+delta)*100)/100,0.1,1);
+    updateVisualScaleLabels();
+    draw();
+}
+function adjustLineScale(delta){
+    S.lineScale=clamp(Math.round((S.lineScale+delta)*100)/100,0.1,1);
+    updateVisualScaleLabels();
+    draw();
+}
+function resetVisualScale(){
+    S.textScale=1;S.lineScale=1;
+    updateVisualScaleLabels();
+    draw();
+}
+function updateSnapDistanceLabel(){
+    const el=document.getElementById('snapScaleLbl');
+    if(el)el.textContent=Math.round(S.snapScale*100)+'%';
+}
+function adjustSnapDistance(delta){
+    S.snapScale=clamp(Math.round((S.snapScale+delta)*100)/100,0.1,1);
+    updateSnapDistanceLabel();
+    draw();
+}
+function getSnapBaseRadius(){
+    return SNAPD*DPR*S.snapScale;
+}
 
 function getCalRefDist(){return parseFloat(document.getElementById('calRefDist').value)||10}
 
@@ -361,6 +490,47 @@ function setRenditeData(d){
 }
 
 function P(){return S.pages[S.ci]}
+function getLineLengthInputValue(){
+    const el=document.getElementById('lineLengthValue');
+    if(!el)return NaN;
+    const raw=(el.value||'').trim().replace(',', '.');
+    if(!raw)return NaN;
+    const v=parseFloat(raw);
+    return Number.isFinite(v)?v:NaN;
+}
+function getLinePreviewTargetPoint(){
+    const fallback=S.snap||S.mp;
+    if(!(S.tool==='line'&&S.cur&&S.cur.type==='line'&&S.cur.points.length===1))return fallback;
+    const ps=P();
+    const mVal=getLineLengthInputValue();
+    if(!ps||!ps.mpp||!Number.isFinite(mVal)||mVal<=0)return fallback;
+    const p0=S.cur.points[0];
+    let dx=fallback.x-p0.x,dy=fallback.y-p0.y;
+    let len=Math.hypot(dx,dy);
+    if(len<1e-6){dx=1;dy=0;len=1;}
+    const pxLen=mVal/ps.mpp;
+    return{x:p0.x+dx/len*pxLen,y:p0.y+dy/len*pxLen};
+}
+function refreshLineLengthUI(){
+    const row=document.getElementById('lineLengthRow');
+    if(!row)return;
+    const show=!!(S.tool==='line'&&S.cur&&S.cur.points.length===1);
+    row.style.display=show?'grid':'none';
+}
+function applyLineLengthAndFinalize(){
+    if(!(S.tool==='line'&&S.cur&&S.cur.type==='line'&&S.cur.points.length===1))return false;
+    const ps=P();
+    if(!ps||!ps.mpp)return false;
+    const mVal=getLineLengthInputValue();
+    if(!Number.isFinite(mVal)||mVal<=0){
+        alert('Inserisci una lunghezza valida maggiore di zero');
+        return false;
+    }
+    const tp=getLinePreviewTargetPoint();
+    S.cur.points.push({x:tp.x,y:tp.y});
+    finalize();
+    return true;
+}
 
 // ─── UNDO ────────────────────────────────────────────────────────────────────
 function pushHistory(){
@@ -390,6 +560,7 @@ function undo(){
         S.pages[i]._cd=pd._cd;
     });
     S.cur=null;S.drag=null;S.selObj=null;S.hSeg=null;S.hVtx=null;
+    refreshLineLengthUI();
     updateUndoBtn();
     updateTbl();draw();updateTabs();
 }
@@ -404,9 +575,9 @@ function toggleBorders(){S.bordVis=!S.bordVis;document.getElementById('bordTog')
 function toggleFills(){S.fillVis=!S.fillVis;document.getElementById('fillTog').classList.toggle('on',S.fillVis);draw()}
 
 function clearTool(){
-    S.tool=null;S.cur=null;S.hSeg=null;S.hVtx=null;
+    S.tool=null;S.cur=null;S.hSeg=null;S.hVtx=null;S.editPick=null;S.offsetPreview=null;S.editMode='move';
     document.querySelectorAll('#toolsCard .btn').forEach(b=>b.classList.remove('active'));
-    VA.classList.remove('measuring','editing');document.getElementById('editHint').style.display='none';
+    VA.classList.remove('measuring','editing');refreshEditModeUI();refreshLineLengthUI();
 }
 
 function segInter(a,b,c,d){
@@ -416,8 +587,245 @@ function segInter(a,b,c,d){
     if(t>=0&&t<=1&&u>=0&&u<=1)return{x:a.x+t*(b.x-a.x),y:a.y+t*(b.y-a.y)};return null;
 }
 
+function isEditableLineObj(o){return !!o&&!o.isB&&o.type!=='area'&&o.type!=='trapezio'}
+function getEditModeLabel(){
+    if(S.editMode==='extend')return 'Estendi';
+    if(S.editMode==='trim')return 'Taglia';
+    if(S.editMode==='delete')return 'Cancella';
+    if(S.editMode==='offset')return 'Offset';
+    if(S.editMode==='copyParallel')return 'Copia Parallela';
+    if(S.editMode==='moveLine')return 'Sposta Linea';
+    return 'Sposta';
+}
+function findSelectableObjectAtPoint(px,py){
+    const ps=P();if(!ps)return null;
+    const segThreshold=SHD*DPR/ps.scale;
+    const areaHits=[];
+    let bestSeg=null;
+    for(const o of ps.objects){
+        if(o.isB)continue;
+        if(o.type==='area'&&pointInPolygon(px,py,o.points)){
+            areaHits.push(o);
+            continue;
+        }
+        if(o.type==='trapezio'){
+            const hitTrap=findTrapNearPoint(px,py);
+            if(hitTrap)return hitTrap;
+            continue;
+        }
+        if(!o.points||o.points.length<2)continue;
+        for(let i=0;i<o.points.length-1;i++){
+            const r=d2s(px,py,o.points[i],o.points[i+1]);
+            if(r.distance<segThreshold&&(!bestSeg||r.distance<bestSeg.distance))bestSeg={obj:o,distance:r.distance};
+        }
+    }
+    if(areaHits.length){
+        const negArea=areaHits.find(o=>o.isHole);
+        if(negArea)return negArea;
+        return areaHits[0];
+    }
+    return bestSeg?bestSeg.obj:null;
+}
+function refreshEditModeUI(){
+    const hint=document.getElementById('editHint'),bar=document.getElementById('editModeBar'),offRow=document.getElementById('editOffsetRow');
+    if(!hint||!bar||!offRow)return;
+    const offsetIn=document.getElementById('offsetValue'),copyIn=document.getElementById('copyParallelValue'),moveIn=document.getElementById('moveLineValue');
+    const inSelect=S.tool==='select';
+    hint.style.display=inSelect?'block':'none';
+    bar.classList.toggle('show',inSelect);
+    const hasMetricMode=S.editMode==='offset'||S.editMode==='copyParallel'||S.editMode==='moveLine';
+    offRow.classList.toggle('show',inSelect&&hasMetricMode&&!S.editPick);
+    if(offsetIn)offsetIn.style.display=inSelect&&S.editMode==='offset'&&!S.editPick?'block':'none';
+    if(copyIn)copyIn.style.display=inSelect&&S.editMode==='copyParallel'&&!S.editPick?'block':'none';
+    if(moveIn)moveIn.style.display=inSelect&&S.editMode==='moveLine'&&!S.editPick?'block':'none';
+    document.getElementById('btn-edit-move')?.classList.toggle('active',inSelect&&S.editMode==='move');
+    document.getElementById('btn-edit-extend')?.classList.toggle('active',inSelect&&S.editMode==='extend');
+    document.getElementById('btn-edit-trim')?.classList.toggle('active',inSelect&&S.editMode==='trim');
+    document.getElementById('btn-edit-delete')?.classList.toggle('active',inSelect&&S.editMode==='delete');
+    document.getElementById('btn-edit-offset')?.classList.toggle('active',inSelect&&S.editMode==='offset');
+    document.getElementById('btn-edit-copy-parallel')?.classList.toggle('active',inSelect&&S.editMode==='copyParallel');
+    document.getElementById('btn-edit-move-line')?.classList.toggle('active',inSelect&&S.editMode==='moveLine');
+    if(!inSelect)return;
+    if(S.editMode==='move'){
+        hint.innerHTML='<b>Click sinistro:</b> Sposta vertice o aggiungi su segmento<br><b>Click destro:</b> Elimina vertice';
+        return;
+    }
+    if(S.editMode==='delete'){
+        hint.innerHTML='<b>Cancella:</b> clicca una figura (interno area o bordo) per eliminarla';
+        return;
+    }
+    if(S.editMode==='offset'){
+        if(S.editPick){
+            hint.innerHTML=`<b>Offset selezionato:</b> <span style="color:#10b981">🟢 Verde</span> o <span style="color:#ef4444">🔴 Rosso</span>? Clicca il lato desiderato. Distanza: <b>${S.editPick.distance.toFixed(2)}m</b>`;
+        }else{
+            hint.innerHTML='<b>Offset:</b> clicca una linea o un poligono per selezionare';
+        }
+        return;
+    }
+    if(S.editMode==='copyParallel'){
+        if(S.editPick){
+            hint.innerHTML=`<b>Copia parallela:</b> scegli il lato <span style="color:#10b981">🟢</span>/<span style="color:#ef4444">🔴</span> con il secondo click. Distanza: <b>${S.editPick.distance.toFixed(2)}m</b>`;
+        }else{
+            hint.innerHTML='<b>Copia parallela:</b> inserisci distanza e clicca una linea';
+        }
+        return;
+    }
+    if(S.editMode==='moveLine'){
+        if(S.editPick){
+            hint.innerHTML=`<b>Sposta linea:</b> scegli il lato <span style="color:#10b981">🟢</span>/<span style="color:#ef4444">🔴</span> con il secondo click. Distanza: <b>${S.editPick.distance.toFixed(2)}m</b>`;
+        }else{
+            hint.innerHTML='<b>Sposta linea:</b> inserisci distanza e clicca una linea';
+        }
+        return;
+    }
+    if(S.editPick){
+        hint.innerHTML=`<b>${getEditModeLabel()}:</b> ora clicca la linea di riferimento che deve fermare il segmento selezionato`;
+        return;
+    }
+    hint.innerHTML=`<b>${getEditModeLabel()}:</b> clicca il segmento da modificare, scegliendo implicitamente l'estremo piu vicino al mouse`;
+}
+function setEditMode(mode){
+    S.editMode=mode;S.editPick=null;S.offsetPreview=null;S.hVtx=null;
+    if(S.tool==='select')S.hSeg=(mode==='move')?findSH(S.mp.x,S.mp.y):((mode==='offset'||mode==='delete')?null:findLineSH(S.mp.x,S.mp.y));
+    refreshEditModeUI();draw();
+}
+function findLineSH(px,py,exclude){
+    const ps=P();if(!ps)return null;
+    const t=SHD*DPR/ps.scale;let best=null;
+    for(let o of ps.objects){
+        if(!isEditableLineObj(o))continue;
+        for(let i=0;i<o.points.length-1;i++){
+            if(exclude&&exclude.obj===o&&exclude.segmentIndex===i)continue;
+            const r=d2s(px,py,o.points[i],o.points[i+1]);
+            if(r.distance<t&&(!best||r.distance<best.distance))best={obj:o,segmentIndex:i,insertPoint:r.pp,distance:r.distance};
+        }
+    }
+    return best;
+}
+function getPickedEndpoint(seg,px,py){
+    const p1=seg.obj.points[seg.segmentIndex],p2=seg.obj.points[seg.segmentIndex+1];
+    return Math.hypot(px-p1.x,py-p1.y)<=Math.hypot(px-p2.x,py-p2.y)?0:1;
+}
+function lineInterInfo(a,b,c,d){
+    const den=(a.x-b.x)*(c.y-d.y)-(a.y-b.y)*(c.x-d.x);
+    if(Math.abs(den)<1e-9)return null;
+    const t=((a.x-c.x)*(c.y-d.y)-(a.y-c.y)*(c.x-d.x))/den;
+    const u=((a.x-c.x)*(a.y-b.y)-(a.y-c.y)*(a.x-b.x))/den;
+    return{x:a.x+t*(b.x-a.x),y:a.y+t*(b.y-a.y),t,u};
+}
+function getExtendTrimResult(source,target,mode){
+    const a=source.obj.points[source.segmentIndex],b=source.obj.points[source.segmentIndex+1];
+    const c=target.obj.points[target.segmentIndex],d=target.obj.points[target.segmentIndex+1];
+    const inter=lineInterInfo(a,b,c,d),eps=1e-6;
+    if(!inter)return{error:'Linee parallele o coincidenti'};
+    if(inter.u<-eps||inter.u>1+eps)return{error:'La linea di riferimento non interseca il segmento selezionato'};
+    if(mode==='extend'){
+        if(source.endpointIndex===0&&inter.t>=-eps)return{error:'L\'intersezione non estende l\'estremo scelto'};
+        if(source.endpointIndex===1&&inter.t<=1+eps)return{error:'L\'intersezione non estende l\'estremo scelto'};
+    }else if(inter.t<=eps||inter.t>=1-eps){
+        return{error:'L\'intersezione non taglia il segmento selezionato'};
+    }
+    return{pointIndex:source.segmentIndex+source.endpointIndex,point:{x:inter.x,y:inter.y}};
+}
+function applyExtendTrim(source,target,mode){
+    const res=getExtendTrimResult(source,target,mode);
+    if(res.error){alert(res.error);return false;}
+    pushHistory();
+    source.obj.points[res.pointIndex]=res.point;
+    S.editPick=null;
+    refreshEditModeUI();
+    updateTbl();
+    draw();
+    return true;
+}
+
+function getOffsetValue(){const v=parseFloat(document.getElementById('offsetValue')?.value)||0;return v;}
+function getCopyParallelValue(){const v=parseFloat(document.getElementById('copyParallelValue')?.value)||0;return v;}
+function getMoveLineValue(){const v=parseFloat(document.getElementById('moveLineValue')?.value)||0;return v;}
+function offsetSegment(p1,p2,dist){
+    const dx=p2.x-p1.x,dy=p2.y-p1.y,len=Math.hypot(dx,dy);
+    if(len<1e-6)return{p1,p2};
+    const nx=-dy/len,ny=dx/len,ox=nx*dist,oy=ny*dist;
+    return{p1:{x:p1.x+ox,y:p1.y+oy},p2:{x:p2.x+ox,y:p2.y+oy}};
+}
+function offsetPolyLine(points,dist){
+    if(points.length<2)return points.map(p=>({...p}));
+    const isClosedPoly=points.length>2&&Math.hypot(points[0].x-points[points.length-1].x,points[0].y-points[points.length-1].y)<1e-3;
+    if(isClosedPoly){
+        const base=points.slice(0,-1),n=base.length;
+        if(n<3)return points.map(p=>({...p}));
+        const offSegs=[];
+        for(let i=0;i<n;i++)offSegs.push(offsetSegment(base[i],base[(i+1)%n],dist));
+        const result=[];
+        for(let i=0;i<n;i++){
+            const prev=offSegs[(i-1+n)%n],curr=offSegs[i];
+            const inter=lineInterInfo(prev.p1,prev.p2,curr.p1,curr.p2);
+            result.push(inter?{x:inter.x,y:inter.y}:{x:curr.p1.x,y:curr.p1.y});
+        }
+        result.push({...result[0]});
+        return result;
+    }
+    const offSegs=[];
+    for(let i=0;i<points.length-1;i++)offSegs.push(offsetSegment(points[i],points[i+1],dist));
+    const result=[];
+    for(let i=0;i<offSegs.length;i++){
+        if(result.length===0)result.push(offSegs[i].p1);
+        if(i<offSegs.length-1){
+            const inter=lineInterInfo(offSegs[i].p1,offSegs[i].p2,offSegs[i+1].p1,offSegs[i+1].p2);
+            result.push(inter?{x:inter.x,y:inter.y}:{x:offSegs[i].p2.x,y:offSegs[i].p2.y});
+        }else result.push(offSegs[i].p2);
+    }
+    return result;
+}
+function distPointToPath(px,py,points){
+    if(!points||points.length<2)return Infinity;
+    let best=Infinity;
+    for(let i=0;i<points.length-1;i++){
+        const d=d2s(px,py,points[i],points[i+1]).distance;
+        if(d<best)best=d;
+    }
+    return best;
+}
+function pickOffsetSide(editPick,px,py){
+    const isArea=editPick.obj&&editPick.obj.type==='area';
+    if(isArea){
+        const inPos=pointInPolygon(px,py,editPick.offsetPos);
+        const inNeg=pointInPolygon(px,py,editPick.offsetNeg);
+        if(inPos&&!inNeg)return 'pos';
+        if(inNeg&&!inPos)return 'neg';
+    }
+    const dPos=distPointToPath(px,py,editPick.offsetPos);
+    const dNeg=distPointToPath(px,py,editPick.offsetNeg);
+    return dPos<=dNeg?'pos':'neg';
+}
+function getModeDistance(mode){
+    if(mode==='offset')return getOffsetValue();
+    if(mode==='copyParallel')return getCopyParallelValue();
+    if(mode==='moveLine')return getMoveLineValue();
+    return 0;
+}
+function applyOffsetToObject(obj,metricDist){
+    const ps=P();if(!ps||!ps.mpp)return false;
+    const pxDist=metricDist/ps.mpp;
+    const offsetPts=offsetPolyLine(obj.points,pxDist);
+    if(!offsetPts||offsetPts.length===0)return false;
+    pushHistory();
+    obj.points=offsetPts;
+    S.offsetPreview=null;
+    updateTbl();
+    draw();
+    return true;
+}
+function getOffsetPreview(obj){
+    const metricDist=getOffsetValue();
+    if(Math.abs(metricDist)<1e-6)return null;
+    const ps=P();if(!ps||!ps.mpp)return null;
+    const pxDist=metricDist/ps.mpp;
+    return{obj,originalPoints:obj.points,offsetPoints:offsetPolyLine(obj.points,pxDist)};
+}
+
 function findSnap(mx,my){
-    if(!S.snapOn)return null;const ps=P();if(!ps)return null;let cp=null,md=SNAPD*DPR;
+    if(!S.snapOn)return null;const ps=P();if(!ps)return null;const baseSnap=getSnapBaseRadius();let cp=null,md=baseSnap;
 
     // ── Vertex snap (highest priority) ──────────────────────────────────────
     ps.objects.forEach(o=>{
@@ -426,8 +834,8 @@ function findSnap(mx,my){
     });
 
     // ── Segment (edge) snap + perpendicular snap ─────────────────────────────
-    const segRadius=SNAPD*DPR*2.5;
-    const perpRadius=SNAPD*DPR*4;
+    const segRadius=baseSnap*2.5;
+    const perpRadius=baseSnap*4;
     let perpBest=null,perpMd=Infinity;
 
     ps.objects.forEach(o=>{
@@ -520,6 +928,7 @@ async function loadPDF(ab){
 async function showPage(pi){
     S.ci=pi;const ps=P();
     PC.width=DC.width=ps.vp.width;PC.height=DC.height=ps.vp.height;
+    enhanceContext(PX);enhanceContext(DX);
     PC.style.width=DC.style.width=ps.cw+'px';PC.style.height=DC.style.height=ps.ch+'px';
     if(ps.imgD)PX.putImageData(ps.imgD,0,0);
     else{await ps.page.render({canvasContext:PX,viewport:ps.vp}).promise;ps.imgD=PX.getImageData(0,0,PC.width,PC.height);ps.rendered=true}
@@ -527,6 +936,7 @@ async function showPage(pi){
     S.cur=null;S.drag=null;S.calMode=false;S.snap=null;S.hSeg=null;S.hVtx=null;S.selObj=null;S.tool=null;
     document.querySelectorAll('#toolsCard .btn').forEach(b=>b.classList.remove('active'));
     VA.classList.remove('measuring','editing');document.getElementById('editHint').style.display='none';
+    refreshLineLengthUI();
     updateCalUI(ps);updateBordUI(ps);updateTabs();
     document.getElementById('pageInf').style.display='';document.getElementById('pageInf').textContent=`Pagina ${pi+1}/${S.tp}`;
     updateTF();updateTbl();draw();
@@ -1047,24 +1457,152 @@ window.addEventListener('mousemove',e=>{
         else S.mp.x=lp.x;
     }
     if(S.tool==='select'&&!S.drag){
-        S.hVtx=findVH(S.mp.x,S.mp.y);
-        S.hSeg=S.hVtx?null:findSH(S.mp.x,S.mp.y);
+        if(S.editMode==='move'){
+            S.hVtx=findVH(S.mp.x,S.mp.y);
+            S.hSeg=S.hVtx?null:findSH(S.mp.x,S.mp.y);
+        }else if(S.editMode==='delete'){
+            S.hVtx=null;
+            S.hSeg=null;
+        }else{
+            S.hVtx=null;
+            S.hSeg=findLineSH(S.mp.x,S.mp.y,S.editPick);
+        }
     }else{S.hSeg=null;S.hVtx=null}
     if(S.cur||S.tool==='select'||S.calMode)draw();
 });
 
 function setTool(t){
     const ps=P();if(!ps||(!ps.mpp&&t!=='select')){alert("Prima calibra!");return}
-    S.tool=t;S.cur=null;S.hSeg=null;S.hVtx=null;S.selObj=null;
+    S.tool=t;S.cur=null;S.hSeg=null;S.hVtx=null;S.selObj=null;S.editPick=null;
+    if(t!=='select'){S.trapPickMode=false;S.trapActionMode=null;}
+    if(t==='select')S.editMode='move';
     document.querySelectorAll('#toolsCard .btn').forEach(b=>b.classList.remove('active'));
     VA.classList.remove('measuring','editing');
-    document.getElementById('editHint').style.display='none';
     if(t){
         document.getElementById('btn-'+t).classList.add('active');
-        if(t==='select'){VA.classList.add('editing');document.getElementById('editHint').style.display='block'}
+        if(t==='select')VA.classList.add('editing');
         else VA.classList.add('measuring');
     }
+    updateTrapPickUI();
+    refreshEditModeUI();
+    refreshLineLengthUI();
     draw();
+}
+
+function setTrapResult(msg,type='warn'){
+    const el=document.getElementById('trapResult');
+    if(!el)return;
+    el.style.display='block';
+    el.className='status';
+    if(type==='ok')el.classList.add('ok');
+    else if(type==='warn')el.classList.add('warn');
+    el.innerHTML=msg;
+}
+function updateTrapPickUI(){
+    const editBtn=document.getElementById('btn-trap-edit');
+    const delBtn=document.getElementById('btn-trap-delete');
+    if(editBtn)editBtn.style.background=(S.trapPickMode&&S.trapActionMode==='edit')?'#117a65':'#16a085';
+    if(delBtn)delBtn.style.background=(S.trapPickMode&&S.trapActionMode==='delete')?'#922b21':'#c0392b';
+}
+function _distPointToSegment(px,py,ax,ay,bx,by){
+    const dx=bx-ax,dy=by-ay;
+    const lenSq=dx*dx+dy*dy;
+    if(lenSq===0)return Math.hypot(px-ax,py-ay);
+    const t=Math.max(0,Math.min(1,((px-ax)*dx+(py-ay)*dy)/lenSq));
+    return Math.hypot(px-(ax+t*dx),py-(ay+t*dy));
+}
+function _pointInPoly(px,py,poly){
+    let inside=false;
+    for(let i=0,j=poly.length-1;i<poly.length;j=i++){
+        const xi=poly[i].x,yi=poly[i].y,xj=poly[j].x,yj=poly[j].y;
+        if(((yi>py)!==(yj>py))&&(px<(xj-xi)*(py-yi)/(yj-yi)+xi))inside=!inside;
+    }
+    return inside;
+}
+function findTrapNearPoint(px,py){
+    const ps=P();if(!ps||!ps.mpp)return null;
+    const EDGE_THRESH=20;
+    for(const o of ps.objects){
+        if(o.type!=='trapezio'||o.isB)continue;
+        const g=calcTrapezioGeom(o,ps.mpp);
+        if(!g)continue;
+        const poly=[g.p1,g.p2,g.tr,g.tl];
+        if(_pointInPoly(px,py,poly))return o;
+        for(let i=0,j=poly.length-1;i<poly.length;j=i++){
+            if(_distPointToSegment(px,py,poly[j].x,poly[j].y,poly[i].x,poly[i].y)<EDGE_THRESH)return o;
+        }
+    }
+    return null;
+}
+function startTrapPickMode(mode){
+    const ps=P();if(!ps||!ps.mpp){alert('Prima calibra!');return;}
+    const traps=ps.objects.filter(o=>o.type==='trapezio'&&!o.isB);
+    if(!traps.length){setTrapResult('⚠️ Nessuna sezione falde inclinata presente in questa pagina','warn');return;}
+    setTool('select');
+    S.trapPickMode=true;
+    S.trapActionMode=mode;
+    updateTrapPickUI();
+    if(mode==='edit')setTrapResult('🎯 Modifica altezze: clicca la falda da modificare, poi premi Invio per aggiornare','warn');
+    else if(mode==='delete')setTrapResult('🎯 Cancella: clicca la falda da eliminare','warn');
+}
+function startTrapEditMode(){
+    startTrapPickMode('edit');
+}
+function startTrapDeleteMode(){
+    startTrapPickMode('delete');
+}
+function getTrapSelection(){
+    const ps=P();
+    if(!ps)return{ps:null,target:null,error:'Nessuna pagina attiva'};
+    const traps=ps.objects.filter(o=>o.type==='trapezio'&&!o.isB);
+    if(!traps.length)return{ps,target:null,error:'Nessuna sezione falde inclinata presente in questa pagina'};
+    if(S.selObj&&S.selObj.type==='trapezio'&&ps.objects.includes(S.selObj))return{ps,target:S.selObj,error:null};
+    if(traps.length===1)return{ps,target:traps[0],error:null};
+    return{ps,target:null,error:'Seleziona prima la sezione da modificare/cancellare (strumento Modifica o click a vuoto vicino alla sezione)'};
+}
+function applyTrapHeights(){
+    const pick=getTrapSelection();
+    if(!pick.target){setTrapResult('⚠️ '+pick.error,'warn');return;}
+    const h1=parseFloat(document.getElementById('trapH1').value);
+    const h2=parseFloat(document.getElementById('trapH2').value);
+    if(!Number.isFinite(h1)||!Number.isFinite(h2)||h1<0||h2<0){
+        setTrapResult('⚠️ Inserisci altezze valide (>= 0)','warn');
+        return;
+    }
+    pushHistory();
+    pick.target.h1=h1;
+    pick.target.h2=h2;
+    S.selObj=pick.target;
+    updateTbl();
+    draw();
+    setTrapResult(`✅ Altezze aggiornate su <b>${pick.target.name||'Sezione'}</b>: sx ${h1.toFixed(2)} m, dx ${h2.toFixed(2)} m`,'ok');
+}
+function applyTrapHeightsSelected(){
+    if(!(S.selObj&&S.selObj.type==='trapezio')){setTrapResult('⚠️ Seleziona prima una falda da modificare','warn');return false;}
+    const h1=parseFloat(document.getElementById('trapH1').value);
+    const h2=parseFloat(document.getElementById('trapH2').value);
+    if(!Number.isFinite(h1)||!Number.isFinite(h2)||h1<0||h2<0){
+        setTrapResult('⚠️ Inserisci altezze valide (>= 0)','warn');
+        return false;
+    }
+    pushHistory();
+    S.selObj.h1=h1;
+    S.selObj.h2=h2;
+    updateTbl();
+    draw();
+    setTrapResult(`✅ Altezze aggiornate su <b>${S.selObj.name||'Sezione'}</b>: sx ${h1.toFixed(2)} m, dx ${h2.toFixed(2)} m`,'ok');
+    return true;
+}
+function deleteTrapSection(){
+    const pick=getTrapSelection();
+    if(!pick.target){setTrapResult('⚠️ '+pick.error,'warn');return;}
+    pushHistory();
+    const idx=pick.ps.objects.indexOf(pick.target);
+    if(idx>=0)pick.ps.objects.splice(idx,1);
+    if(S.selObj===pick.target)S.selObj=null;
+    updateTbl();
+    draw();
+    setTrapResult('✅ Sezione falde inclinata cancellata','ok');
 }
 
 DC.addEventListener('mousemove',e=>{if(!pan&&(S.tool||S.calMode))draw()});
@@ -1097,16 +1635,146 @@ DC.addEventListener('mousedown',e=>{
     if(!ps.mpp)return;
 
     if(S.tool==='select'){
-        const vh=findVH(px,py);
-        if(vh){pushHistory();S.drag=vh;S.selObj=vh.obj;draw();return}
-        const sh=findSH(px,py);
-        if(sh){
-            pushHistory();
-            sh.obj.points.splice(sh.segmentIndex+1,0,sh.insertPoint);
-            S.drag={obj:sh.obj,index:sh.segmentIndex+1};
-            S.selObj=sh.obj;
-            updateTbl();draw();
+        if(S.trapPickMode){
+            const pickedTrap=findTrapNearPoint(px,py);
+            if(pickedTrap){
+                S.selObj=pickedTrap;
+                S.trapPickMode=false;
+                const mode=S.trapActionMode;
+                S.trapActionMode=null;
+                updateTrapPickUI();
+                if(mode==='delete'){
+                    pushHistory();
+                    const idx=ps.objects.indexOf(pickedTrap);
+                    if(idx>=0)ps.objects.splice(idx,1);
+                    S.selObj=null;
+                    updateTbl();
+                    draw();
+                    setTrapResult('✅ Sezione falde inclinata cancellata','ok');
+                }else{
+                    const h1El=document.getElementById('trapH1'),h2El=document.getElementById('trapH2');
+                    if(h1El)h1El.value=(pickedTrap.h1??0).toFixed(2);
+                    if(h2El)h2El.value=(pickedTrap.h2??0).toFixed(2);
+                    setTrapResult(`✅ Sezione selezionata: <b>${pickedTrap.name||'Sezione'}</b>. Premi Invio per aggiornare le altezze`,'ok');
+                }
+            }else{
+                setTrapResult('⚠️ Nessuna sezione trovata vicino al click','warn');
+            }
+            draw();
             return;
+        }
+        if(S.editMode==='delete'){
+            const target=findSelectableObjectAtPoint(px,py);
+            if(target){
+                pushHistory();
+                const idx=ps.objects.indexOf(target);
+                if(idx>=0)ps.objects.splice(idx,1);
+                if(S.selObj===target)S.selObj=null;
+                S.editPick=null;
+                updateTbl();
+                refreshEditModeUI();
+                draw();
+            }else{
+                S.selObj=null;
+                draw();
+            }
+            return;
+        }
+        if(S.editMode==='move'){
+            const vh=findVH(px,py);
+            if(vh){pushHistory();S.drag=vh;S.selObj=vh.obj;draw();return}
+            const sh=findSH(px,py);
+            if(sh){
+                pushHistory();
+                sh.obj.points.splice(sh.segmentIndex+1,0,sh.insertPoint);
+                S.drag={obj:sh.obj,index:sh.segmentIndex+1};
+                S.selObj=sh.obj;
+                updateTbl();draw();
+                return;
+            }
+        }else if(S.editMode==='offset'||S.editMode==='copyParallel'||S.editMode==='moveLine'){
+            if(S.editPick){
+                const side=pickOffsetSide(S.editPick,px,py);
+                const chosenOffset=side==='pos'?S.editPick.offsetPos:S.editPick.offsetNeg;
+                pushHistory();
+                const src=S.editPick.obj;
+                const curPage=S.pages[S.ci];
+                if(S.editMode==='moveLine'){
+                    src.points=chosenOffset.map(p=>({x:p.x,y:p.y}));
+                    S.selObj=src;
+                }else{
+                    const suffix=S.editMode==='copyParallel'?' +Parallela':' +Offset';
+                    const newObj={
+                        ...src,
+                        uid:S.uidCtr++,
+                        name:(src.name||'Object')+suffix,
+                        points:chosenOffset.map(p=>({x:p.x,y:p.y})),
+                        color:src.color
+                    };
+                    if(curPage){
+                        const objIdx=curPage.objects.indexOf(src);
+                        if(objIdx>=0)curPage.objects.splice(objIdx+1,0,newObj);
+                        else curPage.objects.push(newObj);
+                    }
+                    S.selObj=newObj;
+                }
+                S.editPick=null;
+                updateTbl();
+                refreshEditModeUI();
+                draw();
+                return;
+            }
+            const ps2=P();
+            let found=null;
+            if(S.editMode==='offset'){
+                // Pick object (area or line)
+                for(let o of ps2.objects){
+                    if(o.isB||o.isHole)continue;
+                    if(o.type==='area'&&pointInPolygon(px,py,o.points)){found=o;break;}
+                }
+                if(!found){
+                    for(let o of ps2.objects){
+                        if(o.isB||o.isHole)continue;
+                        if(o.type!=='area'){
+                            const c=getC(o.points);
+                            if(Math.hypot(px-c.x,py-c.y)<30*ds){found=o;break;}
+                        }
+                    }
+                }
+            }else{
+                const sh=findLineSH(px,py,null);
+                found=sh?sh.obj:null;
+            }
+            if(found){
+                const metricDist=getModeDistance(S.editMode);
+                if(Math.abs(metricDist)<1e-6){alert('Inserisci una distanza non nulla');return;}
+                const ps3=P();if(!ps3||!ps3.mpp)return;
+                const pxDist=metricDist/ps3.mpp;
+                const offsetPos=offsetPolyLine(found.points,pxDist);
+                const offsetNeg=offsetPolyLine(found.points,-pxDist);
+                S.editPick={obj:found,offsetPos:offsetPos,offsetNeg:offsetNeg,distance:metricDist};
+                S.selObj=found;
+                refreshEditModeUI();
+                draw();
+                return;
+            }
+            return;
+        }else{
+            const sh=findLineSH(px,py,S.editPick);
+            if(sh){
+                S.selObj=sh.obj;
+                if(!S.editPick){
+                    S.editPick={obj:sh.obj,segmentIndex:sh.segmentIndex,endpointIndex:getPickedEndpoint(sh,px,py)};
+                    refreshEditModeUI();draw();
+                    return;
+                }
+                if(S.editPick.obj===sh.obj&&S.editPick.segmentIndex===sh.segmentIndex){
+                    alert('Seleziona una linea di riferimento diversa dal segmento da modificare');
+                    return;
+                }
+                if(applyExtendTrim(S.editPick,sh,S.editMode))return;
+                return;
+            }
         }
         // Click inside area polygon -> select it
         const ps2=P();
@@ -1115,6 +1783,15 @@ DC.addEventListener('mousedown',e=>{
         for(let o of ps2.objects){
             if(o.isB)continue;
             if(o.type==='area'&&pointInPolygon(px,py,o.points)){found=o;break;}
+        }
+        if(!found){
+            for(let o of ps2.objects){
+                if(o.isB)continue;
+                if(o.type!=='area'){
+                    const c=getC(o.points);
+                    if(Math.hypot(px-c.x,py-c.y)<30){found=o;break;}
+                }
+            }
         }
         S.selObj=found;
         draw();
@@ -1153,6 +1830,11 @@ DC.addEventListener('mousedown',e=>{
         const isTrapTool=(S.tool==='trapezio');
         const label=isAreaTool?`Area ${globalCount+1}`:isTrapTool?`Sez ${globalCount+1}`:`Lin ${globalCount+1}`;
         S.cur={type:(S.tool==='rect'?'rect':S.tool),name:label,points:[{x:px,y:py}],color:S.colors[nonB.length%6]};
+        refreshLineLengthUI();
+        if(S.tool==='line'){
+            const lineInput=document.getElementById('lineLengthValue');
+            if(lineInput){lineInput.focus();lineInput.select();}
+        }
     }else{
         S.cur.points.push({x:px,y:py});
         if(S.tool==='line'&&S.cur.points.length===2)finalize();
@@ -1166,7 +1848,7 @@ DC.addEventListener('contextmenu',e=>{
     e.preventDefault();
     if(S.tool==='area'&&S.cur&&S.cur.points.length>2){finalize();return}
     if(S.tool==='poly'&&S.cur&&S.cur.points.length>1){finalize();return}
-    if(S.tool==='select'){
+    if(S.tool==='select'&&S.editMode==='move'){
         const r=DC.getBoundingClientRect();
         const px=(e.clientX-r.left)/r.width*DC.width;
         const py=(e.clientY-r.top)/r.height*DC.height;
@@ -1216,6 +1898,7 @@ function finalize(){
     // Assign stable uid to every object
     if(!S.cur.uid)S.cur.uid=S.uidCtr++;
     ps.objects.push(S.cur);S.cur=null;S.snap=null;
+    refreshLineLengthUI();
     updateTbl();draw();updateTabs();
 }
 
@@ -1330,6 +2013,12 @@ function draw(){
     DX.clearRect(0,0,DC.width,DC.height);
     const ps=P();if(!ps)return;
     const ds=DPR*GDS,m=ps.mpp;
+    // sds: canvas px → costante sullo schermo (÷scale)
+    const sds=ps.scale>0?ds/ps.scale:ds;
+    // csds: cursor in canvas px con risposta morbida allo zoom e clamp min/max
+    const scaleSafe=Math.max(ps.scale,0.01);
+    const cursorScreenUnit=Math.max(0.85*ds,Math.min(1.35*ds,ds/Math.sqrt(scaleSafe)));
+    const csds=cursorScreenUnit/scaleSafe;
 
     // Separate non-hole areas, holes, lines
     const nonBObjs=ps.objects.filter(o=>!o.isB);
@@ -1377,16 +2066,16 @@ function draw(){
     trapObjs.forEach(obj=>drawTrapezio(DX,obj,m,ds));
 
     // Draw vertices and labels for all non-border objects (skip holes unless in select mode)
-    const vs=S.tool==='select'?10*ds:8*ds;
+    const vs=S.tool==='select'?10*sds:8*sds;
     nonBObjs.forEach(obj=>{
         if(obj.isHole&&S.tool!=='select')return;
         obj.points.forEach((p,idx)=>{
             if(S.tool==='select'){
-                DX.strokeStyle=obj.color;DX.lineWidth=1.5*ds;drawX(DX,p.x,p.y,vs);
+                DX.strokeStyle=obj.color;DX.lineWidth=1.5*sds;drawX(DX,p.x,p.y,vs);
             }
             if(S.hVtx&&S.hVtx.obj===obj&&S.hVtx.index===idx){
-                DX.beginPath();DX.arc(p.x,p.y,12*ds,0,Math.PI*2);
-                DX.strokeStyle='#e74c3c';DX.lineWidth=2*ds;DX.stroke();
+                DX.beginPath();DX.arc(p.x,p.y,12*sds,0,Math.PI*2);
+                DX.strokeStyle='#e74c3c';DX.lineWidth=2*sds;DX.stroke();
             }
         });
         if(obj.isHole)return;
@@ -1467,12 +2156,81 @@ function draw(){
         const sg=S.hSeg;
         const p1=sg.obj.points[sg.segmentIndex],p2=sg.obj.points[sg.segmentIndex+1];
         DX.beginPath();DX.moveTo(p1.x,p1.y);DX.lineTo(p2.x,p2.y);
-        DX.strokeStyle='#3498db';DX.lineWidth=4*ds;DX.stroke();
-        if(sg.insertPoint){
+        DX.strokeStyle=S.editMode==='move'?'#3498db':'#8e44ad';DX.lineWidth=4*ds;DX.stroke();
+        if(S.editMode==='move'&&sg.insertPoint){
             DX.beginPath();DX.arc(sg.insertPoint.x,sg.insertPoint.y,5*ds,0,Math.PI*2);
             DX.fillStyle='#3498db';DX.fill();
             DX.strokeStyle='white';DX.lineWidth=2*ds;DX.stroke();
+        }else if(S.editMode!=='move'){
+            const ep=getPickedEndpoint(sg,S.mp.x,S.mp.y),sp=sg.obj.points[sg.segmentIndex+ep];
+            DX.beginPath();DX.arc(sp.x,sp.y,6*sds,0,Math.PI*2);
+            DX.fillStyle='#8e44ad';DX.fill();
+            DX.strokeStyle='white';DX.lineWidth=2*sds;DX.stroke();
         }
+    }
+
+    if(S.editPick&&S.tool==='select'&&(S.editMode==='extend'||S.editMode==='trim')){
+        const sg=S.editPick,p1=sg.obj.points[sg.segmentIndex],p2=sg.obj.points[sg.segmentIndex+1],sp=sg.obj.points[sg.segmentIndex+sg.endpointIndex];
+        DX.save();
+        DX.beginPath();DX.moveTo(p1.x,p1.y);DX.lineTo(p2.x,p2.y);
+        DX.strokeStyle='#f39c12';DX.lineWidth=4*ds;DX.setLineDash([8*ds,4*ds]);DX.stroke();DX.setLineDash([]);
+        DX.beginPath();DX.arc(sp.x,sp.y,7*sds,0,Math.PI*2);
+        DX.fillStyle='#f39c12';DX.fill();
+        DX.strokeStyle='white';DX.lineWidth=2*sds;DX.stroke();
+        DX.restore();
+    }
+
+    // Draw side preview for metric edit modes (offset/copia parallela/sposta linea)
+    if(S.editPick&&S.tool==='select'&&(S.editMode==='offset'||S.editMode==='copyParallel'||S.editMode==='moveLine')){
+        const offsetData=S.editPick;
+        DX.save();
+        
+        // Original object highlight
+        DX.beginPath();DX.moveTo(offsetData.obj.points[0].x,offsetData.obj.points[0].y);
+        offsetData.obj.points.forEach(p=>DX.lineTo(p.x,p.y));
+        DX.strokeStyle='rgba(249,115,22,0.6)';DX.lineWidth=3*ds;
+        DX.setLineDash([6*ds,3*ds]);DX.stroke();DX.setLineDash([]);
+        
+        // Positive offset (green side)
+        DX.beginPath();DX.moveTo(offsetData.offsetPos[0].x,offsetData.offsetPos[0].y);
+        offsetData.offsetPos.forEach(p=>DX.lineTo(p.x,p.y));
+        DX.strokeStyle='#10b981';DX.lineWidth=3.5*ds;DX.stroke();
+        
+        // Negative offset (red side)
+        DX.beginPath();DX.moveTo(offsetData.offsetNeg[0].x,offsetData.offsetNeg[0].y);
+        offsetData.offsetNeg.forEach(p=>DX.lineTo(p.x,p.y));
+        DX.strokeStyle='#ef4444';DX.lineWidth=3.5*ds;DX.stroke();
+        
+        DX.restore();
+    }
+
+    // Custom cursor crosshair — inversamente proporzionale allo zoom, con punto centrale
+    if((S.tool&&S.tool!=='select')||S.calMode){
+        const cx=S.mp.x, cy=S.mp.y, arm=14*csds, gap=4*csds;
+        DX.save();
+        DX.lineCap='round';
+        // White outline for contrast on any background
+        DX.strokeStyle='rgba(255,255,255,0.6)';DX.lineWidth=3.5*csds;
+        DX.beginPath();
+        DX.moveTo(cx-arm,cy);DX.lineTo(cx-gap,cy);
+        DX.moveTo(cx+gap,cy);DX.lineTo(cx+arm,cy);
+        DX.moveTo(cx,cy-arm);DX.lineTo(cx,cy-gap);
+        DX.moveTo(cx,cy+gap);DX.lineTo(cx,cy+arm);
+        DX.stroke();
+        // Dark stroke on top
+        DX.strokeStyle='rgba(0,0,0,0.85)';DX.lineWidth=1.5*csds;
+        DX.beginPath();
+        DX.moveTo(cx-arm,cy);DX.lineTo(cx-gap,cy);
+        DX.moveTo(cx+gap,cy);DX.lineTo(cx+arm,cy);
+        DX.moveTo(cx,cy-arm);DX.lineTo(cx,cy-gap);
+        DX.moveTo(cx,cy+gap);DX.lineTo(cx,cy+arm);
+        DX.stroke();
+        // Central dot
+        DX.beginPath();DX.arc(cx,cy,2.5*csds,0,Math.PI*2);
+        DX.fillStyle='rgba(255,255,255,0.8)';DX.fill();
+        DX.beginPath();DX.arc(cx,cy,1.5*csds,0,Math.PI*2);
+        DX.fillStyle='rgba(0,0,0,0.9)';DX.fill();
+        DX.restore();
     }
 
     if(S.snap&&S.tool&&S.tool!=='select'){
@@ -1535,8 +2293,8 @@ function draw(){
         DX.beginPath();DX.moveTo(p0.x,p0.y);DX.lineTo(tp.x,tp.y);
         DX.strokeStyle='#e67e22';DX.lineWidth=3*ds;
         DX.setLineDash([8*ds,4*ds]);DX.stroke();DX.setLineDash([]);
-        DX.strokeStyle='#e67e22';DX.lineWidth=2*ds;
-        drawX(DX,p0.x,p0.y,8*ds);
+        DX.strokeStyle='#e67e22';DX.lineWidth=2*sds;
+        drawX(DX,p0.x,p0.y,8*sds);
         const pxDist=Math.hypot(tp.x-p0.x,tp.y-p0.y);
         const refDist=getCalRefDist();
         const mx2=(p0.x+tp.x)/2,my2=(p0.y+tp.y)/2;
@@ -1547,7 +2305,7 @@ function draw(){
     }
 
     if(S.cur&&S.cur.points.length>0&&!S.calMode){
-        const obj=S.cur,tp=S.snap||S.mp;
+        const obj=S.cur,tp=(obj.type==='line'&&obj.points.length===1)?getLinePreviewTargetPoint():(S.snap||S.mp);
         DX.save();
         DX.strokeStyle=obj.color;DX.lineWidth=1.5*ds;
         DX.setLineDash([6*ds,4*ds]);
@@ -1574,9 +2332,9 @@ function draw(){
             DX.stroke();
             DX.setLineDash([]);
 
-            DX.strokeStyle=obj.color;DX.lineWidth=1.5*ds;
-            drawX(DX,a.x,a.y,8*ds);
-            drawX(DX,b.x,b.y,8*ds);
+            DX.strokeStyle=obj.color;DX.lineWidth=1.5*sds;
+            drawX(DX,a.x,a.y,8*sds);
+            drawX(DX,b.x,b.y,8*sds);
 
             DX.fillStyle=obj.color;DX.shadowColor='transparent';
             const to={type:'area',points:rp,color:obj.color};
@@ -1596,8 +2354,8 @@ function draw(){
         DX.setLineDash([]);
 
         obj.points.forEach(p=>{
-            DX.strokeStyle=obj.color;DX.lineWidth=1.5*ds;
-            drawX(DX,p.x,p.y,8*ds);
+            DX.strokeStyle=obj.color;DX.lineWidth=1.5*sds;
+            drawX(DX,p.x,p.y,8*sds);
         });
 
         DX.fillStyle=obj.color;DX.shadowColor='transparent';
@@ -1828,7 +2586,7 @@ function savePrj(){
     }));
     const prj={v:V,app:"FABBRICATI_beta",t:new Date().toISOString(),
         psc:PSC,
-        rendite:getRenditeData(),cp:S.ci,sn:S.snapOn,ps:S.perpSnapOn,bv:S.bordVis,fv:S.fillVis,pages:pd,pdf:ab2b64(S.pdfAB)};
+        rendite:getRenditeData(),cp:S.ci,sn:S.snapOn,ps:S.perpSnapOn,sd:S.snapScale,bv:S.bordVis,fv:S.fillVis,pages:pd,pdf:ab2b64(S.pdfAB)};
     const bl=new Blob([JSON.stringify(prj)],{type:'application/json'});
     const fn=buildFileName('mpj');
     const a=document.createElement('a');a.href=URL.createObjectURL(bl);a.download=fn;a.click();
@@ -1870,6 +2628,7 @@ async function loadPrj(ev){
         if(prj.rendite)setRenditeData(prj.rendite);
         if(prj.sn!==undefined){S.snapOn=prj.sn;document.getElementById('snapTog').classList.toggle('on',S.snapOn)}
         if(prj.ps!==undefined){S.perpSnapOn=prj.ps;document.getElementById('perpTog').classList.toggle('on',S.perpSnapOn)}
+        if(prj.sd!==undefined){S.snapScale=clamp(parseFloat(prj.sd)||1,0.1,1);updateSnapDistanceLabel();}
         if(prj.bv!==undefined)S.bordVis=prj.bv;
         if(prj.fv!==undefined){S.fillVis=prj.fv;document.getElementById('fillTog').classList.toggle('on',S.fillVis);}
         await showPage(prj.cp||0);buildGrid(P());
@@ -2020,12 +2779,14 @@ async function printPDF(){
             const tc=document.createElement('canvas');
             tc.width=ps.vp.width;tc.height=ps.vp.height;
             const tx=tc.getContext('2d');
+            enhanceContext(tx);
             await ps.page.render({canvasContext:tx,viewport:ps.vp}).promise;
             ps.imgD=tx.getImageData(0,0,tc.width,tc.height);
         }
         const pc=document.createElement('canvas');
         pc.width=ps.vp.width;pc.height=ps.vp.height;
         const pxc=pc.getContext('2d');
+        enhanceContext(pxc);
         pxc.putImageData(ps.imgD,0,0);
         const px=pxc; // alias for code below
         // --- A4 fit scale (to keep label height constant in mm) ---
@@ -2323,12 +3084,14 @@ async function exportTIFF(){
         const tc=document.createElement('canvas');
         tc.width=ps.vp.width;tc.height=ps.vp.height;
         const tx=tc.getContext('2d');
+        enhanceContext(tx);
         await ps.page.render({canvasContext:tx,viewport:ps.vp}).promise;
         ps.imgD=tx.getImageData(0,0,tc.width,tc.height);ps.rendered=true;
     }
     const oc=document.createElement('canvas');
     oc.width=ps.vp.width;oc.height=ps.vp.height;
     const ox=oc.getContext('2d');
+    enhanceContext(ox);
     ox.putImageData(ps.imgD,0,0);
     const ds=DPR*GDS,m=ps.mpp;
     const nonBObjs=ps.objects.filter(o=>!o.isB);
@@ -2415,12 +3178,26 @@ async function exportTIFF(){
 
 
 document.addEventListener('keydown',e=>{
+    if(e.key==='Enter'&&document.activeElement?.id==='lineLengthValue'){
+        e.preventDefault();
+        applyLineLengthAndFinalize();
+        return;
+    }
+    if(e.key==='Enter'&&S.selObj&&S.selObj.type==='trapezio'){
+        e.preventDefault();
+        applyTrapHeightsSelected();
+        return;
+    }
     if(e.key==='Escape'){
         S.calMode=false;S.cur=null;S.drag=null;S.hSeg=null;S.hVtx=null;S.selObj=null;
+        S.trapPickMode=false;
+        S.trapActionMode=null;
         S.tool=null;
         document.querySelectorAll('#toolsCard .btn').forEach(b=>b.classList.remove('active'));
         VA.classList.remove('measuring','editing');
         document.getElementById('editHint').style.display='none';
+        updateTrapPickUI();
+        refreshLineLengthUI();
         draw();
     }
     if((e.key==='z'||e.key==='Z')&&(e.ctrlKey||e.metaKey)){e.preventDefault();undo();return;}
@@ -2433,6 +3210,10 @@ document.addEventListener('keydown',e=>{
         updateTbl();draw();updateTabs();
     }
 });
+document.getElementById('lineLengthValue')?.addEventListener('input',()=>draw());
+updateVisualScaleLabels();
+updateSnapDistanceLabel();
+updateTrapPickUI();
 document.getElementById('snapTog').classList.add('on');
 document.getElementById('perpTog').classList.add('on');
 </script>
